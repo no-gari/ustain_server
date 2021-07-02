@@ -24,10 +24,10 @@ if DB == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'sichanDB',
-            'USER': 'sichanDB',
-            'PASSWORD': 'rkddkwl123',
-            'HOST': 'sichandb.cxqfieauobbt.us-east-2.rds.amazonaws.com',
+            'NAME': 'changeDB',
+            'USER': 'changeDB',
+            'PASSWORD': 'changeDB123!',
+            'HOST': 'changedb.cafpqcrl5o17.ap-northeast-2.rds.amazonaws.com',
             'PORT': '3306',
         }
     }
@@ -41,11 +41,11 @@ if USE_S3:
 
 AWS_S3_SECURE_URLS = True
 AWS_REGION = 'ap-northeast-2'
-AWS_STORAGE_BUCKET_NAME = 'sichan'
+AWS_STORAGE_BUCKET_NAME = 'changes3'
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_HOST = 's3.%s.amazonaws.com' % AWS_REGION
-AWS_ACCESS_KEY_ID = 'AKIAVQNTDFIYWGRPJEH3'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIATG64CU4RXKUKGP6P'
+AWS_SECRET_ACCESS_KEY = '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'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_DEFAULT_ACL = None
 AWS_S3_OBJECT_PARAMETERS = {
