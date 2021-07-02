@@ -24,19 +24,16 @@ if DB == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'changeDB',
-            'USER': 'changeDB',
-            'PASSWORD': 'changeDB123!',
+            'NAME': 'changedb',
+            'USER': 'changedb',
+            'PASSWORD': 'change123!',
             'HOST': 'changedb.cafpqcrl5o17.ap-northeast-2.rds.amazonaws.com',
             'PORT': '3306',
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            }
         }
     }
 
 # S3
-USE_S3 = False
+USE_S3 = True
 
 if USE_S3:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
