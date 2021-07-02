@@ -24,9 +24,9 @@ if DB == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'changeDB',
-            'USER': 'changeDB',
-            'PASSWORD': 'changeDB123!',
+            'NAME': 'changedb',
+            'USER': 'changedb',
+            'PASSWORD': 'change123!',
             'HOST': 'changedb.cafpqcrl5o17.ap-northeast-2.rds.amazonaws.com',
             'PORT': '3306',
         }
