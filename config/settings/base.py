@@ -207,3 +207,61 @@ CRONJOBS = [
 
 # SOCIAL ACCOUNT
 SOCIAL_REDIRECT_URL = 'http://localhost:3000/login/social/callback'
+
+# COOLSMS
+COOLSMS_API_KEY = 'NCSMVIWDWDVLDXLG'
+COOLSMS_API_SECRET = 'KW9W2RVW8R2DTW206AWVM6PSUIXKO3CT'
+COOLSMS_FROM_PHONE = '01050319504'
+
+
+# MAILGUN
+MAILGUM_API_KEY = "a1209bfad6ca285a9ad2e0d7c1356b80-a0cfb957-2866bfcd"
+MAILGUM_DOMAIN = "https://api.mailgun.net/v3/mail.dev-change.net"
+MAILGUM_FROM_EMAIL = 'sofaissofa@icloud.com'
+
+
+#
+# # KAKAO
+# KAKAO_CLIENT_ID = '29bebceec427c5cb9e5a35627b29036e'
+# KAKAO_CLIENT_SECRET = 'C3JcbuqA5IdvkjdBmPfP0R56WFD2x59O'
+# '''
+# KAKAO LOGIN URL
+# https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${SOCIAL_REDIRECT_URL}&state=kakao
+# https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=29bebceec427c5cb9e5a35627b29036e&redirect_uri=http://localhost:3000/login/social/callback&state=kakao
+# '''
+#
+# # NAVER
+# NAVER_CLIENT_ID = 'uGdhMg5sF0l_syyYTL4a'
+# NAVER_CLIENT_SECRET = 'hEG6AHEIJs'
+# '''
+# NAVER LOGIN URL
+# https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${SOCIAL_REDIRECT_URL}&state=naver
+# https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=uGdhMg5sF0l_syyYTL4a&redirect_uri=http://localhost:3000/login/social/callback&state=naver
+# '''
+#
+# # FACEBOOK
+# FACEBOOK_CLIENT_ID = '390225185553512'
+# FACEBOOK_CLIENT_SECRET = '300c5460a4a64973bae345711599c7c4'
+# '''
+# FACEBOOK LOGIN URL
+# https://www.facebook.com/v9.0/dialog/oauth?response_type=code&client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${SOCIAL_REDIRECT_URL}&state=facebook
+# https://www.facebook.com/v9.0/dialog/oauth?response_type=code&client_id=390225185553512&redirect_uri=http://localhost:3000/login/social/callback&state=facebook
+# '''
+#
+# # GOOGLE
+# GOOGLE_CLIENT_ID = '150905530006-61l7dmaai5ih8href866erlm80cf6q5i.apps.googleusercontent.com'
+# GOOGLE_CLIENT_SECRET = 'FQV6EpdvGdZ1ILsCe2Al-Ym_'
+# '''
+# GOOGLE LOGIN URL
+# https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?response_type=code&client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${SOCIAL_REDIRECT_URL}&state=google&scope=openid
+# https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?response_type=code&client_id=150905530006-61l7dmaai5ih8href866erlm80cf6q5i.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login/social/callback&state=google&scope=openid
+# '''
+#
+# # APPLE
+# APPLE_CLIENT_ID = '123'
+# APPLE_CLIENT_SECRET = ''
+# '''
+# APPLE LOGIN URL
+# https://appleid.apple.com/auth/authorize?response_type=code&client_id=${APPLE_CLIENT_ID}&redirect_uri={SOCIAL_REDIRECT_URL}&state=apple
+# https://appleid.apple.com/auth/authorize?response_type=code&client_id=123&redirect_uri=http://localhost:3000/login/social/callback&state=apple
+# '''
