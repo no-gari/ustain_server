@@ -36,9 +36,9 @@ class User(AbstractUser):
     phone = models.CharField(verbose_name='휴대폰', max_length=11, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['phone']
-    VERIFY_FIELDS = []  # 회원가입 시 검증 받을 필드 (email, phone)
-    REGISTER_FIELDS = ['phone', 'password']  # 회원가입 시 입력 받을 필드 (email, phone, password)
+    REQUIRED_FIELDS = []
+    VERIFY_FIELDS = ['phone']  # 회원가입 시 검증 받을 필드 (email, phone)
+    REGISTER_FIELDS = ['email', 'password']  # 회원가입 시 입력 받을 필드 (email, phone, password)
 
     objects = UserManager()
 

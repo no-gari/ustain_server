@@ -6,20 +6,20 @@ pymysql.install_as_MySQLdb()
 
 DEBUG = True
 
-
 CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = ['*']
 
-DB = 'mysql'
+DB = 'sqlite'
 
-if DB == 'sqlite':
+if DB == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+
 if DB == 'mysql':
     DATABASES = {
         'default': {
@@ -34,7 +34,7 @@ if DB == 'mysql':
 
 
 # S3
-USE_S3 = True
+USE_S3 = False
 
 if USE_S3:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

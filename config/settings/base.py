@@ -198,27 +198,23 @@ CHANNEL_LAYERS = {
     },
 }
 
-
 # CRONTAB
 CRONJOBS = [
     # ['* * * * *', 'api.cron.mall.create_tester'],
 ]
-
 
 # SOCIAL ACCOUNT
 SOCIAL_REDIRECT_URL = 'http://localhost:3000/login/social/callback'
 
 # COOLSMS
 COOLSMS_API_KEY = 'NCSMVIWDWDVLDXLG'
-COOLSMS_API_SECRET = 'KW9W2RVW8R2DTW206AWVM6PSUIXKO3CT'
+COOLSMS_API_SECRET = 'N9KGGSNNCBONQZAYKEP8QDIMPBISY8PS'
 COOLSMS_FROM_PHONE = '01050319504'
-
 
 # MAILGUN
 MAILGUM_API_KEY = "a1209bfad6ca285a9ad2e0d7c1356b80-a0cfb957-2866bfcd"
 MAILGUM_DOMAIN = "https://api.mailgun.net/v3/mail.dev-change.net"
 MAILGUM_FROM_EMAIL = 'sofaissofa@icloud.com'
-
 
 #
 # # KAKAO
