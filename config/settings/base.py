@@ -212,9 +212,9 @@ COOLSMS_API_SECRET = 'N9KGGSNNCBONQZAYKEP8QDIMPBISY8PS'
 COOLSMS_FROM_PHONE = '01050319504'
 
 # MAILGUN
-MAILGUM_API_KEY = "a1209bfad6ca285a9ad2e0d7c1356b80-a0cfb957-2866bfcd"
-MAILGUM_DOMAIN = "https://api.mailgun.net/v3/mail.dev-change.net"
-MAILGUM_FROM_EMAIL = 'sofaissofa@icloud.com'
+MAILGUN_API_KEY = "a1209bfad6ca285a9ad2e0d7c1356b80-a0cfb957-2866bfcd"
+MAILGUN_DOMAIN = "https://api.mailgun.net/v3/mail.dev-change.net"
+MAILGUN_FROM_EMAIL = 'sofaissofa@icloud.com'
 
 # CLAYFUL
 CLAYFUL_API_KEY = '521bf375f86c91e5b9053b1fd461dddfc97bf568bfb056e8d26471febdd698ecee7e55f1'

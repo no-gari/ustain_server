@@ -11,12 +11,12 @@ from api.logger.models import EmailLog, PhoneLog
 @receiver(post_save, sender=EmailLog)
 def send_mail_gun(sender, instance, created, *args, **kwargs):
     if created:
-        url = f'https://api.mailgun.net/v3/{settings.MAILGUM_DOMAIN}/messages'
+        url = f'https://api.mailgun.net/v3/{settings.MAILGUN_DOMAIN}/messages'
         headers = {
-            'Authorization': f'api {settings.MAILGUM_API_KEY}'
+            'Authorization': f'api {settings.MAILGUN_API_KEY}'
         }
         data = {
-            'from': settings.MAILGUM_FROM_EMAIL,
+            'from': settings.MAILGUN_FROM_EMAIL,
             'to': [instance.to],
             'subject': instance.title,
             'html': instance.body,
