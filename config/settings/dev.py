@@ -3,12 +3,8 @@ import pymysql
 import os
 
 pymysql.install_as_MySQLdb()
-
 DEBUG = True
-
-
 CORS_ALLOW_ALL_ORIGINS = True
-
 ALLOWED_HOSTS = ['*']
 
 DB = 'mysql'
@@ -20,6 +16,7 @@ if DB == 'sqlite':
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+
 if DB == 'mysql':
     DATABASES = {
         'default': {
@@ -31,7 +28,6 @@ if DB == 'mysql':
             'PORT': '3306',
         }
     }
-
 
 # S3
 USE_S3 = True
