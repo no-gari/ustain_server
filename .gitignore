@@ -12,6 +12,7 @@ static
 media
 
 # Elastic Beanstalk Files
+.aws/*
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
