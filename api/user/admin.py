@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from api.user.models import User, EmailVerifier, PhoneVerifier, Social
+from api.user.models import User, EmailVerifier, PhoneVerifier, Social, UserGroup
+
+
+@admin.register(UserGroup)
+class CustomGroupAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(User)
