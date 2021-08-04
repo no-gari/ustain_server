@@ -40,9 +40,9 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'api.chat.apps.ChatConfig',
     'api.logger.apps.LoggerConfig',
     'api.user.apps.UserConfig',
+    'api.magazine.apps.MagazineConfig',
     ]
 
 THIRD_PARTY_APPS = [
@@ -54,6 +54,7 @@ THIRD_PARTY_APPS = [
     'django_hosts',
     'drf_yasg',
     'storages',
+    'django_summernote',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -203,6 +204,13 @@ CRONJOBS = [
     # ['* * * * *', 'api.cron.mall.create_tester'],
 ]
 
+# SUMMERNOTE
+SUMMERNOTE_CONFIG = {
+    'attachment_model': 'magazine.Summernote',
+    'iframe': True,
+}
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 # SOCIAL ACCOUNT
 SOCIAL_REDIRECT_URL = 'https://dev-change.net/login/social/callback'
 
@@ -223,15 +231,15 @@ CLAYFUL_API_SECRET = 'cab48c9b28a1fd40b8cb0dd38323f12716f4d00896c8e05476993676ef
 # KAKAO
 KAKAO_CLIENT_ID = '834031fe8f729b4ce1c4d1865bccd63a'
 KAKAO_CLIENT_SECRET = 'ArCJdOXV5GszOyZUj6WOqliE8bJ4DfUB'
-KAKAO_LOGIN_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id={id}&redirect_uri={uri}&state=kakao'.format(id=KAKAO_CLIENT_ID, uri = KAKAO_CLIENT_SECRET)
+KAKAO_LOGIN_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id={id}&redirect_uri={uri}&state=kakao'.format(id=KAKAO_CLIENT_ID, uri=KAKAO_CLIENT_SECRET)
 
 
-# APPLE
-APPLE_CLIENT_ID = '123'
-APPLE_CLIENT_SECRET = ''
-
-'''
-APPLE LOGIN URL
-https://appleid.apple.com/auth/authorize?response_type=code&client_id=${APPLE_CLIENT_ID}&redirect_uri={SOCIAL_REDIRECT_URL}&state=apple
-https://appleid.apple.com/auth/authorize?response_type=code&client_id=123&redirect_uri=http://localhost:3000/login/social/callback&state=apple
-'''
+# # APPLE
+# APPLE_CLIENT_ID = '123'
+# APPLE_CLIENT_SECRET = ''
+#
+# '''
+# APPLE LOGIN URL
+# https://appleid.apple.com/auth/authorize?response_type=code&client_id=${APPLE_CLIENT_ID}&redirect_uri={SOCIAL_REDIRECT_URL}&state=apple
+# https://appleid.apple.com/auth/authorize?response_type=code&client_id=123&redirect_uri=http://localhost:3000/login/social/callback&state=apple
+# '''
