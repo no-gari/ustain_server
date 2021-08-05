@@ -43,6 +43,7 @@ LOCAL_APPS = [
     'api.logger.apps.LoggerConfig',
     'api.user.apps.UserConfig',
     'api.magazine.apps.MagazineConfig',
+    'api.firebase.apps.FirebaseConfig',
     'api.commerce.cart.apps.CartConfig',
     'api.commerce.collection.apps.CollectionConfig',
     'api.commerce.coupon.apps.CouponConfig',
@@ -58,11 +59,6 @@ LOCAL_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'channels',
-    'corsheaders',
-    'django_crontab',
-    'django_filters',
-    'django_hosts',
     'drf_yasg',
     'storages',
     'django_summernote',
