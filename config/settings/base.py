@@ -43,6 +43,17 @@ LOCAL_APPS = [
     'api.logger.apps.LoggerConfig',
     'api.user.apps.UserConfig',
     'api.magazine.apps.MagazineConfig',
+    'api.commerce.cart.apps.CartConfig',
+    'api.commerce.collection.apps.CollectionConfig',
+    'api.commerce.coupon.apps.CouponConfig',
+    'api.commerce.customer.apps.CustomerConfig',
+    'api.commerce.order.apps.OrderConfig',
+    'api.commerce.payment.apps.PaymentConfig',
+    'api.commerce.product.apps.ProductConfig',
+    'api.commerce.review.apps.ReviewConfig',
+    'api.commerce.shipping.apps.ShippingConfig',
+    'api.commerce.vendor.apps.VendorConfig',
+    'api.commerce.wishlist.apps.WishlistConfig',
     ]
 
 THIRD_PARTY_APPS = [
