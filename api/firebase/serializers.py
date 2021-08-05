@@ -3,7 +3,6 @@ from .models import PushToken
 
 
 class PushTokenSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PushToken
         fields = (

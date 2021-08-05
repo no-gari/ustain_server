@@ -3,5 +3,4 @@ from .viewsets import PushTokenAPIView
 
 urlpatterns = [
     path('push/', PushTokenAPIView.as_view()),
-
 ]
