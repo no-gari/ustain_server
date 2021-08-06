@@ -1,4 +1,4 @@
-from .admin import messaging
+from firebase_admin import messaging
 
 
 def send_to_firebase_cloud_messaging(users, title, body, uri, id=None):
