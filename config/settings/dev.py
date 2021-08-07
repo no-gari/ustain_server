@@ -7,7 +7,7 @@ DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ['*']
 
-DB = 'mysql'
+DB = 'sqlite'
 
 if DB == 'sqlite':
     DATABASES = {
