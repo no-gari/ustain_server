@@ -21,10 +21,10 @@ if DB == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'change_dev',
-            'USER': 'change_admin',
-            'PASSWORD': 'change123!',
-            'HOST': 'change-dev.cafpqcrl5o17.ap-northeast-2.rds.amazonaws.com',
+            'NAME': 'aroundus',
+            'USER': 'aroundus',
+            'PASSWORD': 'aroundus123!',
+            'HOST': 'aroundus.cafpqcrl5o17.ap-northeast-2.rds.amazonaws.com',
             'PORT': '3306',
         }
     }
