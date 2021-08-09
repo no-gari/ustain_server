@@ -58,6 +58,7 @@ class User(AbstractUser):
     username = None
     name = models.CharField(verbose_name='닉네임', max_length=16, null=True, blank=True)
     email = models.EmailField(verbose_name='이메일', unique=True)
+    email_verify = models.BooleanField(verbose_name='이메일 인증', default=False)
     phone = models.CharField(verbose_name='휴대폰', max_length=11, null=True, blank=True)
     groups = models.ManyToManyField(UserGroup, verbose_name='속한 그룹')
     profile_article = models.CharField(max_length=512, verbose_name='프로필 정보', null=True, blank=True)

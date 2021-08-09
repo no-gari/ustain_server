@@ -28,15 +28,12 @@
         <tr>
             <td>
                 <div class="password-reset-body">
-                    <h1 class="mb-5">비밀번호 재설정</h1>
-                    <form action="{% url 'password-reset-confirm' %}" method="post">
-                        {% csrf_token %}
-                        <input type="password" class="form-control mb-2" name="password" placeholder="새 비밀번호">
-                        <input type="password" class="form-control mb-2" name="password_confirm" placeholder="비밀번호 확인">
-                        <div class="text-right">
-                            <input type="submit" name="submit" class="btn-lg" value="변경">
-                        </div>
-                    </form>
+                    <h1 class="mb-5">비밀번호 재설정 {{ num }}</h1>
+                    <input type="password" class="form-control mb-2" name="password" placeholder="새 비밀번호">
+                    <input type="password" class="form-control mb-2" name="password_confirm" placeholder="비밀번호 확인">
+                    <div class="text-right">
+                        <input type="submit" name="submit" class="btn-lg" value="변경">
+                    </div>
                 </div>
             </td>
         </tr>
