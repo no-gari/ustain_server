@@ -10,10 +10,6 @@ class MagazineRetrieveView(RetrieveAPIView):
     serializer_class = MagazineRetrieveSerializer
 
 
-class MagazineLikeUserListView(ListAPIView):
-    serializer_class = MagazineLikeUserListSerializer
-
-
 class MagazineLikeCreateView(CreateAPIView):
     serializer_class = MagazineLikeCreateSerializer
 
