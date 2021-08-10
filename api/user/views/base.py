@@ -1,35 +1,15 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.renderers import TemplateHTMLRenderer
 
-from api.user.serializers import *
+from api.user.serializers.base import *
 from api.user.models import User, EmailVerifier
 from config.settings.base import SITE_NAME
 
 
 class UserSocialLoginView(CreateAPIView):
     serializer_class = UserSocialLoginSerializer
-
-
-class UserRegisterView(CreateAPIView):
-    serializer_class = UserRegisterSerializer
-
-
-class EmailVerifierCreateView(CreateAPIView):
-    serializer_class = EmailVerifierCreateSerializer
-
-
-class EmailVerifierConfirmView(CreateAPIView):
-    serializer_class = EmailVerifierConfirmSerializer
-
-
-class PhoneVerifierCreateView(CreateAPIView):
-    serializer_class = PhoneVerifierCreateSerializer
-
-
-class PhoneVerifierConfirmView(CreateAPIView):
-    serializer_class = PhoneVerifierConfirmSerializer
 
 
 class EmailFoundPhoneVerifierCreateView(CreateAPIView):

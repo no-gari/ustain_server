@@ -1,11 +1,13 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from api.user.views import UserRegisterView, EmailVerifierCreateView, EmailVerifierConfirmView, \
-    PhoneVerifierCreateView, PhoneVerifierConfirmView, UserSocialLoginView, EmailFoundPhoneVerifierCreateView, \
+from api.user.views.base import UserSocialLoginView, EmailFoundPhoneVerifierCreateView, \
     EmailFoundPhoneVerifierConfirmView, PasswordResetVerifyView, PasswordResetConfirmView
+from api.user.views.verify import EmailVerifierCreateView, EmailVerifierConfirmView, PhoneVerifierCreateView, \
+    PhoneVerifierConfirmView
+from api.user.views.register import UserRegisterView
 
-from api.user.views import PasswordResetView, TmpView
+from api.user.views.base import PasswordResetView, TmpView
 
 urlpatterns = [
     path('login/', TokenObtainPairView.as_view()),
