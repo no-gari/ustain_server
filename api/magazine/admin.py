@@ -66,7 +66,7 @@ class FilesInlineAdmin(admin.StackedInline):
 class MagazinesAdminForm(forms.ModelForm):
     class Meta:
         model = models.Magazines
-        fields = ('categories', 'is_main', 'comments_banned', 'title', 'content', 'hits')
+        fields = ('categories', 'is_main', 'like_users', 'published', 'comments_banned', 'title', 'content', 'hits')
 
     def save(self, commit=True):
         try:

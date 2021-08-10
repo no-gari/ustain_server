@@ -13,21 +13,48 @@ class MagazinesListSerializer(serializers.ModelSerializer):
 
 
 class MagazineRetrieveSerializer(serializers.ModelSerializer):
+    like_user_count = serializers.IntegerField(source='like_users.count')
+    is_like = serializers.SerializerMethodField()
+    total_comments = serializers.SerializerMethodField()
+
     class Meta:
         model = Magazines
-        fields = '__all__'
+        fields = ['categories', 'id', 'title', 'hits', 'created_at', 'updated_at', 'comments_banned',
+                  'like_user_count', 'is_like', 'total_comments']
+
+    def get_is_like(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return user in obj.like_users.all()
+        else:
+            return False
+
+    def get_total_comments(self, obj):
+        total_comments = obj.magazine_comments.count()
+        return total_comments
 
 
-class MagazineLikeCreateSerializer(serializers.ModelSerializer):
+class MagazineLikeSerializer(serializers.ModelSerializer):
+    is_like = serializers.SerializerMethodField()
+
     class Meta:
         model = Magazines
-        fields = '__all__'
+        fields = ['is_like']
 
+    def get_is_like(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return user in obj.like_users.all()
+        else:
+            return False
 
-class MagazineLikeDeleteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Magazines
-        fields = '__all__'
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        if user in instance.like_users.all():
+            instance.like_users.remove(user)
+        else:
+            instance.like_users.add(user)
+        return instance
 
 
 class MagazineReviewsListSerializer(serializers.ModelSerializer):
