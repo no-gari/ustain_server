@@ -1,7 +1,6 @@
 import requests
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.utils import timezone
 from rest_framework import serializers
 from .models import Magazines, MagazineComments
 from rest_framework.exceptions import ValidationError
