@@ -15,6 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.logger.models import PhoneLog, EmailLog
 from api.user.models import User, EmailVerifier, PhoneVerifier, Social, SocialKindChoices
 from api.user.validators import validate_password
+from api.user.tokens import EmailVerificationTokenGenerator
 
 
 class UserSocialLoginSerializer(serializers.Serializer):
@@ -226,7 +227,6 @@ class EmailFoundPhoneVerifierConfirmSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print(**validated_data)
         phone = validated_data.get('phone')
         user = User.objects.get(phone=phone)
 
@@ -254,7 +254,8 @@ class PasswordResetVerifySerializer(serializers.ModelSerializer):
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = timezone.now()
         hash_string = str(email) + code + str(created.timestamp())
-        token = hashlib.sha1(hash_string.encode('utf-8')).hexdigest()
+        # token = hashlib.sha1(hash_string.encode('utf-8')).hexdigest()
+        token = EmailVerificationTokenGenerator().make_token(user)
 
         attrs.update({
             'code': code,
@@ -263,37 +264,38 @@ class PasswordResetVerifySerializer(serializers.ModelSerializer):
         })
 
         try:
-            self.send_link(attrs)
+            self.send_simple_message(attrs)
         except Exception:
             raise ValidationError('비밀번호 재설정 링크 전송 실패')
 
         return attrs
 
-    def send_link(self, attrs):
+    def send_simple_message(self, attrs):
         body = f'http://localhost:8000/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
-        EmailLog.objects.create(to=attrs['email'], body=body)
+        EmailLog.objects.create(to=attrs['email'], body=body, title="어라운드어스 비밀번호 재설정 링크")
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
-    email = serializers.EmailField(write_only=True)
-    email_token = serializers.CharField(source='token')
+    code = serializers.CharField(write_only=True)
+    email_token = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        email = attrs.get('email')
+        code = attrs.get('code')
         email_token = attrs.pop('email_token', None)
         password = attrs.get('password')
         password_confirm = attrs.pop('password_confirm', None)
         # 이메일 토큰 검증
         try:
-            self.email_verifier = EmailVerifier.objects.get(email=email, token=email_token)
+            self.email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
         except EmailVerifier.DoesNotExist:
             raise ValidationError('유효한 링크가 아닙니다.')
 
         # 이메일 검증
-        if not User.objects.filter(email=email).exists():
+        if not User.objects.filter(email=self.email_verifier.email).exists():
             raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
+        self.email = self.email_verifier.email
 
         # password 검증
         errors = {}
@@ -314,11 +316,10 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        email = validated_data.pop('email')
         password = validated_data.pop('password')
 
-        user = User.objects.get(email=email)
-        user.password = password
+        user = User.objects.get(email=self.email)
+        user.set_password(password)
         user.save()
 
         return user

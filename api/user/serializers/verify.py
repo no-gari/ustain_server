@@ -47,7 +47,8 @@ class EmailVerifierCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def send_code(self, attrs):
-        pass
+        body = f'어라운드어스 이메일 인증 인증번호: [{attrs["code"]}]'
+        EmailLog.objects.create(to=attrs['email'], body=body, title="어라운드어스 이메일 인증 코드")
 
 
 class EmailVerifierConfirmSerializer(serializers.ModelSerializer):
