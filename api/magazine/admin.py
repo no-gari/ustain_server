@@ -124,7 +124,7 @@ class MagazinesAdmin(SummernoteModelAdmin):
 class MagazineCommentsAdmin(admin.ModelAdmin):
     list_display = ('get_id', 'content', 'user', 'magazines',)
     list_display_links = ('content',)
-    readonly_fields = ('ipaddress', 'user',)
+    readonly_fields = ('user',)
     list_filter = ['magazines']
     autocomplete_fields = ['magazines']
 

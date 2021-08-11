@@ -1,9 +1,10 @@
-from rest_framework.generics import UpdateAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView
+from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 from api.magazine.serializers import *
 from .models import *
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
-from rest_framework.response import Response
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -20,6 +21,16 @@ class MagazinesListView(ListAPIView):
 
     def get_queryset(self):
         magazines = Magazines.objects.filter(published=True)
+        return magazines
+
+
+class MainMagazinesListView(ListAPIView):
+    serializer_class = MagazinesListSerializer
+    permission_classes = [AllowAny]
+    ordering = ['-id']
+
+    def get_queryset(self):
+        magazines = Magazines.objects.filter(published=True, is_main=True)
         return magazines
 
 
@@ -60,8 +71,33 @@ class MagazineReviewsListSerializer(ListAPIView):
 
 
 class MagazineReviewCreateView(CreateAPIView):
-    serializer_class = MagazineReviewSerializer
+    serializer_class = MagazineReviewCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class MagazineReviewRetrieveUpdateRetrieveView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MagazineReviewSerializer
+class MagazineCommentUpdateView(UpdateAPIView):
+    serializer_class = MagazineReviewUpdateSerializer
+    permission_classes = [IsAuthenticated]
+    allowed_methods = ['put']
+    lookup_field = 'id'
+
+    def get_object(self):
+        instance = MagazineComments.objects.get(id=self.kwargs['id'])
+        if instance.user != self.request.user:
+            raise ValidationError({'error_msg': '댓글 작성자 본인만 수정할 수 있습니다.'})
+        return instance
+
+
+class MagazineCommentDeleteView(DestroyAPIView):
+    serializer_class = MagazineReviewDestroySerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+
+    def get_object(self):
+        instance = MagazineComments.objects.get(id=self.kwargs['id'])
+        if instance.user != self.request.user:
+            raise ValidationError({'error_msg': '댓글 작성자 본인만 삭제할 수 있습니다.'})
+        return instance

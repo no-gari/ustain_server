@@ -1,9 +1,5 @@
-import requests
-from django.conf import settings
-from django.core.exceptions import ValidationError as DjangoValidationError
+from api.magazine.models import Magazines, MagazineComments
 from rest_framework import serializers
-from .models import Magazines, MagazineComments
-from rest_framework.exceptions import ValidationError
 
 
 class MagazinesListSerializer(serializers.ModelSerializer):
@@ -58,12 +54,31 @@ class MagazineLikeSerializer(serializers.ModelSerializer):
 
 
 class MagazineReviewsListSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = MagazineComments
-        fields = '__all__'
+        fields = ['id', 'content', 'created_at', 'updated_at', 'magazines', 'user', 'name', 'reply']
+
+    def get_name(self, obj):
+        return obj.user.name
 
 
-class MagazineReviewSerializer(serializers.ModelSerializer):
+class MagazineReviewCreateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = MagazineComments
-        fields = '__all__'
+        fields = ['id', 'content', 'magazines', 'reply']
+
+
+class MagazineReviewUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MagazineComments
+        fields = ['id', 'content']
+
+
+class MagazineReviewDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MagazineComments
+        fields = ['id']
