@@ -1,5 +1,5 @@
-from django.urls import path
 from api.magazine.views import *
+from django.urls import path
 
 urlpatterns = [
     path('list/', MagazinesListView.as_view()),

@@ -15,7 +15,7 @@ class MagazineRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Magazines
-        fields = ['categories', 'id', 'title', 'hits', 'created_at', 'updated_at', 'comments_banned',
+        fields = ['categories', 'banner_image', 'id', 'content', 'title', 'hits', 'created_at', 'updated_at', 'comments_banned',
                   'like_user_count', 'is_like', 'total_comments']
 
     def get_is_like(self, obj):
