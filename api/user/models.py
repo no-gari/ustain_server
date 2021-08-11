@@ -14,7 +14,7 @@ class UserGroup(models.Model):
 class Categories(models.Model):
     title = models.CharField(max_length=255, verbose_name='카테고리 이름', help_text='카테고리 이름을 입력하세요.')
     mid = models.CharField(unique=True, max_length=255, verbose_name='카테고리 고유값',
-                           help_text='영문+숫자 조합만 가능한 카테고리의 고유값입니다.')
+                           help_text='영문+숫자 조합만 가능한 카테고리의 고유값입니다.', primary_key=True)
     description = models.TextField(blank=True, null=True, verbose_name='카테고리 설명', help_text='카테고리에 대한 간단한 설명을 입력합니다.')
     snapshot_image = models.ImageField(blank=True, null=True, verbose_name='이미지', help_text='해당하는 이미지 파일을 선택하세요.')
 
