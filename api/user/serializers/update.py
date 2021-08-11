@@ -25,17 +25,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ['name', 'profile_article', 'sex_choices', 'birthday', 'categories']
 
     def validate(self, attrs):
-        # email = attrs['email']
         sex_choices = attrs['sex_choices']
-        birthday = attrs['birthday']
-        categories = attrs['categories']
-        print(categories)
-
-        # # user 검사
-        # try:
-        #     User.objects.get(email=email)
-        # except User.DoesNotExist:
-        #     raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
 
         # sex_choices 유효성 검사
         if not (sex_choices == 'MA' or sex_choices == 'FE'):
@@ -44,8 +34,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return attrs
 
     def update(self, instance, validated_data):
-        # email = validated_data.get('email')
-        # user = User.objects.get(email=email)
         instance.name = validated_data.get('name', instance.name)
         instance.profile_article = validated_data.get('profile_article', instance.profile_article)
         instance.birthday = validated_data.get('birthday', instance.profile_article)
@@ -60,8 +48,5 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         # user categories update
         instance.categories.set(validated_data.get('categories', instance.categories))
         instance.save()
-        # for category_mid in categories:
-        #     category = Categories.objects.get(mid=category_mid)
-        #     instance.categories.add(category)
 
         return instance

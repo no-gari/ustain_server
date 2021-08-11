@@ -33,14 +33,14 @@ class CategoryAdminForm(forms.ModelForm):
 @admin.register(models.Categories)
 class CategoryAdmin(admin.ModelAdmin):
     form = CategoryAdminForm
-    list_display = ('get_id', 'title', 'mid', 'snapshot_image')
+    list_display = ('title', 'mid', 'snapshot_image')
     list_display_links = ('title',)
     search_fields = ('title', 'mid',)
 
     def get_id(self, obj):
         return obj.id
 
-    get_id.short_description = 'ID'
+    get_id.short_description = 'mid'
 
 
 class FilesInlineAdmin(admin.StackedInline):
