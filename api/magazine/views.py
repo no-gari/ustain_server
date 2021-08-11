@@ -20,7 +20,23 @@ class MagazinesListView(ListAPIView):
     ordering = ['-id']
 
     def get_queryset(self):
-        magazines = Magazines.objects.filter(published=True)
+        categories = eval(self.request.query_params.get('categories', []))
+        if categories != []:
+            magazines = Magazines.objects.filter(published=True, categories__in=categories)
+        else:
+            magazines = Magazines.objects.filter(published=True)
+        return magazines
+
+
+class LikeMagazinesListView(ListAPIView):
+    serializer_class = MagazinesListSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
+    ordering = ['-id']
+
+    def get_queryset(self):
+        user = self.request.user
+        magazines = user.like_magazines.all().filter(published=True)
         return magazines
 
 
