@@ -3,9 +3,18 @@ from rest_framework import serializers
 
 
 class MagazinesListSerializer(serializers.ModelSerializer):
+    is_like = serializers.SerializerMethodField()
+
     class Meta:
         model = Magazines
-        fields = '__all__'
+        fields = ['categories', 'banner_image', 'id', 'content', 'title', 'is_like']
+
+    def get_is_like(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return user in obj.like_users.all()
+        else:
+            return False
 
 
 class MagazineRetrieveSerializer(serializers.ModelSerializer):
