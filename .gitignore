@@ -10,6 +10,7 @@ venv
 secrets.json
 static
 media
+db.sqlite3
 
 # Elastic Beanstalk Files
 .aws/*
