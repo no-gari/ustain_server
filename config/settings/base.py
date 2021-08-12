@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
 
 # Application definition
 DJANGO_APPS = [
+    'admin_menu',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

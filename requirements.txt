@@ -27,6 +27,7 @@ cryptography==3.2.1
 daphne==3.0.1
 defusedxml==0.6.0
 Django==3.1.4
+django-admin-menu==1.5
 django-allauth==0.44.0
 django-cors-headers==3.5.0
 django-crontab==0.7.1
@@ -68,6 +69,7 @@ itypes==1.2.0
 Jinja2==2.11.2
 jmespath==0.10.0
 jsonschema==3.2.0
+libsass==0.20.1
 MarkupSafe==1.1.1
 msgpack==1.0.1
 oauthlib==3.1.0
