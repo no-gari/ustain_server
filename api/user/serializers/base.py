@@ -12,9 +12,10 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.logger.models import PhoneLog
+from api.logger.models import PhoneLog, EmailLog
 from api.user.models import User, EmailVerifier, PhoneVerifier, Social, SocialKindChoices
 from api.user.validators import validate_password
+from api.user.tokens import EmailVerificationTokenGenerator
 
 
 class UserSocialLoginSerializer(serializers.Serializer):
@@ -169,159 +170,7 @@ class UserSocialLoginSerializer(serializers.Serializer):
         return decoded['sub']
 
 
-class UserRegisterSerializer(serializers.Serializer):
-    email = serializers.CharField(write_only=True, required=False)
-    email_token = serializers.CharField(write_only=True, required=False)
-    phone = serializers.CharField(write_only=True, required=False)
-    phone_token = serializers.CharField(write_only=True, required=False)
-    password = serializers.CharField(write_only=True, required=False)
-    password_confirm = serializers.CharField(write_only=True, required=False)
-
-    access = serializers.CharField(read_only=True)
-    refresh = serializers.CharField(read_only=True)
-
-    def get_fields(self):
-        fields = super().get_fields()
-
-        if 'email' in User.VERIFY_FIELDS:
-            fields['email_token'].required = True
-        if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
-            fields['email'].required = True
-        if 'phone' in User.VERIFY_FIELDS:
-            fields['phone_token'].required = True
-        if 'phone' in User.VERIFY_FIELDS or 'phone' in User.REGISTER_FIELDS:
-            fields['phone'].required = True
-        if 'password' in User.REGISTER_FIELDS:
-            fields['password'].required = True
-            fields['password_confirm'].required = True
-
-        return fields
-
-    def validate(self, attrs):
-        email = attrs.get('email')
-        email_token = attrs.pop('email_token', None)
-        phone = attrs.get('phone')
-        phone_token = attrs.pop('phone_token', None)
-
-        password = attrs.get('password')
-        password_confirm = attrs.pop('password_confirm', None)
-
-        if 'email' in User.VERIFY_FIELDS:
-            # 이메일 토큰 검증
-            try:
-                self.email_verifier = EmailVerifier.objects.get(email=email, token=email_token)
-            except EmailVerifier.DoesNotExist:
-                raise ValidationError('이메일 인증을 진행해주세요.')
-        if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
-            # 이메일 검증
-            if User.objects.filter(email=email).exists():
-                raise ValidationError({'email': ['이미 가입된 이메일입니다.']})
-
-        if 'phone' in User.VERIFY_FIELDS:
-            # 휴대폰 토큰 검증
-            try:
-                self.phone_verifier = PhoneVerifier.objects.get(phone=phone, token=phone_token)
-            except PhoneVerifier.DoesNotExist:
-                raise ValidationError('휴대폰 인증을 진행해주세요.')
-        if 'phone' in User.VERIFY_FIELDS or 'phone' in User.REGISTER_FIELDS:
-            # 휴대폰 검증
-            if User.objects.filter(phone=phone).exists():
-                raise ValidationError({'phone': ['이미 가입된 휴대폰입니다.']})
-
-        if 'password' in User.REGISTER_FIELDS:
-            errors = {}
-            # 비밀번호 검증
-            if password != password_confirm:
-                errors['password'] = ['비밀번호가 일치하지 않습니다.']
-                errors['password_confirm'] = ['비밀번호가 일치하지 않습니다.']
-            else:
-                try:
-                    validate_password(password)
-                except DjangoValidationError as error:
-                    errors['password'] = list(error)
-                    errors['password_confirm'] = list(error)
-
-            if errors:
-                raise ValidationError(errors)
-
-        return attrs
-
-    @transaction.atomic
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            **validated_data,
-        )
-        if 'email' in User.VERIFY_FIELDS:
-            self.email_verifier.delete()
-        if 'phone' in User.VERIFY_FIELDS:
-            self.phone_verifier.delete()
-
-        refresh = RefreshToken.for_user(user)
-
-        return {
-            'access': refresh.access_token,
-            'refresh': refresh,
-        }
-
-
-class EmailVerifierCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmailVerifier
-        fields = ['email']
-
-    def validate(self, attrs):
-        email = attrs['email']
-
-        if User.objects.filter(email=email).exists():
-            raise ValidationError({'email': ['이미 존재하는 이메일입니다.']})
-
-        code = ''.join([str(random.randint(0, 9)) for i in range(6)])
-        created = timezone.now()
-        hash_string = str(email) + code + str(created.timestamp())
-        token = hashlib.sha1(hash_string.encode('utf-8')).hexdigest()
-
-        attrs.update({
-            'code': code,
-            'token': token,
-            'created': created,
-        })
-
-        try:
-            self.send_code(attrs)
-        except Exception:
-            raise ValidationError('인증번호 전송 실패')
-
-        return attrs
-
-    def send_code(self, attrs):
-        pass
-
-
-class EmailVerifierConfirmSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(write_only=True)
-    code = serializers.CharField(write_only=True)
-    email_token = serializers.CharField(read_only=True, source='token')
-
-    class Meta:
-        model = EmailVerifier
-        fields = ['email', 'code', 'email_token']
-
-    def validate(self, attrs):
-        email = attrs['email']
-        code = attrs['code']
-        try:
-            email_verifier = self.Meta.model.objects.get(email=email, code=code)
-        except self.Meta.model.DoesNotExist:
-            raise ValidationError({'code': ['인증번호가 일치하지 않습니다.']})
-
-        attrs.update({'token': email_verifier.token})
-        return attrs
-
-    def create(self, validated_data):
-        return validated_data
-
-
-class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
+class EmailFoundPhoneVerifierCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneVerifier
         fields = ['phone']
@@ -329,8 +178,8 @@ class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         phone = attrs['phone']
 
-        if User.objects.filter(phone=phone).exists():
-            raise ValidationError({'phone': ['이미 존재하는 휴대폰입니다.']})
+        if not User.objects.filter(phone=phone).exists():
+            raise ValidationError({'phone': ['존재하지 않는 휴대폰입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = timezone.now()
@@ -351,29 +200,126 @@ class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def send_code(self, attrs):
-        body = f'어라운드어스 회원가입 인증번호: [{attrs["code"]}]'
+        body = f'어라운드어스 이메일 찾기 인증번호: [{attrs["code"]}]'
         PhoneLog.objects.create(to=attrs['phone'], body=body)
 
 
-class PhoneVerifierConfirmSerializer(serializers.ModelSerializer):
+class EmailFoundPhoneVerifierConfirmSerializer(serializers.Serializer):
+    '''
+    request로 넘어온 phone과 code의 일치 여부 확인 후, 일치할 경우 해당 phone과 일치하는 user의 email 정보를 반환한다.
+    '''
     phone = serializers.CharField(write_only=True)
     code = serializers.CharField(write_only=True)
     phone_token = serializers.CharField(read_only=True, source='token')
 
-    class Meta:
-        model = PhoneVerifier
-        fields = ['phone', 'code', 'phone_token']
+    email = serializers.EmailField(read_only=True)
 
     def validate(self, attrs):
         phone = attrs['phone']
         code = attrs['code']
         try:
-            phone_verifier = self.Meta.model.objects.get(phone=phone, code=code)
-        except self.Meta.model.DoesNotExist:
+            phone_verifier = PhoneVerifier.objects.get(phone=phone, code=code)
+        except PhoneVerifier.DoesNotExist:
             raise ValidationError({'code': ['인증번호가 일치하지 않습니다.']})
 
         attrs.update({'token': phone_verifier.token})
         return attrs
 
+    @transaction.atomic
     def create(self, validated_data):
-        return validated_data
+        phone = validated_data.get('phone')
+        user = User.objects.get(phone=phone)
+
+        return {
+            'email': user.email
+        }
+
+
+class PasswordResetVerifySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailVerifier
+        fields = ['email']
+
+    def validate(self, attrs):
+        email = attrs['email']
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
+
+        if not user.email_verify:
+            raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
+
+        code = ''.join([str(random.randint(0, 9)) for i in range(6)])
+        created = timezone.now()
+        hash_string = str(email) + code + str(created.timestamp())
+        # token = hashlib.sha1(hash_string.encode('utf-8')).hexdigest()
+        token = EmailVerificationTokenGenerator().make_token(user)
+
+        attrs.update({
+            'code': code,
+            'token': token,
+            'created': created,
+        })
+
+        try:
+            self.send_simple_message(attrs)
+        except Exception:
+            raise ValidationError('비밀번호 재설정 링크 전송 실패')
+
+        return attrs
+
+    def send_simple_message(self, attrs):
+        body = f'http://localhost:8000/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
+        EmailLog.objects.create(to=attrs['email'], body=body, title="어라운드어스 비밀번호 재설정 링크")
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    code = serializers.CharField(write_only=True)
+    email_token = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        code = attrs.get('code')
+        email_token = attrs.pop('email_token', None)
+        password = attrs.get('password')
+        password_confirm = attrs.pop('password_confirm', None)
+        # 이메일 토큰 검증
+        try:
+            self.email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
+        except EmailVerifier.DoesNotExist:
+            raise ValidationError('유효한 링크가 아닙니다.')
+
+        # 이메일 검증
+        if not User.objects.filter(email=self.email_verifier.email).exists():
+            raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
+        self.email = self.email_verifier.email
+
+        # password 검증
+        errors = {}
+        if password != password_confirm:
+            errors['password'] = ['비밀번호가 일치하지 않습니다.']
+            errors['password_confirm'] = ['비밀번호가 일치하지 않습니다.']
+        else:
+            try:
+                validate_password(password)
+            except DjangoValidationError as error:
+                errors['password'] = list(error)
+                errors['password_confirm'] = list(error)
+
+        if errors:
+            raise ValidationError(errors)
+
+        return attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+
+        user = User.objects.get(email=self.email)
+        user.set_password(password)
+        user.save()
+
+        return user

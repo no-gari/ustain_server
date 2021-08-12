@@ -15,13 +15,13 @@ def send_mail_gun(sender, instance, created, *args, **kwargs):
         headers = {
             'Authorization': f'api {settings.MAILGUN_API_KEY}'
         }
-        data = {
-            'from': settings.MAILGUN_FROM_EMAIL,
-            'to': [instance.to],
-            'subject': instance.title,
-            'html': instance.body,
-        }
-        response = requests.request(method='post', url=url, headers=headers, data=data)
+        response = requests.post(
+            "https://api.mailgun.net/v3/mail.dev-change.net/messages",
+            auth=("api", settings.MAILGUN_API_KEY),
+            data={"from": "mail@dev-change.net",
+                  "to": instance.to,
+                  "subject": instance.title,
+                  "text": instance.body})
         if response.status_code != 200:
             instance.status = 'F'
         else:
