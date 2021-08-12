@@ -71,7 +71,13 @@ class EmailVerifierConfirmSerializer(serializers.ModelSerializer):
         attrs.update({'token': email_verifier.token})
         return attrs
 
+    @transaction.atomic
     def create(self, validated_data):
+        email = validated_data.get('email')
+        user = User.objects.get(email=email)
+        user.email_verify = True
+        user.save()
+
         return validated_data
 
 
