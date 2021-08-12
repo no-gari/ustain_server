@@ -27,10 +27,7 @@ def validate_username(username):
 
 def get_password_validators():
     validators = [
-        CustomLengthValidator(8, 16),
-        UserAttributeSimilarityValidator(),
-        CommonPasswordValidator(),
-        NumericPasswordValidator(),
+        CustomValidator()
     ]
     return validators
 
@@ -69,4 +66,15 @@ class CustomLengthValidator:
             raise ValidationError(msg)
         if len(fields) > self.max_length:
             msg = f'최대 {self.max_length} 문자를 입력해주세요.'
+            raise ValidationError(msg)
+
+
+class CustomValidator:
+    def __init__(self):
+        regex = r'^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[`~!@$!%*#^?&\\(\\)\\-_=+])(?!.*[^a-zA-z0-9`~!@$!%*#^?&\\(\\)\\-_=+]).{8,16}$'
+        self.p = re.compile(regex, re.ASCII)
+
+    def validate(self, username):
+        if not self.p.match(username):
+            msg = '비밀번호는 영문자/숫자/특수문자 포함 8~16자로 구성해주세요.'
             raise ValidationError(msg)
