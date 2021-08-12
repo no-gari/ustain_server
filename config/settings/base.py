@@ -38,6 +38,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
 
 LOCAL_APPS = [
@@ -64,7 +65,14 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'storages',
     'django_summernote',
+    'dj_rest_auth',
+    'allauth',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.apple',
 ]
+
+SITE_ID = 1
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
