@@ -20,3 +20,54 @@ class UserUpdateView(UpdateAPIView):
     lookup_field = 'email'
 
 
+class PhoneUpdateVerifierCreateView(CreateAPIView):
+    serializer_class = PhoneUpdateVerifierCreateSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class PhoneUpdateVerifierConfirmView(CreateAPIView):
+    serializer_class = PhoneUpdateVerifierConfirmSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class PasswordResetVerifyView(CreateAPIView):
+    serializer_class = PasswordResetVerifierCreateSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class PasswordResetView(RetrieveAPIView):
+    serializer_class = PasswordResetSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        email_token = kwargs['email_token']
+        code = kwargs['code']
+
+        # email_token 검증
+        try:
+            email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
+        except EmailVerifier.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
+        # email 검증
+        try:
+            user = User.objects.get(email=email_verifier.email)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
+
+        return Response({'email_token': email_token, 'code': code, 'user': user, 'site_name': SITE_NAME},
+                        template_name='password_reset.html')
+
+
+class PasswordResetConfirmView(CreateAPIView):
+    serializer_class = PasswordResetConfirmSerializer
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(status=status.HTTP_201_CREATED, headers=headers, template_name='password_reset_complete.html')
