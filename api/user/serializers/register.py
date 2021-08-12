@@ -77,7 +77,6 @@ class PhoneVerifierConfirmSerializer(serializers.ModelSerializer):
 
 class UserRegisterSerializer(serializers.Serializer):
     email = serializers.CharField(write_only=True, required=False)
-    email_token = serializers.CharField(write_only=True, required=False)
     phone = serializers.CharField(write_only=True, required=False)
     phone_token = serializers.CharField(write_only=True, required=False)
     password = serializers.CharField(write_only=True, required=False)
@@ -89,8 +88,6 @@ class UserRegisterSerializer(serializers.Serializer):
     def get_fields(self):
         fields = super().get_fields()
 
-        if 'email' in User.VERIFY_FIELDS:
-            fields['email_token'].required = True
         if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
             fields['email'].required = True
         if 'phone' in User.VERIFY_FIELDS:
@@ -105,19 +102,12 @@ class UserRegisterSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         email = attrs.get('email')
-        email_token = attrs.pop('email_token', None)
         phone = attrs.get('phone')
         phone_token = attrs.pop('phone_token', None)
 
         password = attrs.get('password')
         password_confirm = attrs.pop('password_confirm', None)
 
-        if 'email' in User.VERIFY_FIELDS:
-            # 이메일 토큰 검증
-            try:
-                self.email_verifier = EmailVerifier.objects.get(email=email, token=email_token)
-            except EmailVerifier.DoesNotExist:
-                raise ValidationError('이메일 인증을 진행해주세요.')
         if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
             # 이메일 검증
             if User.objects.filter(email=email).exists():
@@ -157,8 +147,6 @@ class UserRegisterSerializer(serializers.Serializer):
         user = User.objects.create_user(
             **validated_data,
         )
-        if 'email' in User.VERIFY_FIELDS:
-            self.email_verifier.delete()
         if 'phone' in User.VERIFY_FIELDS:
             self.phone_verifier.delete()
 
