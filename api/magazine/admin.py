@@ -1,20 +1,9 @@
-from django.contrib import admin
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
-from django.urls import reverse
-from django import forms
 from django_summernote.admin import SummernoteModelAdmin
-from django.db import transaction
+from django.utils.safestring import mark_safe
+from django.contrib import admin
+from api.magazine import models
+from django import forms
 import re
-from . import models
-
-
-def get_ipaddress(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        return x_forwarded_for
-    else:
-        return request.META.get('REMOTE_ADDR')
 
 
 class CategoryAdminForm(forms.ModelForm):
@@ -43,35 +32,14 @@ class CategoryAdmin(admin.ModelAdmin):
     get_id.short_description = 'mid'
 
 
-class FilesInlineAdmin(admin.StackedInline):
-    model = models.Files
-    readonly_fields = ['file_image_small']
-
-    def file_image_small(self, obj):
-        if obj.org_file_name != '':
-            file_ext = obj.org_file_name.split('.')[1]
-            if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp']:
-                return mark_safe('<img src="{url}" height="100" />'.format(url=obj.file.url))
-            else:
-                return mark_safe('this is not image')
-
-    file_image_small.short_description = '이미지'
-
-    class Media:
-        js = (
-            'js/myscript.js',
-        )
-
-
 class MagazinesAdminForm(forms.ModelForm):
     class Meta:
         model = models.Magazines
-        fields = ('categories', 'is_main', 'comments_banned', 'title', 'content', 'hits')
+        fields = ('categories', 'is_main', 'banner_image','like_users', 'published', 'comments_banned', 'title', 'content', 'hits')
 
     def save(self, commit=True):
         try:
             self.instance.user = self.request.user
-            self.instance.ipaddress = get_ipaddress(self.request)
 
             instance = super().save(commit=False)
             instance.save()
@@ -98,7 +66,6 @@ class MagazinesAdmin(SummernoteModelAdmin):
     search_fields = ('title', 'user',)
     readonly_fields = ('hits',)
     summernote_fields = ('content',)
-    inlines = (FilesInlineAdmin,)
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -124,7 +91,7 @@ class MagazinesAdmin(SummernoteModelAdmin):
 class MagazineCommentsAdmin(admin.ModelAdmin):
     list_display = ('get_id', 'content', 'user', 'magazines',)
     list_display_links = ('content',)
-    readonly_fields = ('ipaddress', 'user',)
+    readonly_fields = ('user',)
     list_filter = ['magazines']
     autocomplete_fields = ['magazines']
 
@@ -136,8 +103,6 @@ class MagazineCommentsAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if obj.user_id is None:
             obj.user = request.user
-        if obj.ipaddress is None:
-            obj.ipaddress = get_ipaddress(request)
         return super().save_model(request, obj, form, change)
 
 
@@ -171,9 +136,9 @@ admin.site.unregister(models.Summernote)
 
 @admin.register(models.Summernote)
 class SummernoteAdmin(admin.ModelAdmin):
-    list_display = ('get_id', 'user', 'magazines', 'name', 'file', 'uploaded', 'ipaddress',)
+    list_display = ('get_id', 'user', 'magazines', 'name', 'file', 'uploaded',)
     list_display_links = ('magazines', 'name',)
-    readonly_fields = ['magazines', 'ipaddress', 'user', 'name', 'file_image_small']
+    readonly_fields = ['magazines', 'user', 'name', 'file_image_small']
     autocomplete_fields = ['magazines']
 
     def get_id(self, obj):
