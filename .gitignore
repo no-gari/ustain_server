@@ -5,12 +5,12 @@ __pycache__
 .idea
 .DS_Store
 .vscode
-db.sqlite3
+#db.sqlite3
 venv
 secrets.json
 static
 media
-
+db.sqlite3
 
 # Elastic Beanstalk Files
 .aws/*
