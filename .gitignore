@@ -10,12 +10,6 @@ venv
 secrets.json
 static
 media
-# migrations
-api/community/migrations/*
-api/firebase/migrations/*
-api/logger/migrations/*
-api/magazine/migrations/*
-api/user/migrations/*
 
 
 # Elastic Beanstalk Files
