@@ -87,6 +87,14 @@ class MagazineLikeUpdateView(UpdateAPIView):
     lookup_field = 'id'
 
 
+class MagazineScrapUpdateView(UpdateAPIView):
+    queryset = Magazines.objects.prefetch_related('scrapped_users').all()
+    serializer_class = MagazineLikeSerializer
+    permission_classes = [IsAuthenticated]
+    allowed_methods = ['put']
+    lookup_field = 'id'
+
+
 class MagazineReviewsListSerializer(ListAPIView):
     serializer_class = MagazineReviewsListSerializer
     pagination_class = StandardResultsSetPagination

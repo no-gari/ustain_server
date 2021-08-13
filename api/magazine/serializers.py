@@ -62,6 +62,29 @@ class MagazineLikeSerializer(serializers.ModelSerializer):
         return instance
 
 
+class MagazineScrapCreateSerializer(serializers.ModelSerializer):
+    is_scrapped = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Magazines
+        fields = ['is_scrapped']
+
+    def get_is_scrapped(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return user in obj.scrapped_users.all()
+        else:
+            return False
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        if user in instance.scrapped_users.all():
+            instance.scrapped_users.remove(user)
+        else:
+            instance.scrapped_users.add(user)
+        return instance
+
+
 class MagazineReviewsListSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
