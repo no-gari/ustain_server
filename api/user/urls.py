@@ -11,10 +11,13 @@ from api.user.views.update import UserUpdateView, PhoneUpdateVerifierCreateView,
 
 
 urlpatterns = [
+    # 이메일 회원가입, 로그인
+    path('register/', UserRegisterView.as_view()),
     path('login/', TokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
+
+    # 소셜 로그인
     path('social-login/', UserSocialLoginView.as_view()),
-    path('register/', UserRegisterView.as_view()),
     path('email-verifier/', EmailVerifierCreateView.as_view()),
     path('email-verifier/confirm/', EmailVerifierConfirmView.as_view()),
     path('phone-verifier/', PhoneVerifierCreateView.as_view()),

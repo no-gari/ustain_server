@@ -1,21 +1,12 @@
-import hashlib
-import random
-
 import jwt
 import requests
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from api.logger.models import PhoneLog, EmailLog
-from api.user.models import User, EmailVerifier, PhoneVerifier, Social, SocialKindChoices
-from api.user.validators import validate_password
-from api.user.tokens import EmailVerificationTokenGenerator
+from api.user.models import User, Social, SocialKindChoices
 
 
 class UserSocialLoginSerializer(serializers.Serializer):
@@ -52,7 +43,6 @@ class UserSocialLoginSerializer(serializers.Serializer):
         return {
             'access': refresh.access_token,
             'refresh': refresh,
-            'is_register': user.is_register,
         }
 
     def get_social_user_id(self, code, state):
@@ -83,73 +73,6 @@ class UserSocialLoginSerializer(serializers.Serializer):
         data = response.json()
 
         return data['id']
-
-    def get_naver_user_id(self, code):
-        url = 'https://nid.naver.com/oauth2.0/token'
-        data = {
-            'grant_type': 'authorization_code',
-            'client_id': settings.NAVER_CLIENT_ID,
-            'client_secret': settings.NAVER_CLIENT_SECRET,
-            'code': code,
-        }
-        response = requests.post(url=url, data=data)
-        if not response.ok:
-            raise ValidationError('NAVER GET TOKEN API ERROR')
-        data = response.json()
-
-        url = 'https://openapi.naver.com/v1/nid/me'
-        headers = {
-            'Authorization': f'Bearer {data["access_token"]}'
-        }
-        response = requests.post(url=url, headers=headers)
-        if not response.ok:
-            raise ValidationError('NAVER ME API ERROR')
-        data = response.json()
-
-        return data['response']['id']
-
-    def get_facebook_user_id(self, code):
-        url = 'https://graph.facebook.com/v9.0/oauth/access_token'
-        params = {
-            'client_id': settings.FACEBOOK_CLIENT_ID,
-            'client_secret': settings.FACEBOOK_CLIENT_SECRET,
-            'redirect_uri': settings.SOCIAL_REDIRECT_URL,
-            'code': code,
-        }
-        response = requests.get(url=url, params=params)
-        if not response.ok:
-            raise ValidationError('FACEBOOK GET TOKEN API ERROR')
-        data = response.json()
-
-        url = 'https://graph.facebook.com/debug_token'
-        params = {
-            'input_token': data['access_token'],
-            'access_token': data['access_token'],
-        }
-        response = requests.get(url=url, params=params)
-        if not response.ok:
-            raise ValidationError('FACEBOOK ME API ERROR')
-        data = response.json()
-
-        return data['data']['user_id']
-
-    def get_google_user_id(self, code):
-        url = 'https://oauth2.googleapis.com/token'
-        data = {
-            'grant_type': 'authorization_code',
-            'client_id': settings.GOOGLE_CLIENT_ID,
-            'client_secret': settings.GOOGLE_CLIENT_SECRET,
-            'redirect_uri': settings.SOCIAL_REDIRECT_URL,
-            'code': code,
-        }
-        response = requests.post(url=url, data=data)
-        if not response.ok:
-            raise ValidationError('GOOGLE GET TOKEN API ERROR')
-        data = response.json()
-
-        decoded = jwt.decode(data['id_token'], '', verify=False)
-
-        return decoded['sub']
 
     def get_apple_user_id(self, code):
         url = 'https://appleid.apple.com/auth/token'
