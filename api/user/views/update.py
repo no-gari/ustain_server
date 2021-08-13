@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer
 
 from api.user.serializers.update import *
@@ -11,13 +11,13 @@ from api.user.models import User, EmailVerifier
 from config.settings.base import SITE_NAME
 
 
-class UserUpdateView(UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserUpdateSerializer
-    authentication_classes = [JWTAuthentication]
+class UserProfileView(RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
+    allowed_methods = ['put', 'get']
 
-    lookup_field = 'email'
+    def get_object(self):
+        return self.request.user
 
 
 class PhoneUpdateVerifierCreateView(CreateAPIView):
@@ -35,7 +35,7 @@ class PhoneUpdateVerifierConfirmView(CreateAPIView):
 class PasswordResetVerifyView(CreateAPIView):
     serializer_class = PasswordResetVerifierCreateSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class PasswordResetView(RetrieveAPIView):

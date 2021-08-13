@@ -11,20 +11,14 @@ from api.user.models import User, EmailVerifier, PhoneVerifier
 from django.core.exceptions import ValidationError as DjangoValidationError
 
 
-class UserUpdateSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField(read_only=True)
+    email = serializers.EmailField(read_only=True)
+    groups = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['name', 'profile_article', 'sex_choices', 'birthday', 'categories']
-
-    def validate(self, attrs):
-        sex_choices = attrs['sex_choices']
-
-        # sex_choices 유효성 검사
-        if not (sex_choices == 'MA' or sex_choices == 'FE'):
-            raise ValidationError({'sex_choices': ['유효하지 않은 성별입니다.']})
-
-        return attrs
+        fields = ['groups', 'phone', 'email', 'name', 'profile_article', 'sex_choices', 'birthday', 'categories']
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
@@ -144,8 +138,8 @@ class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
         except User.DoesNotExist:
             raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
 
-        if not user.email_verify:
-            raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
+        # if not user.email_verify:
+        #     raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = timezone.now()

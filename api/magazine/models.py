@@ -15,12 +15,9 @@ def _update_filename(instance, filename, path):
     path = path.replace('%Y', today.strftime('%Y'))
     path = path.replace('%m', today.strftime('%m'))
     path = path.replace('%d', today.strftime('%d'))
-
     file_ext = filename.split('.')
     file_ext = file_ext[len(file_ext) - 1]
-
     filename = "{}.{}".format(uuid.uuid4(), file_ext)
-
     return os.path.join(path, filename)
 
 
@@ -37,16 +34,18 @@ class ChoiceEnum(Enum):
 class Magazines(models.Model):
     categories = models.ManyToManyField(Categories, verbose_name='카테고리', related_name='magazines')
     is_main = models.BooleanField(default=False, verbose_name='메인 배너 노출 여부', help_text='체크 하시면 어플리케이션 메인 배너에 등록 됩니다.')
-    title = models.CharField(max_length=255, verbose_name='제목')
-    content = models.TextField(verbose_name='내용')
     banner_image = models.ImageField(verbose_name='배너 이미지', upload_to=upload_to('image/%Y/%m/%d/'), blank=True, null=True)
-    hits = models.PositiveIntegerField(default=0, verbose_name='조회수')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='작성')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성일')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
     published = models.BooleanField(default=False, verbose_name='글 발행 여부', help_text='해당 글을 발행하시려면 체크 해 주세요.')
     comments_banned = models.BooleanField(default=False, verbose_name='댓글 차단', help_text='댓글을 차단하시려면 체크 해 주세요.')
     like_users = models.ManyToManyField(User, related_name='like_magazines', verbose_name='이 매거진을 좋아한 사람들')
+    scrapped_users = models.ManyToManyField(User, related_name='scrapped_magazines', verbose_name='이 매거진을 스크랩한 사람들')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='작성')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성일')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
+    hits = models.PositiveIntegerField(default=0, verbose_name='조회수')
+    title = models.CharField(max_length=255, verbose_name='제목')
+    content = models.TextField(verbose_name='내용')
+
 
     def __str__(self):
         return str(self.title)

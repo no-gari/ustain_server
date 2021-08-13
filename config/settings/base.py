@@ -67,6 +67,7 @@ THIRD_PARTY_APPS = [
     'django_summernote',
     'dj_rest_auth',
     'allauth',
+    'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.kakao',
     'allauth.socialaccount.providers.apple',
@@ -244,6 +245,7 @@ CLAYFUL_API_SECRET = 'cab48c9b28a1fd40b8cb0dd38323f12716f4d00896c8e05476993676ef
 
 # SOCIAL REDIRECT URL
 SOCIAL_REDIRECT_URL = 'http://localhost:8000/login/social/callback'
+KAKAO_REDIRECT_URL = 'http://localhost:8000/accounts/kakao/login/callback/'
 
 # KAKAO
 KAKAO_CLIENT_ID = '834031fe8f729b4ce1c4d1865bccd63a'
