@@ -25,5 +25,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.site_header = f'{settings.SITE_NAME} Administration'
+admin.site.site_header = f'{settings.SITE_NAME} Admin'
 admin.site.site_title = f'{settings.SITE_NAME}'

@@ -40,6 +40,18 @@ class LikeMagazinesListView(ListAPIView):
         return magazines
 
 
+class ScrappedMagazinesListView(ListAPIView):
+    serializer_class = MagazinesListSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
+    ordering = ['-id']
+
+    def get_queryset(self):
+        user = self.request.user
+        magazines = user.scrapped_magazines.all().filter(published=True)
+        return magazines
+
+
 class MainMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     permission_classes = [AllowAny]
@@ -69,6 +81,14 @@ class MagazineRetrieveView(RetrieveAPIView):
 
 class MagazineLikeUpdateView(UpdateAPIView):
     queryset = Magazines.objects.prefetch_related('like_users').all()
+    serializer_class = MagazineLikeSerializer
+    permission_classes = [IsAuthenticated]
+    allowed_methods = ['put']
+    lookup_field = 'id'
+
+
+class MagazineScrapUpdateView(UpdateAPIView):
+    queryset = Magazines.objects.prefetch_related('scrapped_users').all()
     serializer_class = MagazineLikeSerializer
     permission_classes = [IsAuthenticated]
     allowed_methods = ['put']

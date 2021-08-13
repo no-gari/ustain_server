@@ -31,12 +31,14 @@ ALLOWED_HOSTS = [
 
 # Application definition
 DJANGO_APPS = [
+    'admin_menu',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
 
 LOCAL_APPS = [
@@ -63,7 +65,15 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'storages',
     'django_summernote',
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.apple',
 ]
+
+SITE_ID = 1
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -219,9 +229,6 @@ SUMMERNOTE_CONFIG = {
 }
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-# SOCIAL ACCOUNT
-SOCIAL_REDIRECT_URL = 'https://dev-change.net/login/social/callback'
-
 # COOLSMS
 COOLSMS_API_KEY = 'NCSMVIWDWDVLDXLG'
 COOLSMS_API_SECRET = 'N9KGGSNNCBONQZAYKEP8QDIMPBISY8PS'
@@ -236,10 +243,14 @@ MAILGUN_FROM_EMAIL = 'sofaissofa@icloud.com'
 CLAYFUL_API_KEY = '521bf375f86c91e5b9053b1fd461dddfc97bf568bfb056e8d26471febdd698ecee7e55f1'
 CLAYFUL_API_SECRET = 'cab48c9b28a1fd40b8cb0dd38323f12716f4d00896c8e05476993676ef98b7fb7dfedad2f44b29b82705bf3650852cc3'
 
+# SOCIAL REDIRECT URL
+SOCIAL_REDIRECT_URL = 'http://localhost:8000/login/social/callback'
+KAKAO_REDIRECT_URL = 'http://localhost:8000/accounts/kakao/login/callback/'
+
 # KAKAO
 KAKAO_CLIENT_ID = '834031fe8f729b4ce1c4d1865bccd63a'
 KAKAO_CLIENT_SECRET = 'ArCJdOXV5GszOyZUj6WOqliE8bJ4DfUB'
-KAKAO_LOGIN_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id={id}&redirect_uri={uri}&state=kakao'.format(id=KAKAO_CLIENT_ID, uri=KAKAO_CLIENT_SECRET)
+KAKAO_LOGIN_URL = f'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id={KAKAO_CLIENT_ID}&redirect_uri={SOCIAL_REDIRECT_URL}&state=kakao'
 
 
 # # APPLE
