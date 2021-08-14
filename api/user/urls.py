@@ -7,6 +7,7 @@ from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifie
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView, \
     PasswordResetVerifyView, PasswordResetConfirmView, PasswordResetView
 from api.user.views.category import CategoryListView
+from api.user.views.clayful_api import ClayfulRegisterView
 
 urlpatterns = [
     # 이메일 회원가입, 로그인
@@ -14,19 +15,16 @@ urlpatterns = [
     path('login/', TokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
 
+    # clayful 회원가입, 로그인
+    path('clayful/register/', ClayfulRegisterView),
+
     # 소셜 로그인
     path('social-login/', UserSocialLoginView.as_view()),
-<<<<<<< HEAD
-    path('register/', UserRegisterView.as_view()),
-    path('email-verifier/', EmailVerifierCreateView.as_view()),
-    path('email-verifier/confirm/', EmailVerifierConfirmView.as_view()),
-=======
 
     # 이메일 중복 확인
     path('email-verifier/', EmailVerifierCreateView.as_view()),
 
     # 휴대폰 코드 인증
->>>>>>> 9b11bc955ad84a03386a87baaaa13132ef76e47b
     path('phone-verifier/', PhoneVerifierCreateView.as_view()),
     path('phone-verifier/confirm/', PhoneVerifierConfirmView.as_view()),
 
