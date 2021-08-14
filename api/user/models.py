@@ -118,9 +118,17 @@ class EmailVerifier(models.Model):
     token = models.CharField(verbose_name='토큰', max_length=40)
     created = models.DateTimeField(verbose_name='생성일시')
 
+    class Meta:
+        verbose_name = '이메일 중복 확인'
+        verbose_name_plural = verbose_name
+
 
 class PhoneVerifier(models.Model):
     phone = models.CharField(verbose_name='휴대폰번호', max_length=11)
     code = models.CharField(verbose_name='인증번호', max_length=6)
     token = models.CharField(verbose_name='토큰', max_length=40)
     created = models.DateTimeField(verbose_name='생성일시')
+
+    class Meta:
+        verbose_name = '휴대폰 인증'
+        verbose_name_plural = verbose_name
