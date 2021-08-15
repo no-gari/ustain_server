@@ -7,7 +7,7 @@ from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifie
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView, \
     PasswordResetVerifyView, PasswordResetConfirmView, PasswordResetView
 from api.user.views.category import CategoryListView
-from api.user.views.clayful_api import ClayfulRegisterView
+from api.user.views.clayful_api import ClayfulRegisterView, ClayfulLoginView
 
 urlpatterns = [
     # 이메일 회원가입, 로그인
@@ -16,7 +16,8 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view()),
 
     # clayful 회원가입, 로그인
-    path('clayful/register/', ClayfulRegisterView),
+    path('clayful/register/', ClayfulRegisterView.as_view()),
+    path('clayful/login/', ClayfulLoginView.as_view()),
 
     # 소셜 로그인
     path('social-login/', UserSocialLoginView.as_view()),

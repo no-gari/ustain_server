@@ -12,38 +12,62 @@ from clayful import Clayful
 
 
 class ClayfulRegisterSerializer(serializers.Serializer):
-    email = serializers.CharField(write_only=True, required=False)
-    phone = serializers.CharField(write_only=True, required=False)
-    password = serializers.CharField(write_only=True, required=False)
+    email = serializers.CharField(required=True)
+
+    user_id = serializers.CharField(read_only=True)
+
+    def validate(self, attrs):
+        try:
+            Clayful.config({
+                'client': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImI5ZDM1MjFhNjFhYTQ4OWYwNWY2ZWQwOWVlYjU5ZmFhYWQ2NjdjOGEwYTEwNTRiOTY0YTJkM2E5ZjczM2EyZjgiLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjI5MDA3NjA4LCJzdG9yZSI6IjRINlhaTEdUNzU3TS44WVVBWlpTQTRTQUMiLCJzdWIiOiJCSkhMS0tFVkU5WUEifQ.ZZV0TUGuOAekbhipF2jpiiKzFe_Sd19171LgOs4hsCM",
+                'debug_language': 'ko'
+            })
+
+            customer = Clayful.Customer
+
+            payload = {
+                'connect': True,
+                'userId': attrs.get('email'),
+            }
+
+            response = customer.create(payload)
+
+            attrs.update({
+                'user_id': response.data.get('userId')
+            })
+        except Exception as err:
+            raise ValidationError({'code': err.code, 'message': err.message})
+        return attrs
 
     def create(self, validated_data):
+        return validated_data
+
+
+class ClayfulLoginSerializer(serializers.Serializer):
+    user_id = serializers.CharField(required=True)
+
+    customer = serializers.CharField(read_only=True)
+    token = serializers.CharField(read_only=True)
+    expires_in = serializers.IntegerField(read_only=True)
+
+    def validate(self, attrs):
         try:
             Customer = Clayful.Customer
 
-            # 데이터 전송시 application/json 컨텐츠 타입을 사용해야합니다.
             payload = {
-                # 'userId': 'user_id',
-                'email': validated_data.get('email'),
-                'password': validated_data.get('password')
+                'userId': attrs.get('user_id')
             }
 
-            options = {
-                'client': settings.CLAYFUL_API_KEY,
-                # 'customer': '<customer-auth-token>',
-                'language': 'ko',
-                'currency': 'KRW',
-                'time_zone': 'Asia/Seoul',
-                'debug_language': 'ko'
-            }
+            response = Customer.authenticate(payload)
 
-            response = Customer.create(payload, options)
+            attrs.update({
+                'customer': response.data.get('customer'),
+                'token': response.data.get('token'),
+                'expires_in': response.data.get('expiresIn')
+            })
+        except Exception as err:
+            raise ValidationError({'code': err.code, 'message': err.message})
+        return attrs
 
-            print(response.data)
-            # headers = response.headers
-            # data = response.data
-            return response.data
-
-        except Exception as e:
-            # Error case
-            print(e.code)
-            raise ValidationError(e.code)
+    def create(self, validated_data):
+        return validated_data
