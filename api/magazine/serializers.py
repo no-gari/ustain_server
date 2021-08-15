@@ -21,16 +21,24 @@ class MagazineRetrieveSerializer(serializers.ModelSerializer):
     like_user_count = serializers.IntegerField(source='like_users.count')
     is_like = serializers.SerializerMethodField()
     total_comments = serializers.SerializerMethodField()
+    is_scrapped = serializers.SerializerMethodField()
 
     class Meta:
         model = Magazines
         fields = ['categories', 'banner_image', 'id', 'content', 'title', 'hits', 'created_at', 'updated_at', 'comments_banned',
-                  'like_user_count', 'is_like', 'total_comments']
+                  'like_user_count', 'is_like', 'total_comments', 'is_scrapped']
 
     def get_is_like(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
             return user in obj.like_users.all()
+        else:
+            return False
+
+    def get_is_scrapped(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return user in obj.scrapped_users.all()
         else:
             return False
 
@@ -62,7 +70,7 @@ class MagazineLikeSerializer(serializers.ModelSerializer):
         return instance
 
 
-class MagazineScrapCreateSerializer(serializers.ModelSerializer):
+class MagazineScrapUpdateSerializer(serializers.ModelSerializer):
     is_scrapped = serializers.SerializerMethodField()
 
     class Meta:
