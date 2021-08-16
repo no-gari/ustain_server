@@ -5,7 +5,7 @@ from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifie
     EmailFoundPhoneVerifierConfirmView
 from api.user.views.login import UserSocialLoginView, CustomTokenObtainPairView, CustomTokenRefreshView
 from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
-from api.user.views.clayful_api import ClayfulRegisterView
+# from api.user.views.clayful_api import ClayfulRegisterView
 from api.user.views.category import CategoryListView
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     path('refresh/', CustomTokenRefreshView.as_view()),
 
     # clayful 회원가입, 로그인
-    path('clayful/register/', ClayfulRegisterView),
+    # path('clayful/register/', ClayfulRegisterView), -> 연동 되기 전 코드라서 주석 처리함. (헷갈림 방지)
 
     # 소셜 로그인
     path('social-login/', UserSocialLoginView.as_view()),

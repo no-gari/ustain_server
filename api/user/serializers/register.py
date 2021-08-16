@@ -144,7 +144,7 @@ class UserRegisterSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data,)
         clayful_client = ClayfulClient()
-        clayful_register = clayful_client.clayful_register(id=user.email, password=user.password)
+        clayful_register = clayful_client.clayful_register(email=user.email, password=user.password, phone=user.phone)
 
         if not clayful_register.status == 201:
             user.delete()
@@ -153,7 +153,7 @@ class UserRegisterSerializer(serializers.Serializer):
             if 'phone' in User.VERIFY_FIELDS:
                 self.phone_verifier.delete()
 
-            clayful_login = clayful_client.clayful_login(id=user.email, password=user.password)
+            clayful_login = clayful_client.clayful_login(email=user.email, password=user.password, phone=user.phone)
             token = clayful_login.data['token']
             refresh = RefreshToken.for_user(user)
 

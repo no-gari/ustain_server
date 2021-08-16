@@ -17,25 +17,46 @@ class ClayfulClient:
             'debug_language': 'ko'
     })
 
-    # 회원가입, 로그인, 로그아웃, 회원 탈퇴
+    # 회원가입, 로그인, 로그아웃, 이메일 재설정,회원 탈퇴
     def clayful_register(self, **kwargs):
         customer = self.customer
-        payload = ({'userId': kwargs['id'], 'password': kwargs['password']})
+        payload = ({
+            'email': kwargs['email'],
+            'password': kwargs['password'],
+            'phone': kwargs['phone'],
+        })
         options = ({'client': self.clf_token})
         response = customer.create(payload, options)
         return response
 
     def clayful_login(self, **kwargs):
         customer = self.customer
-        payload = ({'userId': kwargs['id'], 'password': kwargs['password']})
+        payload = ({'email': kwargs['email'], 'password': kwargs['password']})
         options = ({'client': self.clf_token})
         response = customer.authenticate(payload, options)
         return response
 
+    def clayful_customer_update(self, **kwargs):
+        customer = self.customer
+        payload = ({
+
+        })
+        options = ({
+
+        })
+        response = customer.update(kwargs['id'], payload, options)
+        return response
+
     def clayful_logout(self, **kwargs):
+        customer = self.customer
+        payload = ({})
+        options = ({})
+        response = customer.update(payload, options)
         pass
 
     def clayful_customer_delete(self, **kwargs):
+        customer = self.customer
+        payload = ({})
+        options = ({})
+        response = customer.update(payload, options)
         pass
-
-    # 상품 목록 / 상품 상세 가져오기
