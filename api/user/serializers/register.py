@@ -1,15 +1,17 @@
 import hashlib
 import random
+import requests
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework import status
 from api.logger.models import PhoneLog
 from api.user.models import User, PhoneVerifier
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError as DjangoValidationError
-
+from clayful import Clayful
 
 class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,6 +81,9 @@ class UserRegisterSerializer(serializers.Serializer):
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
 
+    clayful_error_code = serializers.CharField(read_only=True)
+    clayful_error_message = serializers.CharField(read_only=True)
+
     def get_fields(self):
         fields = super().get_fields()
 
@@ -136,17 +141,50 @@ class UserRegisterSerializer(serializers.Serializer):
 
         return attrs
 
+    def clayful_register(self, email):
+        Clayful.config({
+            'client': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImI5ZDM1MjFhNjFhYTQ4OWYwNWY2ZWQwOWVlYjU5ZmFhYWQ2NjdjOGEwYTEwNTRiOTY0YTJkM2E5ZjczM2EyZjgiLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjI5MDA3NjA4LCJzdG9yZSI6IjRINlhaTEdUNzU3TS44WVVBWlpTQTRTQUMiLCJzdWIiOiJCSkhMS0tFVkU5WUEifQ.ZZV0TUGuOAekbhipF2jpiiKzFe_Sd19171LgOs4hsCM",
+            'debug_language': 'ko'
+        })
+        try:
+            customer = Clayful.Customer
+
+            payload = {
+                'connect': True,
+                'userId': email,
+            }
+
+            response = customer.create(payload)
+        except Exception as err:
+            print('code:', err.code)
+            print('message: ', err.message)
+            # raise ValidationError({'code': err.code, 'message': err.message})
+
     @transaction.atomic
     def create(self, validated_data):
-        user = User.objects.create_user(
-            **validated_data,
-        )
         if 'phone' in User.VERIFY_FIELDS:
             self.phone_verifier.delete()
 
-        refresh = RefreshToken.for_user(user)
+        # clayful 회원가입
+        try:
+            self.clayful_register(validated_data.get('email'))
+            user = User.objects.create_user(
+                **validated_data
+            )
 
-        return {
-            'access': refresh.access_token,
-            'refresh': refresh,
-        }
+            refresh = RefreshToken.for_user(user)
+
+            data = {
+                'access': refresh.access_token,
+                'refresh': refresh,
+            }
+
+        except Exception as err:
+            print(err)
+            data = {
+                'clayful_error_code': err.code,
+                'clayful_error_message': err.message
+            }
+        return data
+
+
