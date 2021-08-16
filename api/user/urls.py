@@ -1,19 +1,18 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
-from api.user.views.login import UserSocialLoginView
-from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifierCreateView, \
-    EmailFoundPhoneVerifierConfirmView
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView, \
     PasswordResetVerifyView, PasswordResetConfirmView, PasswordResetView
-from api.user.views.category import CategoryListView
+from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifierCreateView, \
+    EmailFoundPhoneVerifierConfirmView
+from api.user.views.login import UserSocialLoginView, CustomTokenObtainPairView, CustomTokenRefreshView
+from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
 from api.user.views.clayful_api import ClayfulRegisterView
+from api.user.views.category import CategoryListView
 
 urlpatterns = [
     # 이메일 회원가입, 로그인
     path('register/', UserRegisterView.as_view()),
-    path('login/', TokenObtainPairView.as_view()),
-    path('refresh/', TokenRefreshView.as_view()),
+    path('login/', CustomTokenObtainPairView.as_view()),
+    path('refresh/', CustomTokenRefreshView.as_view()),
 
     # clayful 회원가입, 로그인
     path('clayful/register/', ClayfulRegisterView),
