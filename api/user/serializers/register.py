@@ -4,6 +4,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 from api.logger.models import PhoneLog
+from api.clayful_client import ClayfulClient
 from api.user.models import User, PhoneVerifier
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
@@ -19,8 +20,8 @@ class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         phone = attrs['phone']
 
-        if User.objects.filter(phone=phone).exists():
-            raise ValidationError({'phone': ['이미 존재하는 휴대폰입니다.']})
+        # if User.objects.filter(phone=phone).exists():
+        #     raise ValidationError({'phone': ['이미 존재하는 휴대폰입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = timezone.now()
@@ -78,6 +79,7 @@ class UserRegisterSerializer(serializers.Serializer):
 
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
+    clayful = serializers.CharField(read_only=True)
 
     def get_fields(self):
         fields = super().get_fields()
@@ -104,8 +106,9 @@ class UserRegisterSerializer(serializers.Serializer):
 
         if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
             # 이메일 검증
-            if User.objects.filter(email=email).exists():
-                raise ValidationError({'email': ['이미 가입된 이메일입니다.']})
+            # if User.objects.filter(email=email).exists():
+            #     raise ValidationError({'email': ['이미 가입된 이메일입니다.']})
+            pass
 
         if 'phone' in User.VERIFY_FIELDS:
             # 휴대폰 토큰 검증
@@ -114,9 +117,10 @@ class UserRegisterSerializer(serializers.Serializer):
             except PhoneVerifier.DoesNotExist:
                 raise ValidationError('휴대폰 인증을 진행해주세요.')
         if 'phone' in User.VERIFY_FIELDS or 'phone' in User.REGISTER_FIELDS:
+            pass
             # 휴대폰 검증
-            if User.objects.filter(phone=phone).exists():
-                raise ValidationError({'phone': ['이미 가입된 휴대폰입니다.']})
+            # if User.objects.filter(phone=phone).exists():
+            #     raise ValidationError({'phone': ['이미 가입된 휴대폰입니다.']})
 
         if 'password' in User.REGISTER_FIELDS:
             errors = {}
@@ -138,15 +142,23 @@ class UserRegisterSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        user = User.objects.create_user(
-            **validated_data,
-        )
-        if 'phone' in User.VERIFY_FIELDS:
-            self.phone_verifier.delete()
+        user = User.objects.create_user(**validated_data,)
+        clayful_client = ClayfulClient()
+        clayful_register = clayful_client.clayful_register(id=user.email, password=user.password)
 
-        refresh = RefreshToken.for_user(user)
+        if not clayful_register.status == 201:
+            user.delete()
+            raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
+        else:
+            if 'phone' in User.VERIFY_FIELDS:
+                self.phone_verifier.delete()
+
+            clayful_login = clayful_client.clayful_login(id=user.email, password=user.password)
+            token = clayful_login.data['token']
+            refresh = RefreshToken.for_user(user)
 
         return {
             'access': refresh.access_token,
             'refresh': refresh,
+            'clayful': token,
         }
