@@ -6,6 +6,7 @@ pymysql.install_as_MySQLdb()
 DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ['*']
+DOMAIN = 'http://localhost:8000'
 
 DB = 'sqlite'
 

@@ -1,7 +1,7 @@
+import datetime
 import hashlib
 import random
 from django.db import transaction
-from django.utils import timezone
 from rest_framework import serializers
 from api.logger.models import PhoneLog, EmailLog
 from api.user.validators import validate_password
@@ -62,7 +62,7 @@ class PhoneUpdateVerifierCreateSerializer(serializers.Serializer):
             raise ValidationError({'phone': ['기존의 번호와 동일합니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
-        created = timezone.now()
+        created = datetime.datetime.now()
         hash_string = str(phone) + code + str(created.timestamp())
         token = hashlib.sha1(hash_string.encode('utf-8')).hexdigest()
 
@@ -142,7 +142,7 @@ class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
         #     raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
-        created = timezone.now()
+        created = datetime.datetime.now()
         token = EmailVerificationTokenGenerator().make_token(user)
 
         attrs.update({
@@ -159,7 +159,7 @@ class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def send_simple_message(self, attrs):
-        body = f'http://localhost:8000/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
+        body = f'https://dev-change.net/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
         EmailLog.objects.create(to=attrs['email'], body=body, title="어라운드어스 비밀번호 재설정 링크")
 
 

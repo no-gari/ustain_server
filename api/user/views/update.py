@@ -1,12 +1,15 @@
+import datetime
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer
 
-from api.user.serializers.update import *
+from api.user.serializers.update import UserProfileSerializer, PhoneUpdateVerifierCreateSerializer, \
+    PhoneUpdateVerifierConfirmSerializer, PasswordResetVerifierCreateSerializer, PasswordResetSerializer, \
+    PasswordResetConfirmSerializer
 from api.user.models import User, EmailVerifier
 from config.settings.base import SITE_NAME
 
@@ -50,6 +53,10 @@ class PasswordResetView(RetrieveAPIView):
         try:
             email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
         except EmailVerifier.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
+        # link 유효시간 검증
+        time_del = datetime.datetime.now() - email_verifier.created()
+        if time_del.seconds > 3600:
             return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
         # email 검증
         try:
