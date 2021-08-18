@@ -7,8 +7,6 @@ class ClayfulClient:
         self.clf_key = settings.CLAYFUL_API_KEY
         self.clf_token = settings.CLAYFUL_BACKEND_TOKEN
         self.clf_secret = settings.CLAYFUL_API_SECRET
-        self.customer = Clayful.Customer
-        self.product = Clayful.Product
 
     Clayful.config({
             'language': 'ko',
@@ -16,6 +14,12 @@ class ClayfulClient:
             'time_zone': 'Asia/Seoul',
             'debug_language': 'ko'
     })
+
+
+class ClayfulCustomerClient(ClayfulClient):
+    def __init__(self):
+        super().__init__()
+        self.customer = Clayful.Customer
 
     # 회원가입, 로그인, 로그아웃, 이메일 재설정,회원 탈퇴
     def clayful_register(self, **kwargs):
@@ -60,3 +64,9 @@ class ClayfulClient:
         options = ({})
         response = customer.update(payload, options)
         pass
+
+
+class ClayfulProductClient(ClayfulClient):
+    def __init__(self):
+        super().__init__()
+        self.product = Clayful.Product
