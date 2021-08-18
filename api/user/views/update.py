@@ -66,7 +66,7 @@ class PasswordResetView(RetrieveAPIView):
         try:
             user = User.objects.get(email=email_verifier.email)
         except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='http404.html')
 
         return Response({'email_token': email_token, 'code': code, 'user': user, 'site_name': SITE_NAME},
                         template_name='password_reset.html')
@@ -81,4 +81,16 @@ class PasswordResetConfirmView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(status=status.HTTP_201_CREATED, headers=headers, template_name='password_reset_complete.html')
+        if serializer.data.get('error') is None:
+            return Response(status=status.HTTP_201_CREATED, headers=headers, template_name='password_reset_complete.html')
+        elif serializer.data.get('error')[0] == 1:
+            email_token = serializer.data.get('email_token')
+            code = serializer.data.get('code')
+            email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
+            user = User.objects.get(email=email_verifier.email)
+            error = serializer.data.get('error')[1]
+            return Response({'email_token': email_token, 'code': code, 'user': user, 'site_name': SITE_NAME, 'error': error},
+                            template_name='password_reset.html')
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='http404.html')
+

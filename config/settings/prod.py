@@ -5,7 +5,6 @@ import os
 pymysql.install_as_MySQLdb()
 
 DEBUG = True
-DOMAIN = 'https://dev-change.net'
 
 
 CORS_ALLOW_ALL_ORIGINS = True
