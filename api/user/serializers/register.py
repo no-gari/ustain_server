@@ -4,7 +4,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 from api.logger.models import PhoneLog
-from api.clayful_client import ClayfulClient
+from api.clayful_client import ClayfulCustomerClient
 from api.user.models import User, PhoneVerifier
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
@@ -143,8 +143,8 @@ class UserRegisterSerializer(serializers.Serializer):
     @transaction.atomic
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data,)
-        clayful_client = ClayfulClient()
-        clayful_register = clayful_client.clayful_register(email=user.email, password=user.password, phone=user.phone)
+        clayful_customer_client = ClayfulCustomerClient()
+        clayful_register = clayful_customer_client.clayful_register(email=user.email, password=user.password, phone=user.phone)
 
         if not clayful_register.status == 201:
             user.delete()
@@ -153,7 +153,7 @@ class UserRegisterSerializer(serializers.Serializer):
             if 'phone' in User.VERIFY_FIELDS:
                 self.phone_verifier.delete()
 
-            clayful_login = clayful_client.clayful_login(email=user.email, password=user.password, phone=user.phone)
+            clayful_login = clayful_customer_client.clayful_login(email=user.email, password=user.password, phone=user.phone)
             token = clayful_login.data['token']
             refresh = RefreshToken.for_user(user)
 
