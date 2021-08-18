@@ -159,7 +159,8 @@ class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def send_simple_message(self, attrs):
-        body = f'https://dev-change.net/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
+        # body = f'https://dev-change.net/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
+        body = f'http://localhost:8000/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
         EmailLog.objects.create(to=attrs['email'], body=body, title="어라운드어스 비밀번호 재설정 링크")
 
 
@@ -213,5 +214,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         user = User.objects.get(email=self.email)
         user.set_password(password)
         user.save()
+
+        self.email_verifier.delete()
 
         return user

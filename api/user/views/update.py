@@ -53,11 +53,15 @@ class PasswordResetView(RetrieveAPIView):
         try:
             email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
         except EmailVerifier.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='http404.html')
         # link 유효시간 검증
-        time_del = datetime.datetime.now() - email_verifier.created()
-        if time_del.seconds > 3600:
-            return Response(status=status.HTTP_404_NOT_FOUND, template_name='password_reset.html')
+        try:
+            time_del = datetime.datetime.now() - email_verifier.created
+            if time_del.seconds > 3600:
+                email_verifier.delete()
+                return Response(status=status.HTTP_404_NOT_FOUND, template_name='http404.html')
+        except Exception:
+            return Response(status=status.HTTP_404_NOT_FOUND, template_name='http404.html')
         # email 검증
         try:
             user = User.objects.get(email=email_verifier.email)
