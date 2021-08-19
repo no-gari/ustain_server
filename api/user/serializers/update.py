@@ -16,7 +16,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(read_only=True)
     email = serializers.EmailField(read_only=True)
     groups = serializers.CharField(read_only=True)
-    clayful = serializers.CharField(write_only=True)
+    clayful = serializers.CharField()
 
     class Meta:
         model = User

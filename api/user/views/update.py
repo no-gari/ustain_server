@@ -25,10 +25,12 @@ class UserProfileView(RetrieveUpdateDestroyAPIView):
         return self.request.user
 
     def delete(self, request, *args, **kwargs):
-        clayful_customer_delete = ClayfulCustomerClient.clayful_customer_delete(clayful=kwargs['clayful'])
-        if not clayful_customer_delete.status_code == 204 or clayful_customer_delete.status_code == 200:
-            raise ValidationError({'error_msg': '다시 한 번 시도해주세요.'})
-        return super().delete(self, request, *args)
+        clayful = self.request.data['clayful']
+        clayful_customer_client = ClayfulCustomerClient()
+        clayful_customer_client.clayful_customer_delete(clayful=clayful)
+        del_user = self.request.user
+        del_user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PhoneUpdateVerifierCreateView(CreateAPIView):

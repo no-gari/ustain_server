@@ -24,10 +24,7 @@ class ClayfulCustomerClient(ClayfulClient):
 
     def clayful_register(self, **kwargs):
         customer = self.customer
-        payload = ({
-            'connect': True,
-            'userId': kwargs['email']
-        })
+        payload = ({'connect': True, 'userId': kwargs['email']})
         options = ({'client': self.clf_token})
         try:
             response = customer.create(payload, options)
@@ -47,7 +44,7 @@ class ClayfulCustomerClient(ClayfulClient):
 
     def clayful_customer_delete(self, **kwargs):
         customer = self.customer
-        options = ({'customer': kwargs['clayful']})
+        options = ({'customer': kwargs['clayful'], 'client': self.clf_token})
         try:
             response = customer.delete_me(options)
             return response
