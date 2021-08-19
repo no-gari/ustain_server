@@ -106,9 +106,8 @@ class UserRegisterSerializer(serializers.Serializer):
 
         if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
             # 이메일 검증
-            # if User.objects.filter(email=email).exists():
-            #     raise ValidationError({'email': ['이미 가입된 이메일입니다.']})
-            pass
+            if User.objects.filter(email=email).exists():
+                raise ValidationError({'email': ['이미 가입된 이메일입니다.']})
 
         if 'phone' in User.VERIFY_FIELDS:
             # 휴대폰 토큰 검증
@@ -117,10 +116,9 @@ class UserRegisterSerializer(serializers.Serializer):
             except PhoneVerifier.DoesNotExist:
                 raise ValidationError('휴대폰 인증을 진행해주세요.')
         if 'phone' in User.VERIFY_FIELDS or 'phone' in User.REGISTER_FIELDS:
-            pass
             # 휴대폰 검증
-            # if User.objects.filter(phone=phone).exists():
-            #     raise ValidationError({'phone': ['이미 가입된 휴대폰입니다.']})
+            if User.objects.filter(phone=phone).exists():
+                raise ValidationError({'phone': ['이미 가입된 휴대폰입니다.']})
 
         if 'password' in User.REGISTER_FIELDS:
             errors = {}
@@ -134,7 +132,6 @@ class UserRegisterSerializer(serializers.Serializer):
                 except DjangoValidationError as error:
                     errors['password'] = list(error)
                     errors['password_confirm'] = list(error)
-
             if errors:
                 raise ValidationError(errors)
 
@@ -144,7 +141,7 @@ class UserRegisterSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data,)
         clayful_customer_client = ClayfulCustomerClient()
-        clayful_register = clayful_customer_client.clayful_register(email=user.email, password=user.password, phone=user.phone)
+        clayful_register = clayful_customer_client.clayful_register(email=user.email)
 
         if not clayful_register.status == 201:
             user.delete()
@@ -153,7 +150,7 @@ class UserRegisterSerializer(serializers.Serializer):
             if 'phone' in User.VERIFY_FIELDS:
                 self.phone_verifier.delete()
 
-            clayful_login = clayful_customer_client.clayful_login(email=user.email, password=user.password, phone=user.phone)
+            clayful_login = clayful_customer_client.clayful_login(email=user.email)
             token = clayful_login.data['token']
             refresh = RefreshToken.for_user(user)
 

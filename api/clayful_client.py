@@ -1,3 +1,4 @@
+from rest_framework.exceptions import ValidationError
 from django.conf import settings
 from clayful import Clayful
 
@@ -21,49 +22,37 @@ class ClayfulCustomerClient(ClayfulClient):
         super().__init__()
         self.customer = Clayful.Customer
 
-    # 회원가입, 로그인, 로그아웃, 이메일 재설정,회원 탈퇴
     def clayful_register(self, **kwargs):
         customer = self.customer
         payload = ({
-            'email': kwargs['email'],
-            'password': kwargs['password'],
-            'phone': kwargs['phone'],
+            'connect': True,
+            'userId': kwargs['email']
         })
         options = ({'client': self.clf_token})
-        response = customer.create(payload, options)
-        return response
+        try:
+            response = customer.create(payload, options)
+            return response
+        except Exception as e:
+            return ValidationError(e)
 
     def clayful_login(self, **kwargs):
         customer = self.customer
-        payload = ({'email': kwargs['email'], 'password': kwargs['password']})
+        payload = ({'userId': kwargs['email']})
         options = ({'client': self.clf_token})
-        response = customer.authenticate(payload, options)
-        return response
-
-    def clayful_customer_update(self, **kwargs):
-        customer = self.customer
-        payload = ({
-
-        })
-        options = ({
-
-        })
-        response = customer.update(kwargs['id'], payload, options)
-        return response
-
-    def clayful_logout(self, **kwargs):
-        customer = self.customer
-        payload = ({})
-        options = ({})
-        response = customer.update(payload, options)
-        pass
+        try:
+            response = customer.authenticate(payload, options)
+            return response
+        except Exception as e:
+            return ValidationError(e)
 
     def clayful_customer_delete(self, **kwargs):
         customer = self.customer
-        payload = ({})
-        options = ({})
-        response = customer.update(payload, options)
-        pass
+        options = ({'customer': kwargs['clayful']})
+        try:
+            response = customer.delete_me(options)
+            return response
+        except Exception as e:
+            return ValidationError(e)
 
 
 class ClayfulProductClient(ClayfulClient):

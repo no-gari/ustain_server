@@ -3,7 +3,6 @@ import random
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
-from api.clayful_client import ClayfulCustomerClient
 from api.logger.models import PhoneLog, EmailLog
 from rest_framework.exceptions import ValidationError
 from api.user.models import User, EmailVerifier, PhoneVerifier
@@ -61,10 +60,6 @@ class EmailVerifierConfirmSerializer(serializers.ModelSerializer):
             raise ValidationError({'code': ['인증번호가 일치하지 않습니다.']})
 
         attrs.update({'token': email_verifier.token})
-        clayful_customer_client = ClayfulCustomerClient()
-        clayful_customer_update = clayful_customer_client.clayful_customer_update(
-
-        )
         return attrs
 
     @transaction.atomic

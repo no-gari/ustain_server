@@ -1,26 +1,34 @@
 import datetime
 
-from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 
+from config.settings.base import SITE_NAME
+from api.clayful_client import ClayfulCustomerClient
+from api.user.models import User, EmailVerifier
 from api.user.serializers.update import UserProfileSerializer, PhoneUpdateVerifierCreateSerializer, \
     PhoneUpdateVerifierConfirmSerializer, PasswordResetVerifierCreateSerializer, PasswordResetSerializer, \
     PasswordResetConfirmSerializer
-from api.user.models import User, EmailVerifier
-from config.settings.base import SITE_NAME
 
 
-class UserProfileView(RetrieveUpdateAPIView):
+class UserProfileView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
-    allowed_methods = ['put', 'get']
+    allowed_methods = ['put', 'get', 'delete']
 
     def get_object(self):
         return self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        clayful_customer_delete = ClayfulCustomerClient.clayful_customer_delete(clayful=kwargs['clayful'])
+        if not clayful_customer_delete.status_code == 204 or clayful_customer_delete.status_code == 200:
+            raise ValidationError({'error_msg': '다시 한 번 시도해주세요.'})
+        return super().delete(self, request, *args)
 
 
 class PhoneUpdateVerifierCreateView(CreateAPIView):

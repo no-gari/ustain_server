@@ -14,9 +14,6 @@ urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view()),
     path('refresh/', CustomTokenRefreshView.as_view()),
 
-    # clayful 회원가입, 로그인
-    # path('clayful/register/', ClayfulRegisterView), -> 연동 되기 전 코드라서 주석 처리함. (헷갈림 방지)
-
     # 소셜 로그인
     path('social-login/', UserSocialLoginView.as_view()),
 
@@ -31,7 +28,7 @@ urlpatterns = [
     path('email-found/phone-verifier/', EmailFoundPhoneVerifierCreateView.as_view()),
     path('email-found/phone-verifier/confirm/', EmailFoundPhoneVerifierConfirmView.as_view()),
 
-    # 유저 프로필 가져오기, 업데이트
+    # 유저 프로필 가져오기, 업데이트, 삭제
     path('profile/', UserProfileView.as_view()),
 
     # 카테고리 전체 가져오기

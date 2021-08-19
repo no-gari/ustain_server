@@ -99,7 +99,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         clayful_customer_client = ClayfulCustomerClient()
-        clayful_login = clayful_customer_client.clayful_login(email=self.user.email, password=self.user.password)
+        clayful_login = clayful_customer_client.clayful_login(email=self.user.email)
         data['clayful'] = clayful_login.data['token']
         return data
 
@@ -108,6 +108,6 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         clayful_customer_client = ClayfulCustomerClient()
-        clayful_login = clayful_customer_client.clayful_login(email=self.user.email, password=self.user.password)
+        clayful_login = clayful_customer_client.clayful_login(email=self.user.email)
         data['clayful'] = clayful_login.data['token']
         return data

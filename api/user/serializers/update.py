@@ -6,6 +6,7 @@ from rest_framework import serializers
 from api.logger.models import PhoneLog, EmailLog
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
+from api.clayful_client import ClayfulCustomerClient
 from api.user.tokens import EmailVerificationTokenGenerator
 from api.user.models import User, EmailVerifier, PhoneVerifier
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -15,10 +16,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(read_only=True)
     email = serializers.EmailField(read_only=True)
     groups = serializers.CharField(read_only=True)
+    clayful = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['groups', 'phone', 'email', 'name', 'profile_article', 'sex_choices', 'birthday', 'categories']
+        fields = ['clayful', 'groups', 'phone', 'email', 'name', 'profile_article', 'sex_choices', 'birthday', 'categories']
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
@@ -138,8 +140,8 @@ class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
         except User.DoesNotExist:
             raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
 
-        # if not user.email_verify:
-        #     raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
+        if not user.email_verify:
+            raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = datetime.datetime.now()
