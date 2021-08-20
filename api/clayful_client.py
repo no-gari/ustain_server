@@ -2,19 +2,20 @@ from rest_framework.exceptions import ValidationError
 from django.conf import settings
 from clayful import Clayful
 
+Clayful.config({
+            'language': 'ko',
+            'currency': 'KRW',
+            'time_zone': 'Asia/Seoul',
+            'debug_language': 'ko',
+            'client': settings.CLAYFUL_BACKEND_TOKEN
+})
+
 
 class ClayfulClient:
     def __init__(self):
         self.clf_key = settings.CLAYFUL_API_KEY
         self.clf_token = settings.CLAYFUL_BACKEND_TOKEN
         self.clf_secret = settings.CLAYFUL_API_SECRET
-
-    Clayful.config({
-            'language': 'ko',
-            'currency': 'KRW',
-            'time_zone': 'Asia/Seoul',
-            'debug_language': 'ko'
-    })
 
 
 class ClayfulCustomerClient(ClayfulClient):
@@ -56,3 +57,15 @@ class ClayfulProductClient(ClayfulClient):
     def __init__(self):
         super().__init__()
         self.product = Clayful.Product
+
+    def list_categories(self, **kwargs):
+        try:
+            options = {
+                'query': {
+                    'collection': kwargs['collection']
+                }
+            }
+            response = self.product.list(options)
+            return response
+        except Exception as err:
+            return ValidationError({'product_list': [err.message]})
