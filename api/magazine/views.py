@@ -83,7 +83,7 @@ class MagazineLikeUpdateView(RetrieveUpdateAPIView):
     queryset = Magazines.objects.prefetch_related('like_users').all()
     serializer_class = MagazineLikeSerializer
     permission_classes = [AllowAny]
-    allowed_methods = ['put']
+    allowed_methods = ['put', 'get']
     lookup_field = 'id'
 
 
@@ -91,7 +91,7 @@ class MagazineScrapUpdateView(RetrieveUpdateAPIView):
     queryset = Magazines.objects.prefetch_related('scrapped_users').all()
     serializer_class = MagazineScrapUpdateSerializer
     permission_classes = [AllowAny]
-    allowed_methods = ['put']
+    allowed_methods = ['put', 'get']
     lookup_field = 'id'
 
 
