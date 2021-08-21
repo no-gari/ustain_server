@@ -15,11 +15,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(read_only=True)
     email = serializers.EmailField(read_only=True)
     groups = serializers.CharField(read_only=True)
-    clayful = serializers.CharField()
 
     class Meta:
         model = User
-        fields = ['clayful', 'groups', 'phone', 'email', 'name', 'profile_article', 'sex_choices', 'birthday', 'categories']
+        fields = ['groups', 'phone', 'email', 'name', 'profile_article', 'sex_choices', 'birthday', 'categories']
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
