@@ -5,7 +5,6 @@ from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifie
     EmailFoundPhoneVerifierConfirmView
 from api.user.views.login import UserSocialLoginView, CustomTokenObtainPairView, CustomTokenRefreshView
 from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
-# from api.user.views.clayful_api import ClayfulRegisterView
 from api.user.views.category import CategoryListView
 
 urlpatterns = [

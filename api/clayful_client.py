@@ -11,14 +11,7 @@ Clayful.config({
 })
 
 
-class ClayfulClient:
-    def __init__(self):
-        self.clf_key = settings.CLAYFUL_API_KEY
-        self.clf_token = settings.CLAYFUL_BACKEND_TOKEN
-        self.clf_secret = settings.CLAYFUL_API_SECRET
-
-
-class ClayfulCustomerClient(ClayfulClient):
+class ClayfulCustomerClient:
     def __init__(self):
         super().__init__()
         self.customer = Clayful.Customer
@@ -26,9 +19,8 @@ class ClayfulCustomerClient(ClayfulClient):
     def clayful_register(self, **kwargs):
         customer = self.customer
         payload = ({'connect': True, 'userId': kwargs['email']})
-        options = ({'client': self.clf_token})
         try:
-            response = customer.create(payload, options)
+            response = customer.create(payload)
             return response
         except Exception as e:
             return ValidationError(e)
@@ -36,16 +28,15 @@ class ClayfulCustomerClient(ClayfulClient):
     def clayful_login(self, **kwargs):
         customer = self.customer
         payload = ({'userId': kwargs['email']})
-        options = ({'client': self.clf_token})
         try:
-            response = customer.authenticate(payload, options)
+            response = customer.authenticate(payload)
             return response
         except Exception as e:
             return ValidationError(e)
 
     def clayful_customer_delete(self, **kwargs):
         customer = self.customer
-        options = ({'customer': kwargs['clayful'], 'client': self.clf_token})
+        options = ({'customer': kwargs['clayful']})
         try:
             response = customer.delete_me(options)
             return response
@@ -53,7 +44,7 @@ class ClayfulCustomerClient(ClayfulClient):
             return ValidationError(e)
 
 
-class ClayfulProductClient(ClayfulClient):
+class ClayfulProductClient:
     def __init__(self):
         super().__init__()
         self.product = Clayful.Product
