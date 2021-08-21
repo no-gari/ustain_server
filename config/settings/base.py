@@ -46,6 +46,7 @@ LOCAL_APPS = [
     'api.user.apps.UserConfig',
     'api.magazine.apps.MagazineConfig',
     'api.firebase.apps.FirebaseConfig',
+    'api.categories.apps.CategoriesConfig',
     'api.commerce.cart.apps.CartConfig',
     'api.commerce.collection.apps.CollectionConfig',
     'api.commerce.coupon.apps.CouponConfig',
