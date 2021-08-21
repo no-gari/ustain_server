@@ -20,8 +20,8 @@ class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         phone = attrs['phone']
 
-        # if User.objects.filter(phone=phone).exists():
-        #     raise ValidationError({'phone': ['이미 존재하는 휴대폰입니다.']})
+        if User.objects.filter(phone=phone).exists():
+            raise ValidationError({'phone': ['이미 존재하는 휴대폰입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = timezone.now()

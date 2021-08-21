@@ -6,7 +6,6 @@ from rest_framework import serializers
 from api.logger.models import PhoneLog, EmailLog
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
-from api.clayful_client import ClayfulCustomerClient
 from api.user.tokens import EmailVerificationTokenGenerator
 from api.user.models import User, EmailVerifier, PhoneVerifier
 from django.core.exceptions import ValidationError as DjangoValidationError
