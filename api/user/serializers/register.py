@@ -6,6 +6,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework import status
 from api.logger.models import PhoneLog
+from api.clayful_client import ClayfulCustomerClient
 from api.user.models import User, PhoneVerifier
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
@@ -80,6 +81,7 @@ class UserRegisterSerializer(serializers.Serializer):
 
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
+    clayful = serializers.CharField(read_only=True)
 
     clayful_error_code = serializers.CharField(read_only=True)
     clayful_error_message = serializers.CharField(read_only=True)
@@ -135,7 +137,6 @@ class UserRegisterSerializer(serializers.Serializer):
                 except DjangoValidationError as error:
                     errors['password'] = list(error)
                     errors['password_confirm'] = list(error)
-
             if errors:
                 raise ValidationError(errors)
 
@@ -162,6 +163,7 @@ class UserRegisterSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
+<<<<<<< HEAD
         if 'phone' in User.VERIFY_FIELDS:
             self.phone_verifier.delete()
 
@@ -188,3 +190,25 @@ class UserRegisterSerializer(serializers.Serializer):
         return data
 
 
+=======
+        user = User.objects.create_user(**validated_data,)
+        clayful_customer_client = ClayfulCustomerClient()
+        clayful_register = clayful_customer_client.clayful_register(email=user.email)
+
+        if not clayful_register.status == 201:
+            user.delete()
+            raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
+        else:
+            if 'phone' in User.VERIFY_FIELDS:
+                self.phone_verifier.delete()
+
+            clayful_login = clayful_customer_client.clayful_login(email=user.email)
+            token = clayful_login.data['token']
+            refresh = RefreshToken.for_user(user)
+
+        return {
+            'access': refresh.access_token,
+            'refresh': refresh,
+            'clayful': token,
+        }
+>>>>>>> 4f5acb9637fb95e61c628f9b776db51d52291047

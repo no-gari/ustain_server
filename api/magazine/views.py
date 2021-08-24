@@ -1,7 +1,7 @@
-from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView
+from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, RetrieveAPIView, \
+    DestroyAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from api.magazine.serializers import *
 from .models import *
@@ -79,19 +79,19 @@ class MagazineRetrieveView(RetrieveAPIView):
         return magazines
 
 
-class MagazineLikeUpdateView(UpdateAPIView):
+class MagazineLikeUpdateView(RetrieveUpdateAPIView):
     queryset = Magazines.objects.prefetch_related('like_users').all()
     serializer_class = MagazineLikeSerializer
-    permission_classes = [IsAuthenticated]
-    allowed_methods = ['put']
+    permission_classes = [AllowAny]
+    allowed_methods = ['put', 'get']
     lookup_field = 'id'
 
 
-class MagazineScrapUpdateView(UpdateAPIView):
+class MagazineScrapUpdateView(RetrieveUpdateAPIView):
     queryset = Magazines.objects.prefetch_related('scrapped_users').all()
     serializer_class = MagazineScrapUpdateSerializer
-    permission_classes = [IsAuthenticated]
-    allowed_methods = ['put']
+    permission_classes = [AllowAny]
+    allowed_methods = ['put', 'get']
     lookup_field = 'id'
 
 

@@ -1,23 +1,30 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
-from api.user.views.login import UserSocialLoginView
-from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifierCreateView, \
-    EmailFoundPhoneVerifierConfirmView
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView, \
     PasswordResetVerifyView, PasswordResetConfirmView, PasswordResetView
+from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifierCreateView, \
+    EmailFoundPhoneVerifierConfirmView
+from api.user.views.login import UserSocialLoginView, CustomTokenObtainPairView, CustomTokenRefreshView
+from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
 from api.user.views.category import CategoryListView
+<<<<<<< HEAD
 from api.user.views.clayful_api import ClayfulRegisterView, ClayfulLoginView
+=======
+>>>>>>> 4f5acb9637fb95e61c628f9b776db51d52291047
 
 urlpatterns = [
     # 이메일 회원가입, 로그인
     path('register/', UserRegisterView.as_view()),
+<<<<<<< HEAD
     path('login/', TokenObtainPairView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
 
     # clayful 회원가입, 로그인
     path('clayful/register/', ClayfulRegisterView.as_view()),
     path('clayful/login/', ClayfulLoginView.as_view()),
+=======
+    path('login/', CustomTokenObtainPairView.as_view()),
+    path('refresh/', CustomTokenRefreshView.as_view()),
+>>>>>>> 4f5acb9637fb95e61c628f9b776db51d52291047
 
     # 소셜 로그인
     path('social-login/', UserSocialLoginView.as_view()),
@@ -33,7 +40,7 @@ urlpatterns = [
     path('email-found/phone-verifier/', EmailFoundPhoneVerifierCreateView.as_view()),
     path('email-found/phone-verifier/confirm/', EmailFoundPhoneVerifierConfirmView.as_view()),
 
-    # 유저 프로필 가져오기, 업데이트
+    # 유저 프로필 가져오기, 업데이트, 삭제
     path('profile/', UserProfileView.as_view()),
 
     # 카테고리 전체 가져오기

@@ -1,12 +1,15 @@
 import jwt
 import requests
 from django.conf import settings
-from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from rest_framework import serializers
+from api.clayful_client import ClayfulCustomerClient
+from django.contrib.auth.hashers import make_password
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from api.user.models import User, Social, SocialKindChoices
+from rest_framework_simplejwt.backends import TokenBackend
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 
 
 class UserSocialLoginSerializer(serializers.Serializer):
@@ -91,3 +94,23 @@ class UserSocialLoginSerializer(serializers.Serializer):
         decoded = jwt.decode(data['id_token'], '', verify=False)
 
         return decoded['sub']
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        clayful_customer_client = ClayfulCustomerClient()
+        clayful_login = clayful_customer_client.clayful_login(email=self.user.email)
+        data['clayful'] = clayful_login.data['token']
+        return data
+
+
+class CustomTokenRefreshSerializer(TokenRefreshSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        get_user = TokenBackend(algorithm='HS256').decode(data['access'], verify=False)
+        clayful_customer_client = ClayfulCustomerClient()
+        current_user = User.objects.get(id=get_user['user_id'])
+        clayful_login = clayful_customer_client.clayful_login(email=current_user.email)
+        data['clayful'] = clayful_login.data['token']
+        return data

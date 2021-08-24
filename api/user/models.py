@@ -22,8 +22,8 @@ class Categories(models.Model):
         return str(self.title)
 
     class Meta:
-        verbose_name = '카테고리'
-        verbose_name_plural = '카테고리'
+        verbose_name = '소셜 카테고리'
+        verbose_name_plural = '소셜 카테고리'
 
 
 class UserManager(DjangoUserManager):
