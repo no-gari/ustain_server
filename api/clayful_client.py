@@ -148,7 +148,7 @@ class ClayfulReviewClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def update_review(self, kwargs):
+    def update_review(self, **kwargs):
         try:
             review_id = kwargs['review_id']
             response = self.review.update_for_me(review_id)
@@ -160,7 +160,7 @@ class ClayfulReviewClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def delete_review(self, kwargs):
+    def delete_review(self, **kwargs):
         try:
             review_id = kwargs['review_id']
             response = self.review.delete_for_me(review_id)
@@ -245,7 +245,7 @@ class ClayfulQNAClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def update_qna(self, kwargs):
+    def update_qna(self, **kwargs):
         try:
             review_id = kwargs['review_id']
             response = self.review.update_for_me(review_id)
@@ -257,7 +257,7 @@ class ClayfulQNAClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def delete_qna(self, kwargs):
+    def delete_qna(self, **kwargs):
         try:
             review_id = kwargs['review_id']
             response = self.review.delete_for_me(review_id)
@@ -274,7 +274,7 @@ class ClayfulReviewCommentClient:
     def __init__(self):
         self.review_comment = Clayful.ReviewComment
 
-    def get_comment(self, kwargs):
+    def get_comment(self, **kwargs):
         try:
             review_id = kwargs['review_id']
             response = self.review_comment.get(review_id)
@@ -286,7 +286,7 @@ class ClayfulReviewCommentClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def create_comment(self, kwargs):
+    def create_comment(self, **kwargs):
         try:
             payload = {'review': kwargs['review_id'], 'body': kwargs['content']}
             options = {'customer': kwargs['clayful']}
@@ -299,7 +299,7 @@ class ClayfulReviewCommentClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def update_comment(self, kwargs):
+    def update_comment(self, **kwargs):
         try:
             payload = {'review': kwargs['review_id'], 'body': kwargs['content']}
             options = {'customer': kwargs['clayful']}
@@ -312,7 +312,7 @@ class ClayfulReviewCommentClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def delete_review(self, kwargs):
+    def delete_review(self, **kwargs):
         try:
             payload = {'review': kwargs['review_id'], 'body': kwargs['content']}
             options = {'customer': kwargs['clayful']}
@@ -330,7 +330,7 @@ class ClayfulCartClient:
     def __init__(self):
         self.cart = Clayful.Cart
 
-    def get_cart(self, kwargs):
+    def get_cart(self, **kwargs):
         try:
             payload = {}
             options = {
@@ -345,9 +345,13 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def add_to_cart(self, kwargs):
+    def add_to_cart(self, **kwargs):
         try:
-            payload = {}
+            payload = {
+                'product': kwargs['product'],
+                'variant': kwargs['variant'],
+                'quantity': kwargs['quantity'],
+            }
             options = {'customer': kwargs['clayful']}
             resposne = self.cart.add_item_for_me(payload, options)
             return resposne
@@ -358,7 +362,7 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def empty_all_cart(self, kwargs):
+    def empty_all_cart(self, **kwargs):
         try:
             options = {'customer': kwargs['clayful']}
             resposne = self.cart.empty_for_me(options)
@@ -370,10 +374,10 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def delete_item_cart(self, kwargs):
+    def delete_item_cart(self, **kwargs):
         try:
             options = {'customer': kwargs['clayful']}
-            resposne = self.cart.delte_item_for_me(kwargs['item_id'], options)
+            resposne = self.cart.delete_item_for_me(kwargs['item_id'], options)
             return resposne
         except Exception as err:
             error_msg = []
@@ -382,7 +386,7 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def count_items_cart(self, kwargs):
+    def count_items_cart(self, **kwargs):
         try:
             options = {'customer': kwargs['clayful']}
             resposne = self.cart.count_items_for_me(options)
@@ -394,7 +398,7 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def checkout_cart(self, kwargs):
+    def checkout_cart(self, **kwargs):
         try:
             payload = {}
             options = {'customer': kwargs['clayful']}
@@ -407,7 +411,7 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-#
+
 # class ClayfulCouponClient:
 #     def __init__(self):
 #         self.coupon = Clayful.Coupon
