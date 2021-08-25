@@ -1,10 +1,13 @@
-from django.views.decorators.http import require_http_methods
+from rest_framework.decorators import api_view, permission_classes
 from api.clayful_client import ClayfulBrandClient
-from django.http import JsonResponse
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
 
 
-@require_http_methods(["GET"])
+@api_view(["GET"])
+@permission_classes([AllowAny])
 def get_brand(request, *args, **kwargs):
     clayful_brand_client = ClayfulBrandClient()
     response = clayful_brand_client.get_brand(brand_id=kwargs['brand_id'])
-    return JsonResponse({'response': response.data})
+    return Response(response.data, status=status.HTTP_200_OK)
