@@ -102,7 +102,7 @@ class MagazineReviewsListSerializer(ListAPIView):
     ordering = ['-id']
 
     def get_queryset(self):
-        magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'])
+        magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'], parent=None)
         return magazine_comments
 
 
