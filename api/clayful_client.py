@@ -60,3 +60,12 @@ class ClayfulProductClient:
             return response
         except Exception as err:
             return ValidationError({'product_list': [err.message]})
+
+    def get_detail(self, **kwargs):
+        try:
+            product_id = kwargs['id']
+            response = self.product.get(product_id)
+            return response
+        except Exception as err:
+            return ValidationError({'product_detail': [err.message]})
+

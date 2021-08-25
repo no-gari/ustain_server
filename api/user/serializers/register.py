@@ -163,34 +163,6 @@ class UserRegisterSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-<<<<<<< HEAD
-        if 'phone' in User.VERIFY_FIELDS:
-            self.phone_verifier.delete()
-
-        # clayful 회원가입
-        try:
-            self.clayful_register(validated_data.get('email'))
-            user = User.objects.create_user(
-                **validated_data
-            )
-
-            refresh = RefreshToken.for_user(user)
-
-            data = {
-                'access': refresh.access_token,
-                'refresh': refresh,
-            }
-
-        except Exception as err:
-            print(err)
-            data = {
-                'clayful_error_code': err.code,
-                'clayful_error_message': err.message
-            }
-        return data
-
-
-=======
         user = User.objects.create_user(**validated_data,)
         clayful_customer_client = ClayfulCustomerClient()
         clayful_register = clayful_customer_client.clayful_register(email=user.email)
@@ -211,4 +183,3 @@ class UserRegisterSerializer(serializers.Serializer):
             'refresh': refresh,
             'clayful': token,
         }
->>>>>>> 4f5acb9637fb95e61c628f9b776db51d52291047
