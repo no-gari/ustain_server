@@ -324,3 +324,101 @@ class ClayfulReviewCommentClient:
                 for error in err.args:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
+
+
+class ClayfulCartClient:
+    def __init__(self):
+        self.cart = Clayful.Cart
+
+    def get_cart(self, kwargs):
+        try:
+            payload = {}
+            options = {
+                'customer': kwargs['clayful'],
+            }
+            resposne = self.cart.get_for_me(payload, options)
+            return resposne
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+    def add_to_cart(self, kwargs):
+        try:
+            payload = {}
+            options = {'customer': kwargs['clayful']}
+            resposne = self.cart.add_item_for_me(payload, options)
+            return resposne
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+    def empty_all_cart(self, kwargs):
+        try:
+            options = {'customer': kwargs['clayful']}
+            resposne = self.cart.empty_for_me(options)
+            return resposne
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+    def delete_item_cart(self, kwargs):
+        try:
+            options = {'customer': kwargs['clayful']}
+            resposne = self.cart.delte_item_for_me(kwargs['item_id'], options)
+            return resposne
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+    def count_items_cart(self, kwargs):
+        try:
+            options = {'customer': kwargs['clayful']}
+            resposne = self.cart.count_items_for_me(options)
+            return resposne
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+    def checkout_cart(self, kwargs):
+        try:
+            payload = {}
+            options = {'customer': kwargs['clayful']}
+            resposne = self.cart.checkout_for_me('order', payload, options)
+            return resposne
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+#
+# class ClayfulCouponClient:
+#     def __init__(self):
+#         self.coupon = Clayful.Coupon
+#
+#
+#
+# class ClayfulOrderClient:
+#     def __init__(self):
+#         self.order = Clayful.Order
+#
+#
+# class ClayfulPaymentClient:
+#     def __init__(self):
+#         self.payment = Clayful.Payment
