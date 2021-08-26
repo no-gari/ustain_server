@@ -58,6 +58,8 @@ LOCAL_APPS = [
     'api.commerce.shipping.apps.ShippingConfig',
     'api.commerce.vendor.apps.VendorConfig',
     'api.commerce.wishlist.apps.WishlistConfig',
+    'api.commerce.qna.apps.QnaConfig',
+    'api.commerce.qna.apps.CommentConfig',
     ]
 
 THIRD_PARTY_APPS = [

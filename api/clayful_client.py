@@ -133,25 +133,15 @@ class ClayfulReviewClient:
             payload = ({
                 'order': kwargs['order'],
                 'product': kwargs['product'],
-                'customer': kwargs['customer'],
                 'rating': kwargs['rating'],
                 'body': kwargs['body'],
                 'images': kwargs['images'],
                 'published': False
             })
-            response = self.review.create_for_me(payload)
-            return response
-        except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
-
-    def update_review(self, **kwargs):
-        try:
-            review_id = kwargs['review_id']
-            response = self.review.update_for_me(review_id)
+            options = ({
+                'customer': kwargs['customer'],
+            })
+            response = self.review.create_for_me(payload, options)
             return response
         except Exception as err:
             error_msg = []
@@ -163,7 +153,10 @@ class ClayfulReviewClient:
     def delete_review(self, **kwargs):
         try:
             review_id = kwargs['review_id']
-            response = self.review.delete_for_me(review_id)
+            options = ({
+                'customer': kwargs['customer'],
+            })
+            response = self.review.delete_for_me(review_id, options)
             return response
         except Exception as err:
             error_msg = []
@@ -227,7 +220,6 @@ class ClayfulQNAClient:
             payload = ({
                 'order': kwargs['order'],
                 'product': kwargs['product'],
-                'customer': kwargs['customer'],
                 'rating': kwargs['rating'],
                 'body': kwargs['body'],
                 'images': kwargs['images'],
@@ -236,19 +228,10 @@ class ClayfulQNAClient:
                     'qnaReason': kwargs['qnaReason']
                 }
             })
-            response = self.review.create_for_me(payload)
-            return response
-        except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
-
-    def update_qna(self, **kwargs):
-        try:
-            review_id = kwargs['review_id']
-            response = self.review.update_for_me(review_id)
+            options = ({
+                'customer': kwargs['customer'],
+            })
+            response = self.review.create_for_me(payload, options)
             return response
         except Exception as err:
             error_msg = []
@@ -260,7 +243,10 @@ class ClayfulQNAClient:
     def delete_qna(self, **kwargs):
         try:
             review_id = kwargs['review_id']
-            response = self.review.delete_for_me(review_id)
+            options = ({
+                'customer': kwargs['customer'],
+            })
+            response = self.review.delete_for_me(review_id, options)
             return response
         except Exception as err:
             error_msg = []
