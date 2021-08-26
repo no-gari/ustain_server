@@ -1,3 +1,6 @@
-from django.db import models
+from api.commerce.comment.views import get_comments
+from django.urls import path
 
-# Create your models here.
+urlpatterns = [
+    path('', get_comments),
+]

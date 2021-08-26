@@ -3,11 +3,11 @@ from django.conf import settings
 from clayful import Clayful
 
 Clayful.config({
-            'language': 'ko',
-            'currency': 'KRW',
-            'time_zone': 'Asia/Seoul',
-            'debug_language': 'ko',
-            'client': settings.CLAYFUL_BACKEND_TOKEN
+    'language': 'ko',
+    'currency': 'KRW',
+    'time_zone': 'Asia/Seoul',
+    'debug_language': 'ko',
+    'client': settings.CLAYFUL_BACKEND_TOKEN
 })
 
 
@@ -260,49 +260,10 @@ class ClayfulReviewCommentClient:
     def __init__(self):
         self.review_comment = Clayful.ReviewComment
 
-    def get_comment(self, **kwargs):
+    def get_comments(self, **kwargs):
         try:
-            review_id = kwargs['review_id']
-            response = self.review_comment.get(review_id)
-            return response
-        except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
-
-    def create_comment(self, **kwargs):
-        try:
-            payload = {'review': kwargs['review_id'], 'body': kwargs['content']}
-            options = {'customer': kwargs['clayful']}
-            response = self.review_comment.create_for_me(payload, options)
-            return response
-        except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
-
-    def update_comment(self, **kwargs):
-        try:
-            payload = {'review': kwargs['review_id'], 'body': kwargs['content']}
-            options = {'customer': kwargs['clayful']}
-            response = self.review_comment.update_for_me(payload, options)
-            return response
-        except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
-
-    def delete_review(self, **kwargs):
-        try:
-            payload = {'review': kwargs['review_id'], 'body': kwargs['content']}
-            options = {'customer': kwargs['clayful']}
-            response = self.review_comment.delete_for_me(payload, options)
+            options = {'query': {'review': kwargs['review_id'], 'page': 1}}
+            response = self.review_comment.list(options)
             return response
         except Exception as err:
             error_msg = []
@@ -396,7 +357,6 @@ class ClayfulCartClient:
                 for error in err.args:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
-
 
 # class ClayfulCouponClient:
 #     def __init__(self):
