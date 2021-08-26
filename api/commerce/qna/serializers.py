@@ -17,7 +17,7 @@ class QNARetrieveSerializer(serializers.Serializer):
         return attrs
 
 
-class QNACreateSerializer(serializers.Serializer)
+class QNACreateSerializer(serializers.Serializer):
     def validate(self, attrs):
         return attrs
 

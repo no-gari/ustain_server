@@ -17,7 +17,7 @@ class ReviewRetrieveSerializer(serializers.Serializer):
         return attrs
 
 
-class ReviewCreateSerializer(serializers.Serializer)
+class ReviewCreateSerializer(serializers.Serializer):
     def validate(self, attrs):
         return attrs
 
