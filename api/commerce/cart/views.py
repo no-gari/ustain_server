@@ -48,3 +48,11 @@ def count_items(request, *args, **kwargs):
     clayful_cart_client = ClayfulCartClient()
     response = clayful_cart_client.count_items_cart(clayful=request.headers['clayful'])
     return Response(response.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def checkout_cart(request, *args, **kwargs):
+    clayful_cart_client = ClayfulCartClient()
+    response = clayful_cart_client.checkout_cart(items=request.data['items'], clayful=request.headers['clayful'])
+    return Response(response.data, status=status.HTTP_200_OK)
