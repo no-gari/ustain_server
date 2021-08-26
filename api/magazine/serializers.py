@@ -82,6 +82,7 @@ class RecursiveSerializer(serializers.Serializer):
 class MagazineReviewsListSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     reply = RecursiveSerializer(many=True, read_only=True)
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = MagazineComments
@@ -89,6 +90,9 @@ class MagazineReviewsListSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return obj.user.name
+
+    def get_user(self, obj):
+        return obj.user.email
 
 
 class MagazineReviewCreateSerializer(serializers.ModelSerializer):
