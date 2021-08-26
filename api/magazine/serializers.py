@@ -15,8 +15,8 @@ class MagazineRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Magazines
-        fields = ['categories', 'banner_image', 'id', 'content', 'title', 'hits', 'created_at', 'updated_at',
-                  'comments_banned', 'like_user_count', 'total_comments']
+        fields = ['categories', 'banner_image', 'id', 'content', 'title', 'hits', 'created_at', 'updated_at', 'comments_banned',
+                  'like_user_count', 'total_comments']
 
     def get_total_comments(self, obj):
         total_comments = obj.magazine_comments.count()
