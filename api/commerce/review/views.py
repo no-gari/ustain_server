@@ -17,7 +17,7 @@ def reviews_count(request, *args, **kwargs):
 @permission_classes([AllowAny])
 def reviews_list(request, *args, **kwargs):
     clayful_review_client = ClayfulReviewClient()
-    response = clayful_review_client.reviews_count(product=kwargs['product'], page=kwargs['page'])
+    response = clayful_review_client.reviews_list(product=kwargs['product'], page=kwargs['page'])
     return Response(response.data, status=status.HTTP_200_OK)
 
 
