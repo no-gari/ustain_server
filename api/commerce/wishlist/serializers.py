@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class ProductListByCategoriesSerializer(serializers.Serializer):
+class GetWishListProductsSerializer(serializers.Serializer):
     _id = serializers.CharField()
     name = serializers.CharField()
     summary = serializers.CharField()
@@ -9,3 +9,4 @@ class ProductListByCategoriesSerializer(serializers.Serializer):
     price = serializers.JSONField()
     discount = serializers.JSONField()
     collections = serializers.JSONField()
+
