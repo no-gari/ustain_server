@@ -1,13 +1,17 @@
-from rest_framework import status
+from .serializers import CountItemSerializer, DeleteItemSerializer, EmptyCartSerializer, \
+    RetrieveCartSerializer, AddToCartSerializer, CheckOutSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from api.clayful_client import ClayfulCartClient
 from rest_framework.response import Response
+from rest_framework import status
+
+
 from rest_framework.exceptions import ValidationError, AuthenticationFailed
 from rest_framework.generics import ListAPIView, RetrieveAPIView, DestroyAPIView, GenericAPIView, CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
-
-from api.clayful_client import ClayfulCartClient
 from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer
 
 
@@ -105,3 +109,27 @@ class DeleteItemToCartView(DestroyAPIView):
         })
         return self.destroy(request, *args, **kwargs)
 
+
+      
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def empty_cart(request, *args, **kwargs):
+    clayful_cart_client = ClayfulCartClient()
+    response = clayful_cart_client.empty_all_cart(clayful=request.headers['clayful'])
+    return Response(response.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def count_items(request, *args, **kwargs):
+    clayful_cart_client = ClayfulCartClient()
+    response = clayful_cart_client.count_items_cart(clayful=request.headers['clayful'])
+    return Response(response.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def checkout_cart(request, *args, **kwargs):
+    clayful_cart_client = ClayfulCartClient()
+    response = clayful_cart_client.checkout_cart(items=request.data['items'], clayful=request.headers['clayful'])
+    return Response(response.data, status=status.HTTP_200_OK)
