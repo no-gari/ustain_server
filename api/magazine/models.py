@@ -59,7 +59,7 @@ class MagazineComments(models.Model):
     magazines = models.ForeignKey(Magazines, on_delete=models.CASCADE, related_name='magazine_comments', verbose_name='매거진')
     content = models.TextField(verbose_name='내용')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='작성자')
-    reply = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='대댓글')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='reply', null=True, blank=True, verbose_name='대댓글')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성일')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
 
