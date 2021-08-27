@@ -61,6 +61,15 @@ class ClayfulProductClient:
         except Exception as err:
             return ValidationError({'product_list': [err.message]})
 
+    def get_detail(self, **kwargs):
+        try:
+            product_id = kwargs['id']
+            response = self.product.get(product_id)
+            return response
+        except Exception as err:
+            return ValidationError({'product_detail': [err.message]})
+
+
 
 class ClayfulBrandClient:
     def __init__(self):
@@ -340,15 +349,6 @@ class ClayfulCartClient:
                 for error in err.args:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
-
-
-    def get_detail(self, **kwargs):
-        try:
-            product_id = kwargs['id']
-            response = self.product.get(product_id)
-            return response
-        except Exception as err:
-            return ValidationError({'product_detail': [err.message]})
 
 
 class ClayfulWishListClient:
