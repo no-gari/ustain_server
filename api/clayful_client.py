@@ -273,7 +273,6 @@ class ClayfulReviewCommentClient:
             return ValidationError({'error_msg': error_msg})
 
 
-
 class ClayfulCartClient:
     def __init__(self, auth_token):
         self.cart = Clayful.Cart
@@ -298,18 +297,17 @@ class ClayfulCartClient:
         except Exception as err:
             raise ValidationError({'get_selected_items': [err.message]})
 
-    def add_item(self, **kwargs):
+    def empty_all_cart(self, **kwargs):
         try:
-            payload = {
-                'product': kwargs['product_id'],
-                'variant': kwargs['variant'],
-                'quantity': kwargs['quantity']
-            }
-            response = self.cart.add_item_for_me(payload, self.options)
-            print(response.data)
-            return response
+            options = {'customer': kwargs['clayful']}
+            resposne = self.cart.empty_for_me(options)
+            return resposne
         except Exception as err:
-            raise ValidationError({'add_item': [err.message]})
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
 
     def delete_item(self, **kwargs):
         try:
@@ -318,13 +316,6 @@ class ClayfulCartClient:
         except Exception as err:
             raise ValidationError({'delete_item': [err.message]})
 
-    def empty_cart(self):
-        try:
-            response = self.cart.empty_for_me(self.options)
-            return response
-        except Exception as err:
-            return ValidationError({'empty_cart': [err.message]})          
- 
     def count_items_cart(self, **kwargs):
         try:
             resposne = self.cart.count_items_for_me(self.options)
