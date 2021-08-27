@@ -137,9 +137,9 @@ class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
-
-        if not user.email_verify:
-            raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
+        #
+        # if not user.email_verify:
+        #     raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
 
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = datetime.datetime.now()

@@ -102,7 +102,7 @@ class MagazineReviewsListSerializer(ListAPIView):
     ordering = ['-id']
 
     def get_queryset(self):
-        magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'])
+        magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'], parent=None)
         return magazine_comments
 
 
@@ -112,6 +112,10 @@ class MagazineReviewCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({'status': 200, 'data': response.data})
 
 
 class MagazineCommentUpdateView(UpdateAPIView):
@@ -137,3 +141,7 @@ class MagazineCommentDeleteView(DestroyAPIView):
         if instance.user != self.request.user:
             raise ValidationError({'error_msg': '댓글 작성자 본인만 삭제할 수 있습니다.'})
         return instance
+
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        return Response({'status': 200, 'data': response.data})

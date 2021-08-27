@@ -73,23 +73,41 @@ class MagazineScrapUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
+class RecursiveSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        serializer = self.parent.parent.__class__(instance, context=self.context)
+        return serializer.data
+
+
 class MagazineReviewsListSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    reply = RecursiveSerializer(many=True, read_only=True)
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = MagazineComments
-        fields = ['id', 'content', 'created_at', 'updated_at', 'magazines', 'user', 'name', 'reply']
+        fields = ['id', 'content', 'created_at', 'updated_at', 'magazines', 'user', 'name', 'parent', 'reply']
 
     def get_name(self, obj):
         return obj.user.name
 
+    def get_user(self, obj):
+        return obj.user.email
+
 
 class MagazineReviewCreateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    user = serializers.CharField(read_only=True)
+    name = serializers.SerializerMethodField()
 
     class Meta:
         model = MagazineComments
-        fields = ['id', 'content', 'magazines', 'reply']
+        fields = ['id', 'content', 'created_at', 'updated_at', 'magazines', 'user', 'name', 'parent']
+
+    def get_name(self, obj):
+        return obj.user.name
 
 
 class MagazineReviewUpdateSerializer(serializers.ModelSerializer):
