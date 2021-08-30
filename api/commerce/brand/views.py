@@ -14,7 +14,6 @@ def get_brand(request, *args, **kwargs):
     response = clayful_brand_client.get_brand(brand_id=kwargs['brand_id'])
     if response.status == 200:
         serializer = BrandRetrieveSerializer(response.data)
-        if serializer.is_valid:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         raise ClayfulBrandException

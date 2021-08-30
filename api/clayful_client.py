@@ -70,7 +70,6 @@ class ClayfulProductClient:
             return ValidationError({'product_detail': [err.message]})
 
 
-
 class ClayfulBrandClient:
     def __init__(self):
         self.brand = Clayful.Brand
@@ -291,7 +290,7 @@ class ClayfulCartClient:
 
     def get_cart(self):
         try:
-            response = self.cart.get_for_me({},self.options)
+            response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
             raise ValidationError({'get_cart': [err.message]})
@@ -301,7 +300,7 @@ class ClayfulCartClient:
             self.options.update({
                 'items': kwargs['items']
             })
-            response = self.cart.get_for_me({},self.options)
+            response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
             raise ValidationError({'get_selected_items': [err.message]})
