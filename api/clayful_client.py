@@ -49,6 +49,18 @@ class ClayfulProductClient:
         super().__init__()
         self.product = Clayful.Product
 
+    def get_related_products(self, **kwargs):
+        try:
+            options = {
+                'query': {
+                    'brand': kwargs['brand_id']
+                }
+            }
+            response = self.product.list(options)
+            return response
+        except Exception as err:
+            return ValidationError({'product_list': [err.message]})
+
     def list_categories(self, **kwargs):
         try:
             options = {

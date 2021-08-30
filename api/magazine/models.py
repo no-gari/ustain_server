@@ -45,7 +45,7 @@ class Magazines(models.Model):
     hits = models.PositiveIntegerField(default=0, verbose_name='조회수')
     title = models.CharField(max_length=255, verbose_name='제목')
     content = models.TextField(verbose_name='내용')
-    brand = models.CharField(max_length=255, verbose_name='브랜드 이름', blank=True, null=True)
+    brand = models.CharField(max_length=255, verbose_name='브랜드 이름', blank=True, null=True, help_text='클레이풀 상의 브랜드에 해당하는 ID를 입력해주세요.')
 
     def __str__(self):
         return str(self.title)
