@@ -49,6 +49,18 @@ class ClayfulProductClient:
         super().__init__()
         self.product = Clayful.Product
 
+    def get_related_products(self, **kwargs):
+        try:
+            options = {
+                'query': {
+                    'brand': kwargs['brand_id']
+                }
+            }
+            response = self.product.list(options)
+            return response
+        except Exception as err:
+            return ValidationError({'product_list': [err.message]})
+
     def list_categories(self, **kwargs):
         try:
             options = {
@@ -68,7 +80,6 @@ class ClayfulProductClient:
             return response
         except Exception as err:
             return ValidationError({'product_detail': [err.message]})
-
 
 
 class ClayfulBrandClient:
@@ -291,7 +302,7 @@ class ClayfulCartClient:
 
     def get_cart(self):
         try:
-            response = self.cart.get_for_me({},self.options)
+            response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
             raise ValidationError({'get_cart': [err.message]})
@@ -301,7 +312,7 @@ class ClayfulCartClient:
             self.options.update({
                 'items': kwargs['items']
             })
-            response = self.cart.get_for_me({},self.options)
+            response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
             raise ValidationError({'get_selected_items': [err.message]})
