@@ -14,6 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError as DjangoValidationError
 from clayful import Clayful
 
+
 class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneVerifier
