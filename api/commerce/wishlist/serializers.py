@@ -9,4 +9,3 @@ class GetWishListProductsSerializer(serializers.Serializer):
     price = serializers.JSONField()
     discount = serializers.JSONField()
     collections = serializers.JSONField()
-

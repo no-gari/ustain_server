@@ -65,7 +65,9 @@ class ClayfulProductClient:
         try:
             options = {
                 'query': {
-                    'collection': kwargs['collection']
+                    'collection': kwargs['collection'],
+                    'limit': 10,
+                    'sort': kwargs['sort'],
                 }
             }
             response = self.product.list(options)
@@ -76,7 +78,12 @@ class ClayfulProductClient:
     def get_detail(self, **kwargs):
         try:
             product_id = kwargs['id']
-            response = self.product.get(product_id)
+            options = {
+                'query': {
+                    'embed': '+brand.logo'
+                }
+            }
+            response = self.product.get(product_id, options)
             return response
         except Exception as err:
             return ValidationError({'product_detail': [err.message]})
@@ -90,6 +97,39 @@ class ClayfulBrandClient:
         try:
             brand_id = kwargs['brand_id']
             response = self.brand.get(brand_id)
+            return response
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+
+class ClayfulCollectionClient:
+    def __init__(self):
+        self.collection = Clayful.Collection
+
+    def get_collections(self, **kwargs):
+        try:
+            parent = kwargs.get('parent', None)
+            if parent is None:
+                options = {'query': {'parent': 'none'}}
+            else:
+                options = {'query': {'parent': parent}}
+            response = self.collection.list(options)
+            return response
+        except Exception as err:
+            error_msg = []
+            if err.args:
+                for error in err.args:
+                    error_msg.append(error)
+            return ValidationError({'error_msg': error_msg})
+
+    def get_collection(self, **kwargs):
+        try:
+            parent = kwargs.get('parent')
+            response = self.collection.get(parent)
             return response
         except Exception as err:
             error_msg = []
@@ -363,21 +403,14 @@ class ClayfulCartClient:
 
 
 class ClayfulWishListClient:
-    def __init__(self, auth_token):
+    def __init__(self, **kwargs):
         self.wishlist = Clayful.WishList
-        self.options = {
-            'customer': auth_token
-        }
+        self.options = {'customer': kwargs['clayful']}
         self.wishlist_id = self.get_wishlist_id()
 
     def create_wishlist(self, **kwargs):
         try:
-            payload = {
-                'name': kwargs['name']
-            }
-            # options = {
-            #     'customer': kwargs['customer_auth_token']
-            # }
+            payload = {'name': kwargs['name']}
             response = self.wishlist.create_for_me(payload, self.options)
             return response
         except Exception as err:
@@ -395,9 +428,7 @@ class ClayfulWishListClient:
 
     def add_item(self, **kwargs):
         try:
-            payload = {
-                'product': kwargs['product_id']
-            }
+            payload = {'product': kwargs['product_id']}
             response = self.wishlist.add_item_for_me(self.wishlist_id, payload, self.options)
             return response
         except Exception as err:
@@ -417,9 +448,16 @@ class ClayfulWishListClient:
         except Exception as err:
             raise ValidationError({'empty_wishlist': [err.message]})
 
-    def get_list_products(self):
+    def get_list_products(self, **kwargs):
         try:
-            response = self.wishlist.list_products_for_me(self.wishlist_id, self.options)
+            options = {
+                'customer': kwargs['clayful'],
+                'query': {
+                    'limit': 10,
+                    'page': kwargs['page'],
+                }
+            }
+            response = self.wishlist.list_products_for_me(self.wishlist_id, options)
             return response
         except Exception as err:
             raise ValidationError({'get_list_products': [err.message]})

@@ -1,4 +1,4 @@
-from api.commerce.product.serializers import ProductListByCategoriesSerializer
+from api.commerce.product.serializers import ProductListSerializer
 from api.magazine.serializers import MagazinesListSerializer
 from api.clayful_client import ClayfulProductClient
 from api.magazine.models import Magazines
@@ -36,5 +36,5 @@ class BrandRetrieveSerializer(serializers.Serializer):
     def get_products(self, value):
         clayful_product_client = ClayfulProductClient()
         products = clayful_product_client.get_related_products(brand_id=value['_id'])
-        product_data = ProductListByCategoriesSerializer(products.data, many=True).data
+        product_data = ProductListSerializer(products.data, many=True).data
         return product_data
