@@ -21,8 +21,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class GetCartView(ListAPIView):
     serializer_class = CartListSerializer
-    # pagination_class = StandardResultsSetPagination
-
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -37,7 +35,7 @@ class GetCartView(ListAPIView):
                 print(get_cart.data['cart']['items'])
                 return get_cart.data['cart']['items']
         except Exception as err:
-            raise ValidationError({'get_cart': [err]})
+            raise ValidationError({'error_msg': [err]})
 
     def get(self, request, *args, **kwargs):
         self.kwargs.update({

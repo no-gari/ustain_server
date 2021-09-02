@@ -9,11 +9,11 @@ from api.user.models import User
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def email_verifier(request, *args, **kwargs):
+def email_verifier(request):
     email = request.data['email']
     try:
         User.objects.get(email=email)
-    except:
+    except Exception as e:
         return Response(email, status=status.HTTP_200_OK)
     return Response({'error_msg': '이미 등록된 이메일입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 

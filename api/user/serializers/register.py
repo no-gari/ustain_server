@@ -1,18 +1,16 @@
 import hashlib
 import random
-import requests
+from clayful import Clayful
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
-from rest_framework import status
 from api.logger.models import PhoneLog
-from api.clayful_client import ClayfulCustomerClient
 from api.user.models import User, PhoneVerifier
 from api.user.validators import validate_password
+from api.clayful_client import ClayfulCustomerClient
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError as DjangoValidationError
-from clayful import Clayful
 
 
 class PhoneVerifierCreateSerializer(serializers.ModelSerializer):

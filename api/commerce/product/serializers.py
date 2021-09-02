@@ -23,6 +23,9 @@ class ProductListSerializer(serializers.Serializer):
     def get_discount_rate(self, value):
         return value['discount']['value']['formatted']
 
+    def get_max_index(self, value):
+        pass
+
 
 class ProductDetailSerializer(serializers.Serializer):
     _id = serializers.CharField()

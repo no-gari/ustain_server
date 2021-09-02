@@ -23,7 +23,7 @@ class ClayfulCustomerClient:
             response = customer.create(payload)
             return response
         except Exception as e:
-            return ValidationError(e)
+            return ValidationError({'error_msg': [e.args]})
 
     def clayful_login(self, **kwargs):
         customer = self.customer
@@ -32,7 +32,7 @@ class ClayfulCustomerClient:
             response = customer.authenticate(payload)
             return response
         except Exception as e:
-            return ValidationError(e)
+            return ValidationError({'error_msg': [e.args]})
 
     def clayful_customer_delete(self, **kwargs):
         customer = self.customer
@@ -41,7 +41,7 @@ class ClayfulCustomerClient:
             response = customer.delete_me(options)
             return response
         except Exception as e:
-            return ValidationError(e)
+            return ValidationError({'error_msg': [e.args]})
 
 
 class ClayfulProductClient:
@@ -59,7 +59,7 @@ class ClayfulProductClient:
             response = self.product.list(options)
             return response
         except Exception as err:
-            return ValidationError({'product_list': [err.message]})
+            return ValidationError({'error_msg': [err.message]})
 
     def list_categories(self, **kwargs):
         try:
@@ -73,7 +73,7 @@ class ClayfulProductClient:
             response = self.product.list(options)
             return response
         except Exception as err:
-            return ValidationError({'product_list': [err.message]})
+            return ValidationError({'error_msg': [err.message]})
 
     def get_detail(self, **kwargs):
         try:
@@ -86,7 +86,7 @@ class ClayfulProductClient:
             response = self.product.get(product_id, options)
             return response
         except Exception as err:
-            return ValidationError({'product_detail': [err.message]})
+            return ValidationError({'error_msg': [err.message]})
 
 
 class ClayfulBrandClient:
@@ -345,7 +345,7 @@ class ClayfulCartClient:
             response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
-            raise ValidationError({'get_cart': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def get_selected_items(self, **kwargs):
         try:
@@ -355,7 +355,7 @@ class ClayfulCartClient:
             response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
-            raise ValidationError({'get_selected_items': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def empty_all_cart(self, **kwargs):
         try:
@@ -374,7 +374,7 @@ class ClayfulCartClient:
             response = self.cart.delete_item_for_me(kwargs['item_id'], self.options)
             return response
         except Exception as err:
-            raise ValidationError({'delete_item': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def count_items_cart(self, **kwargs):
         try:
@@ -414,7 +414,7 @@ class ClayfulWishListClient:
             response = self.wishlist.create_for_me(payload, self.options)
             return response
         except Exception as err:
-            return ValidationError({'create_wishlist': [err.message]})
+            return ValidationError({'error_msg': [err.message]})
 
     def get_wishlist_id(self):
         try:
@@ -424,7 +424,7 @@ class ClayfulWishListClient:
                 return self.get_wishlist_id()
             return response.data[0]['_id']
         except Exception as err:
-            raise ValidationError({'get_wishlist_id': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def add_item(self, **kwargs):
         try:
@@ -432,32 +432,33 @@ class ClayfulWishListClient:
             response = self.wishlist.add_item_for_me(self.wishlist_id, payload, self.options)
             return response
         except Exception as err:
-            raise ValidationError({'add_item': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def delete_item(self, **kwargs):
         try:
             response = self.wishlist.delete_item_for_me(self.wishlist_id, kwargs['product_id'], self.options)
             return response
         except Exception as err:
-            raise ValidationError({'delete_item': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def empty_wishlist(self):
         try:
             response = self.wishlist.empty_for_me(self.wishlist_id, self.options)
             return response
         except Exception as err:
-            raise ValidationError({'empty_wishlist': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
 
     def get_list_products(self, **kwargs):
         try:
-            options = {
-                'customer': kwargs['clayful'],
-                'query': {
-                    'limit': 10,
-                    'page': kwargs['page'],
-                }
-            }
+            options = {'customer': kwargs['clayful'], 'query': {'limit': 10, 'page': kwargs['page']}}
             response = self.wishlist.list_products_for_me(self.wishlist_id, options)
             return response
         except Exception as err:
-            raise ValidationError({'get_list_products': [err.message]})
+            raise ValidationError({'error_msg': [err.message]})
+
+    def count_wishlist(self):
+        try:
+            response = self.wishlist.count_products_for_me(self.wishlist_id, self.options)
+            return response
+        except Exception as err:
+            raise ValidationError({'error_msg': [err.message]})

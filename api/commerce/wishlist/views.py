@@ -1,5 +1,5 @@
-from api.commerce.product.serializers import ProductListSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from api.commerce.product.serializers import ProductListSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulWishListClient
@@ -10,7 +10,6 @@ from rest_framework import status
 
 
 class RetrieveWishListProductsView(ListAPIView):
-    serializer_class = ProductListSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     allowed_methods = ['get']
@@ -30,6 +29,15 @@ class RetrieveWishListProductsView(ListAPIView):
     def get(self, request, *args, **kwargs):
         self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         return self.list(request, *args, kwargs)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        clayful_wishlist_client = ClayfulWishListClient(clayful=self.kwargs['clayful'])
+        wishlist_count = clayful_wishlist_client.count_wishlist()
+        max_index = int(wishlist_count.data['count']['formatted']) // 10 + 1
+        serializer = ProductListSerializer(queryset, many=True)
+        response = {'max_index': max_index, 'products': serializer.data}
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class AddProductToWishListView(APIView):
