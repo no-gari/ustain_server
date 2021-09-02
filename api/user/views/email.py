@@ -10,7 +10,7 @@ from api.user.models import User
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def email_verifier(request, *args, **kwargs):
-    email = request.POST['email']
+    email = request.data['email']
     try:
         User.objects.get(email=email)
     except:
