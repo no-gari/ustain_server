@@ -1,11 +1,11 @@
-from django.urls import path
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView, \
     PasswordResetVerifyView, PasswordResetConfirmView, PasswordResetView
-from api.user.views.email import EmailVerifierCreateView, EmailFoundPhoneVerifierCreateView, \
-    EmailFoundPhoneVerifierConfirmView
-from api.user.views.login import UserSocialLoginView, CustomTokenObtainPairView, CustomTokenRefreshView
+from api.user.views.email import email_verifier, EmailFoundPhoneVerifierCreateView, EmailFoundPhoneVerifierConfirmView
 from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
+from api.user.views.login import UserSocialLoginView, CustomTokenObtainPairView, CustomTokenRefreshView
 from api.user.views.category import CategoryListView
+from django.urls import path
+
 
 urlpatterns = [
     # 이메일 회원가입, 로그인
@@ -17,7 +17,7 @@ urlpatterns = [
     path('social-login/', UserSocialLoginView.as_view()),
 
     # 이메일 중복 확인
-    path('email-verifier/', EmailVerifierCreateView.as_view()),
+    path('email-verifier/', email_verifier),
 
     # 휴대폰 코드 인증
     path('phone-verifier/', PhoneVerifierCreateView.as_view()),

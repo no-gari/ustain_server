@@ -17,14 +17,13 @@ class MagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [AllowAny]
-    ordering = ['-id']
 
     def get_queryset(self):
         categories = eval(self.request.query_params.get('categories', []))
         if categories != []:
-            magazines = Magazines.objects.filter(published=True, categories__in=categories)
+            magazines = Magazines.objects.filter(published=True, categories__in=categories).order_by('-id')
         else:
-            magazines = Magazines.objects.filter(published=True)
+            magazines = Magazines.objects.filter(published=True).order_by('-id')
         return magazines
 
 
@@ -32,11 +31,10 @@ class LikeMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticated]
-    ordering = ['-id']
 
     def get_queryset(self):
         user = self.request.user
-        magazines = user.like_magazines.all().filter(published=True)
+        magazines = user.like_magazines.all().filter(published=True).order_by('-id')
         return magazines
 
 
@@ -44,21 +42,19 @@ class ScrappedMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticated]
-    ordering = ['-id']
 
     def get_queryset(self):
         user = self.request.user
-        magazines = user.scrapped_magazines.all().filter(published=True)
+        magazines = user.scrapped_magazines.all().filter(published=True).order_by('-id')
         return magazines
 
 
 class MainMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     permission_classes = [AllowAny]
-    ordering = ['-id']
 
     def get_queryset(self):
-        magazines = Magazines.objects.filter(published=True, is_main=True)
+        magazines = Magazines.objects.filter(published=True, is_main=True).order_by('-id')
         return magazines
 
 
@@ -99,10 +95,9 @@ class MagazineReviewsListSerializer(ListAPIView):
     serializer_class = MagazineReviewsListSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [AllowAny]
-    ordering = ['-id']
 
     def get_queryset(self):
-        magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'], parent=None)
+        magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'], parent=None).order_by('id')
         return magazine_comments
 
 
