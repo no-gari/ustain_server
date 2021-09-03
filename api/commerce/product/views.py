@@ -49,5 +49,5 @@ class ProductDetailView(APIView):
             else:
                 serializer = ProductDetailSerializer(product_detail.data)
                 return Response(serializer.data)
-        except Exception as err:
+        except Exception:
             raise ValidationError({'error_msg': ['%s: 유효하지 않은 id입니다.' % product_id]})
