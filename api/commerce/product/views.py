@@ -9,16 +9,12 @@ from rest_framework import status
 
 class ProductListByCategoriesView(ListAPIView):
     def get_queryset(self):
-        kwargs = self.kwargs
-        clayful_product_client = ClayfulProductClient()
         try:
-            if 'brand' in kwargs:
-                brand = self.kwargs.get('brand', 'any')
-                products = clayful_product_client.list_products(brand=brand)
-            else:
-                category = self.kwargs.get('category', 'any')
-                sort = self.request.query_params.get('sort', 'rating.count')
-                products = clayful_product_client.list_products(collection=category, sort=sort)
+            brand = self.kwargs.get('brand', 'any')
+            category = self.kwargs.get('category', 'any')
+            sort = self.request.query_params.get('sort', 'rating.count')
+            clayful_product_client = ClayfulProductClient()
+            products = clayful_product_client.list_products(collection=category, sort=sort, brand=brand)
             if not products.status == 200:
                 raise ValidationError({'error_msg': '서버 에러입니다. 잠시 후 다시 시도해주세요.'})
             return products.data
@@ -26,15 +22,12 @@ class ProductListByCategoriesView(ListAPIView):
             raise ValidationError({'error_msg': '상품을 불러올 수 없습니다.'})
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        clayful_wishlist_client = ClayfulProductClient()
         try:
-            if 'brand' in kwargs:
-                brand = self.kwargs.get('brand', 'any')
-                wishlist_count = clayful_wishlist_client.count_products(brand=brand)
-            else:
-                category = self.kwargs.get('category', 'any')
-                wishlist_count = clayful_wishlist_client.count_products(collection=category)
+            queryset = self.get_queryset()
+            brand = self.kwargs.get('brand', 'any')
+            category = self.kwargs.get('category', 'any')
+            clayful_wishlist_client = ClayfulProductClient()
+            wishlist_count = clayful_wishlist_client.count_products(collection=category, brand=brand)
             max_index = int(wishlist_count.data['count']['formatted']) // 10 + 1
             serializer = ProductListSerializer(queryset, many=True)
             response = {'max_index': max_index, 'products': serializer.data}

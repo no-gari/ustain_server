@@ -10,6 +10,7 @@ class ProductListSerializer(serializers.Serializer):
     original_price = serializers.SerializerMethodField()
     discount_price = serializers.SerializerMethodField()
     discount_rate = serializers.SerializerMethodField()
+    brand = serializers.SerializerMethodField()
 
     def get_rating(self, value):
         return value['rating']['average']['formatted']
@@ -23,8 +24,8 @@ class ProductListSerializer(serializers.Serializer):
     def get_discount_rate(self, value):
         return value['discount']['value']['formatted']
 
-    def get_max_index(self, value):
-        pass
+    def get_brand(self, value):
+        return value['brand']['name']
 
 
 class ProductDetailSerializer(serializers.Serializer):
