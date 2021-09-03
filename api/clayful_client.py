@@ -61,13 +61,14 @@ class ClayfulProductClient:
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
 
-    def list_categories(self, **kwargs):
+    def list_products(self, **kwargs):
         try:
             options = {
                 'query': {
-                    'collection': kwargs['collection'],
+                    'collection': kwargs.get('collection', 'any'),
                     'limit': 10,
-                    'sort': kwargs['sort'],
+                    'sort': kwargs.get('sort', '-createdAt'),
+                    'brand': kwargs.get('brand', 'any')
                 }
             }
             response = self.product.list(options)
@@ -78,12 +79,16 @@ class ClayfulProductClient:
     def get_detail(self, **kwargs):
         try:
             product_id = kwargs['id']
-            options = {
-                'query': {
-                    'embed': '+brand.logo'
-                }
-            }
+            options = {'query': {'embed': '+brand.logo'}}
             response = self.product.get(product_id, options)
+            return response
+        except Exception as err:
+            return ValidationError({'error_msg': [err.message]})
+
+    def count_products(self, **kwargs):
+        try:
+            options = {'query': {'collection': kwargs.get('collection', 'any'), 'brand': kwargs.get('brand', 'any')}}
+            response = self.product.count(options)
             return response
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
