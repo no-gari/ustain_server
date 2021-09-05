@@ -1,46 +1,32 @@
-from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer, EmptyCartSerializer, \
-    CountItemSerializer, CheckOutSerializer
+from api.commerce.cart.serializers import CartItemSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from api.clayful_client import ClayfulCartClient
 from rest_framework.response import Response
 from rest_framework import status
-
-
+from api.commerce.cart.serializers import CartListSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, DestroyAPIView, CreateAPIView
-from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 1
-
-
 class GetCartView(ListAPIView):
-    serializer_class = CartListSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = CartListSerializer
 
     def get_queryset(self):
         try:
             clayful_cart_client = ClayfulCartClient(self.kwargs['clayful'])
             get_cart = clayful_cart_client.get_cart()
-
             if not get_cart.status == 200:
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
-            else:
-                print(get_cart.data['cart']['items'])
-                return get_cart.data['cart']['items']
+            return get_cart.data['cart']['items']
         except Exception as err:
             raise ValidationError({'error_msg': [err]})
 
     def get(self, request, *args, **kwargs):
-        self.kwargs.update({
-            'clayful': request.META.get('HTTP_CLAYFUL')
-        })
+        self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         return self.list(request, *args, **kwargs)
 
 
@@ -50,7 +36,6 @@ class AddItemToCartView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        print(serializer.validated_data)
         try:
             clayful_cart_client = ClayfulCartClient(self.kwargs['clayful'])
             add_item = clayful_cart_client.add_item(
@@ -58,13 +43,10 @@ class AddItemToCartView(CreateAPIView):
                 variant=serializer.validated_data.get('variant'),
                 quantity=serializer.validated_data.get('quantity')
             )
-            print(add_item.status)
-
             if not add_item.status == 200:
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
         except Exception as err:
-            raise ValidationError({'add_product': err})
-        print(add_item.data)
+            raise ValidationError({'error_msg': err})
         serializer.save(
             shipping_method=add_item.data['shippingMethod'],
             bundle_items=add_item.data['bundleItems'],
@@ -73,9 +55,7 @@ class AddItemToCartView(CreateAPIView):
         )
 
     def post(self, request, *args, **kwargs):
-        self.kwargs.update({
-            'clayful': request.META.get('HTTP_CLAYFUL')
-        })
+        self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         return self.create(request, *args, **kwargs)
 
 
@@ -83,48 +63,48 @@ class DeleteItemToCartView(DestroyAPIView):
     serializer_class = CartItemSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-
     lookup_field = 'id'
 
     def destroy(self, request, *args, **kwargs):
         try:
             clayful_cart_client = ClayfulCartClient(self.kwargs['clayful'])
             delete_item = clayful_cart_client.delete_item(item_id=self.kwargs['id'])
-
             if not delete_item.status == 204:
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
-
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as err:
-            raise ValidationError({'add_product': err})
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            raise ValidationError({'error_msg': err})
 
     def delete(self, request, *args, **kwargs):
-        self.kwargs.update({
-            'clayful': request.META.get('HTTP_CLAYFUL')
-        })
+        self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         return self.destroy(request, *args, **kwargs)
 
-      
+
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def empty_cart(request, *args, **kwargs):
-    clayful_cart_client = ClayfulCartClient()
-    response = clayful_cart_client.empty_all_cart(clayful=request.headers['clayful'])
-    return Response(response.data, status=status.HTTP_200_OK)
+    clayful_cart_client = ClayfulCartClient(auth_token=request.header['clayful'])
+    response = clayful_cart_client.empty_cart()
+    if response.status == 204:
+        return Response(response.data, status=status.HTTP_200_OK)
+    else:
+        raise ValidationError({'error_msg': '장바구니를 비우지 못했습니다. 다시 시도해주세요.'})
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def count_items(request, *args, **kwargs):
-    clayful_cart_client = ClayfulCartClient()
-    response = clayful_cart_client.count_items_cart(clayful=request.headers['clayful'])
-    return Response(response.data, status=status.HTTP_200_OK)
+    clayful_cart_client = ClayfulCartClient(auth_token=request.header['clayful'])
+    response = clayful_cart_client.count_items_cart()
+    if response.status == 200:
+        return Response({'count': response.data['count']['formatted']}, status=status.HTTP_200_OK)
+    else:
+        raise ValidationError({'error_msg': '다시 시도해주세요.'})
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def checkout_cart(request, *args, **kwargs):
-    clayful_cart_client = ClayfulCartClient()
+    clayful_cart_client = ClayfulCartClient(auth_token=request.header['clayful'])
     response = clayful_cart_client.checkout_cart(items=request.data['items'], clayful=request.headers['clayful'])
     return Response(response.data, status=status.HTTP_200_OK)

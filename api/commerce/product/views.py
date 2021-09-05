@@ -26,9 +26,9 @@ class ProductListByCategoriesView(ListAPIView):
             queryset = self.get_queryset()
             brand = self.kwargs.get('brand', 'any')
             category = self.kwargs.get('category', 'any')
-            clayful_wishlist_client = ClayfulProductClient()
-            wishlist_count = clayful_wishlist_client.count_products(collection=category, brand=brand)
-            max_index = int(wishlist_count.data['count']['formatted']) // 10 + 1
+            clf_product_client = ClayfulProductClient()
+            products_count = clf_product_client.count_products(collection=category, brand=brand)
+            max_index = int(products_count.data['count']['formatted']) // 10 + 1
             serializer = ProductListSerializer(queryset, many=True)
             response = {'max_index': max_index, 'products': serializer.data}
             return Response(response, status=status.HTTP_200_OK)

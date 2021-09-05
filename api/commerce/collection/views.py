@@ -1,6 +1,6 @@
+from api.commerce.collection.serializers import CollectionRetrieveSerializers
 from rest_framework.decorators import api_view, permission_classes
 from api.clayful_client import ClayfulCollectionClient
-from .serializers import CollectionRetrieveSerializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response

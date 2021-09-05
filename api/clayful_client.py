@@ -341,9 +341,7 @@ class ClayfulReviewCommentClient:
 class ClayfulCartClient:
     def __init__(self, auth_token):
         self.cart = Clayful.Cart
-        self.options = {
-            'customer': auth_token
-        }
+        self.options = {'customer': auth_token}
 
     def get_cart(self):
         try:
@@ -354,32 +352,33 @@ class ClayfulCartClient:
 
     def get_selected_items(self, **kwargs):
         try:
-            self.options.update({
-                'items': kwargs['items']
-            })
+            self.options.update({'items': kwargs['items']})
             response = self.cart.get_for_me({}, self.options)
             return response
         except Exception as err:
             raise ValidationError({'error_msg': [err.message]})
 
-    def empty_all_cart(self, **kwargs):
+    def add_item(self, **kwargs):
         try:
-            options = {'customer': kwargs['clayful']}
-            resposne = self.cart.empty_for_me(options)
-            return resposne
+            payload = {'product': kwargs['product_id'], 'variant': kwargs['variant'], 'quantity': kwargs['quantity']}
+            response = self.cart.add_item_for_me(payload, self.options)
+            return response
         except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
+            raise ValidationError({'add_item': [err.message]})
 
     def delete_item(self, **kwargs):
         try:
             response = self.cart.delete_item_for_me(kwargs['item_id'], self.options)
             return response
         except Exception as err:
-            raise ValidationError({'error_msg': [err.message]})
+            raise ValidationError({'delete_item': [err.message]})
+
+    def empty_cart(self):
+        try:
+            response = self.cart.empty_for_me(self.options)
+            return response
+        except Exception as err:
+            return ValidationError({'empty_cart': [err.message]})
 
     def count_items_cart(self, **kwargs):
         try:
