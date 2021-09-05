@@ -1,6 +1,5 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.commerce.product.serializers import ProductListSerializer
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulWishListClient
 from rest_framework.generics import ListAPIView
@@ -11,7 +10,6 @@ from rest_framework import status
 
 class RetrieveWishListProductsView(ListAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
     allowed_methods = ['get']
 
     def get_queryset(self):
@@ -27,6 +25,8 @@ class RetrieveWishListProductsView(ListAPIView):
             raise ValidationError({'error_msg': [errors.args]})
 
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
         self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         return self.list(request, *args, kwargs)
 
@@ -42,10 +42,11 @@ class RetrieveWishListProductsView(ListAPIView):
 
 class AddProductToWishListView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
     allowed_methods = ['post']
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
         self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         try:
             clayful_wishlist_client = ClayfulWishListClient(clayful=self.kwargs['clayful'])
@@ -59,10 +60,11 @@ class AddProductToWishListView(APIView):
 
 class DeleteProductFromWishListView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
     allowed_methods = ['delete']
 
     def delete(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
         self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         try:
             clayful_wishlist_client = ClayfulWishListClient(clayful=self.kwargs['clayful'])
