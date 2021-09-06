@@ -46,6 +46,7 @@ class Magazines(models.Model):
     title = models.CharField(max_length=255, verbose_name='제목')
     content = models.TextField(verbose_name='내용')
     brand = models.CharField(max_length=255, verbose_name='브랜드 이름', blank=True, null=True, help_text='클레이풀 상의 브랜드에 해당하는 ID를 입력해주세요.')
+    products = models.CharField(max_length=512, verbose_name='상품 이름', blank=True, null=True, help_text='상품 아이디를 입력해주세요. 여러 개일 경우 ","로 구분해주세요.')
 
     def __str__(self):
         return str(self.title)
