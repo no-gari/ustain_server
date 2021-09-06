@@ -35,8 +35,8 @@ class CategoryAdmin(admin.ModelAdmin):
 class MagazinesAdminForm(forms.ModelForm):
     class Meta:
         model = models.Magazines
-        fields = ('categories', 'scrapped_users', 'brand', 'products', 'is_main', 'banner_image','like_users',
-                  'published', 'comments_banned', 'title', 'content', 'hits')
+        fields = ('categories', 'scrapped_users', 'is_main', 'banner_image', 'like_users', 'published', 'title', 'hits',
+                  'comments_banned', 'content', 'collection')
 
     def save(self, commit=True):
         try:
