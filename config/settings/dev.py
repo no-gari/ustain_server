@@ -7,7 +7,7 @@ DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ['*']
 
-DB = 'sqlite'
+DB = 'mysql'
 
 if DB == 'sqlite':
     DATABASES = {
@@ -30,7 +30,7 @@ if DB == 'mysql':
     }
 
 # S3
-USE_S3 = False
+USE_S3 = True
 
 if USE_S3:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
