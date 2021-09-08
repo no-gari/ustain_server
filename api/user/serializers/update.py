@@ -1,14 +1,12 @@
-import datetime
-import hashlib
 import random
-from django.db import transaction
+import hashlib
+import datetime
 from rest_framework import serializers
-from api.logger.models import PhoneLog, EmailLog
+from api.logger.models import PhoneLog
 from api.user.validators import validate_password
 from rest_framework.exceptions import ValidationError
 from api.user.tokens import EmailVerificationTokenGenerator
-from api.user.models import User, EmailVerifier, PhoneVerifier
-from django.core.exceptions import ValidationError as DjangoValidationError
+from api.user.models import User, PhoneVerifier
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -121,106 +119,5 @@ class PhoneUpdateVerifierConfirmSerializer(serializers.Serializer):
         user = User.objects.get(email=email)
         user.phone = phone
         user.save()
-
-        return validated_data
-
-
-class PasswordResetVerifierCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmailVerifier
-        fields = ['email']
-
-    def validate(self, attrs):
-        email = attrs['email']
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise ValidationError({'email': ['존재하지 않는 이메일입니다.']})
-        #
-        # if not user.email_verify:
-        #     raise ValidationError({'email_verify': ['인증되지 않은 이메일입니다.']})
-
-        code = ''.join([str(random.randint(0, 9)) for i in range(6)])
-        created = datetime.datetime.now()
-        token = EmailVerificationTokenGenerator().make_token(user)
-
-        attrs.update({
-            'code': code,
-            'token': token,
-            'created': created,
-        })
-
-        try:
-            self.send_simple_message(attrs)
-        except Exception:
-            raise ValidationError('비밀번호 재설정 링크 전송 실패')
-
-        return attrs
-
-    def send_simple_message(self, attrs):
-        body = f'https://dev-change.net/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
-        # body = f'http://localhost:8000/api/v1/user/password-reset/%s/%s' % (attrs['code'], attrs['token'])
-        EmailLog.objects.create(to=attrs['email'], body=body, title="어라운드어스 비밀번호 재설정 링크")
-
-
-class PasswordResetSerializer(serializers.Serializer):
-    pass
-
-
-class PasswordResetConfirmSerializer(serializers.Serializer):
-    code = serializers.CharField(required=True)
-    email_token = serializers.CharField(required=True)
-    password = serializers.CharField(write_only=True, required=True)
-    password_confirm = serializers.CharField(write_only=True, required=True)
-
-    error = serializers.ListField(read_only=True)
-
-    def validate(self, attrs):
-        code = attrs.get('code')
-        email_token = attrs.get('email_token')
-        password = attrs.get('password')
-        password_confirm = attrs.get('password_confirm')
-        # 이메일 토큰 검증
-        try:
-            self.email_verifier = EmailVerifier.objects.get(code=code, token=email_token)
-        except EmailVerifier.DoesNotExist:
-            attrs.update({
-                'error': [0, '유효한 링크가 아닙니다.']
-            })
-
-        # 이메일 검증
-        if not User.objects.filter(email=self.email_verifier.email).exists():
-            attrs.update({
-                'error': [0, '유효한 링크가 아닙니다.']
-            })
-        self.email = self.email_verifier.email
-
-        # password 검증
-        if password != password_confirm:
-            attrs.update({
-                'error': [1, '비밀번호가 일치하지 않습니다.']
-            })
-        else:
-            try:
-                validate_password(password)
-            except DjangoValidationError as error:
-                print(error)
-                attrs.update({
-                    'error': [1, list(error)[0]]
-                })
-
-        return attrs
-
-    @transaction.atomic
-    def create(self, validated_data):
-        if validated_data.get('error') is None:
-            password = validated_data.pop('password')
-
-            user = User.objects.get(email=self.email)
-            user.set_password(password)
-            user.save()
-
-            self.email_verifier.delete()
 
         return validated_data

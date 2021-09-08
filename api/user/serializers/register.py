@@ -72,7 +72,6 @@ class PhoneVerifierConfirmSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.Serializer):
-    email = serializers.CharField(write_only=True, required=False)
     phone = serializers.CharField(write_only=True, required=False)
     phone_token = serializers.CharField(write_only=True, required=False)
     password = serializers.CharField(write_only=True, required=False)
@@ -88,8 +87,6 @@ class UserRegisterSerializer(serializers.Serializer):
     def get_fields(self):
         fields = super().get_fields()
 
-        if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
-            fields['email'].required = True
         if 'phone' in User.VERIFY_FIELDS:
             fields['phone_token'].required = True
         if 'phone' in User.VERIFY_FIELDS or 'phone' in User.REGISTER_FIELDS:
@@ -101,17 +98,11 @@ class UserRegisterSerializer(serializers.Serializer):
         return fields
 
     def validate(self, attrs):
-        email = attrs.get('email')
         phone = attrs.get('phone')
         phone_token = attrs.pop('phone_token', None)
 
         password = attrs.get('password')
         password_confirm = attrs.pop('password_confirm', None)
-
-        if 'email' in User.VERIFY_FIELDS or 'email' in User.REGISTER_FIELDS:
-            # 이메일 검증
-            if User.objects.filter(email=email).exists():
-                raise ValidationError({'email': ['이미 가입된 이메일입니다.']})
 
         if 'phone' in User.VERIFY_FIELDS:
             # 휴대폰 토큰 검증
@@ -141,17 +132,18 @@ class UserRegisterSerializer(serializers.Serializer):
 
         return attrs
 
-    def clayful_register(self, email):
+    def clayful_register(self, phone):
         Clayful.config({
             'client': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImI5ZDM1MjFhNjFhYTQ4OWYwNWY2ZWQwOWVlYjU5ZmFhYWQ2NjdjOGEwYTEwNTRiOTY0YTJkM2E5ZjczM2EyZjgiLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjI5MDA3NjA4LCJzdG9yZSI6IjRINlhaTEdUNzU3TS44WVVBWlpTQTRTQUMiLCJzdWIiOiJCSkhMS0tFVkU5WUEifQ.ZZV0TUGuOAekbhipF2jpiiKzFe_Sd19171LgOs4hsCM",
             'debug_language': 'ko'
         })
         try:
             customer = Clayful.Customer
+            userId = str(phone) + '@email.com'
 
             payload = {
                 'connect': True,
-                'userId': email,
+                'email': userId,
             }
 
             response = customer.create(payload)
@@ -163,8 +155,11 @@ class UserRegisterSerializer(serializers.Serializer):
     @transaction.atomic
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data,)
+        userId = str(user.phone)+'@email.com'
+        user.email = userId
+        user.save()
         clayful_customer_client = ClayfulCustomerClient()
-        clayful_register = clayful_customer_client.clayful_register(email=user.email)
+        clayful_register = clayful_customer_client.clayful_register(email=userId)
 
         if not clayful_register.status == 201:
             user.delete()
@@ -173,7 +168,7 @@ class UserRegisterSerializer(serializers.Serializer):
             if 'phone' in User.VERIFY_FIELDS:
                 self.phone_verifier.delete()
 
-            clayful_login = clayful_customer_client.clayful_login(email=user.email)
+            clayful_login = clayful_customer_client.clayful_login(email=userId)
             token = clayful_login.data['token']
             refresh = RefreshToken.for_user(user)
 

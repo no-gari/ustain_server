@@ -8,14 +8,13 @@ import hashlib
 import random
 
 
-class EmailFoundPhoneVerifierCreateSerializer(serializers.ModelSerializer):
+class PasswordChangeVerifierCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneVerifier
         fields = ['phone']
 
     def validate(self, attrs):
         phone = attrs['phone']
-
         if not User.objects.filter(phone=phone).exists():
             raise ValidationError({'phone': ['존재하지 않는 휴대폰입니다.']})
 
@@ -38,15 +37,14 @@ class EmailFoundPhoneVerifierCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def send_code(self, attrs):
-        body = f'어라운드어스 이메일 찾기 인증번호: [{attrs["code"]}]'
+        body = f'어라운드어스 비밀번호 찾기 인증번호: [{attrs["code"]}]'
         PhoneLog.objects.create(to=attrs['phone'], body=body)
 
 
-class EmailFoundPhoneVerifierConfirmSerializer(serializers.Serializer):
-    phone = serializers.CharField(write_only=True)
+class PasswordChangeVerifierConfirmSerializer(serializers.Serializer):
+    phone = serializers.CharField()
     code = serializers.CharField(write_only=True)
     phone_token = serializers.CharField(read_only=True, source='token')
-    email = serializers.EmailField(read_only=True)
 
     def validate(self, attrs):
         phone = attrs['phone']
@@ -61,9 +59,4 @@ class EmailFoundPhoneVerifierConfirmSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        phone = validated_data.get('phone')
-        user = User.objects.get(phone=phone)
-
-        return {
-            'email': user.email
-        }
+        return validated_data

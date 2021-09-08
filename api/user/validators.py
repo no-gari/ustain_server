@@ -1,8 +1,5 @@
-import re
-
-from django.contrib.auth.password_validation import UserAttributeSimilarityValidator, CommonPasswordValidator, \
-    NumericPasswordValidator
 from django.core.exceptions import ValidationError
+import re
 
 
 def get_username_validators():

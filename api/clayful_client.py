@@ -53,7 +53,8 @@ class ClayfulProductClient:
         try:
             options = {
                 'query': {
-                    'brand': kwargs['brand_id']
+                    'brand': kwargs['brand_id'],
+                    'limit': 100,
                 }
             }
             response = self.product.list(options)

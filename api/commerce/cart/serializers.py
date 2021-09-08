@@ -58,16 +58,16 @@ class CartListSerializer(serializers.Serializer):
         return option_string
 
     # def get_original_price(self, value):
-    #     return value['variant']['price']['original']['formatted']
+    #     return value['variant']['price']['original']['raw']
 
     def get_sale_price(self, value):
-        return value['variant']['price']['sale']['formatted']
+        return str(value['variant']['price']['sale']['raw'])
 
     # def get_discount_price(self, value):
     #     return value['variant']['discount']['discounted']['formatted']
 
     def get_quantity(self, value):
-        return value['quantity']['formatted']
+        return str(value['quantity']['raw'])
     #
     # def get_total_orignal_price(self, value):
     #     return value['']

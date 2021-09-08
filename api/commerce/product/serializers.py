@@ -16,13 +16,13 @@ class ProductListSerializer(serializers.Serializer):
         return value['rating']['average']['formatted']
 
     def get_original_price(self, value):
-        return value['price']['original']['formatted']
+        return str(value['price']['original']['raw'])
 
     def get_discount_price(self, value):
-        return value['price']['sale']['formatted']
+        return str(value['price']['sale']['raw'])
 
     def get_discount_rate(self, value):
-        return value['discount']['value']['formatted']
+        return str(value['discount']['value']['raw'])
 
     def get_brand(self, value):
         return value['brand']['name']
@@ -49,13 +49,13 @@ class ProductDetailSerializer(serializers.Serializer):
         return value['rating']['average']['formatted']
 
     def get_original_price(self, value):
-        return value['price']['original']['formatted']
+        return str(value['price']['original']['raw'])
 
     def get_discount_price(self, value):
-        return value['price']['sale']['formatted']
+        return str(value['price']['sale']['raw'])
 
     def get_discount_rate(self, value):
-        return value['discount']['value']['formatted']
+        return str(value['discount']['value']['raw'])
 
     def get_brand(self, value):
         brand = value['brand']
@@ -68,7 +68,7 @@ class ProductDetailSerializer(serializers.Serializer):
         return value['thumbnail']['url']
 
     def get_total_reviews(self, value):
-        return value['totalReview']['formatted']
+        return str(value['totalReview']['raw'])
 
     def get_social_values(self, value):
         return value['meta']['socialValues']

@@ -7,4 +7,8 @@ class CollectionRetrieveSerializers(serializers.Serializer):
     thumbnail = serializers.SerializerMethodField(read_only=True)
 
     def get_thumbnail(self, value):
-        return value['thumbnail']['url']
+        try:
+            value = value['thumbnail']['url']
+            return value
+        except:
+            return {}
