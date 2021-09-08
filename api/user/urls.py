@@ -1,5 +1,5 @@
+from api.user.views.phone import PasswordChangeVerifierConfirmView, PasswordChangeVerifierCreateView, PasswordChangeView
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView
-from api.user.views.email import PasswordChangeVerifierConfirmView, PasswordChangeVerifierCreateView
 from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
 from api.user.views.login import CustomTokenObtainPairView, CustomTokenRefreshView
 from api.user.views.category import CategoryListView
@@ -19,6 +19,7 @@ urlpatterns = [
     # 비밀번호 리셋 -> 휴대폰 인증
     path('password-reset/phone-verifier/', PasswordChangeVerifierCreateView.as_view()),
     path('password-reset/phone-verifier/confirm/', PasswordChangeVerifierConfirmView.as_view()),
+    path('password-reset/', PasswordChangeView.as_view()),
 
     # 유저 프로필 가져오기, 업데이트, 삭제
     path('profile/', UserProfileView.as_view()),
