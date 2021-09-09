@@ -20,7 +20,7 @@ class UserProfileView(RetrieveUpdateDestroyAPIView):
         clayful_customer_client.clayful_customer_delete(clayful=clayful)
         del_user = self.request.user
         del_user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 class PhoneUpdateVerifierCreateView(CreateAPIView):
