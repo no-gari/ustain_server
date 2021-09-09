@@ -2,7 +2,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from api.clayful_client import ClayfulCustomerClient
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 from api.user.serializers.update import UserProfileSerializer, PhoneUpdateVerifierCreateSerializer, PhoneUpdateVerifierConfirmSerializer
 
@@ -26,11 +25,21 @@ class UserProfileView(RetrieveUpdateDestroyAPIView):
 
 class PhoneUpdateVerifierCreateView(CreateAPIView):
     serializer_class = PhoneUpdateVerifierCreateSerializer
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.create(request, *args, **kwargs)
+        if serializer.status_code == 201:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return serializer
 
 
 class PhoneUpdateVerifierConfirmView(CreateAPIView):
     serializer_class = PhoneUpdateVerifierConfirmSerializer
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.create(request, *args, **kwargs)
+        if serializer.status_code == 201:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return serializer
