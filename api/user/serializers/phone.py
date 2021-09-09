@@ -64,7 +64,6 @@ class PasswordChangeSerializer(serializers.Serializer):
         fields = ['password', 'password_confirm', 'phone', 'phone_token']
 
     def validate(self, attrs):
-        a=1
         password = attrs['password']
         password_confirm = attrs['password_confirm']
         phone = attrs['phone']
@@ -80,7 +79,7 @@ class PasswordChangeSerializer(serializers.Serializer):
     @transaction.atomic
     def create(self, validated_data):
         user = User.objects.get(phone=validated_data['phone'])
-        user.password = validated_data['password']
+        user.set_password(validated_data['password'])
         self.phone_verifier.delete()
         user.save()
         return {'phone': user.phone}
