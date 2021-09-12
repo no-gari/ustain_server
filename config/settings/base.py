@@ -68,10 +68,6 @@ THIRD_PARTY_APPS = [
     'django_summernote',
     'dj_rest_auth',
     'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.kakao',
-    'allauth.socialaccount.providers.apple',
 ]
 
 SITE_ID = 1
@@ -171,16 +167,15 @@ ROOT_URLCONF = 'config.urls.api'
 
 # JWT
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=8),
     'ROTATE_REFRESH_TOKENS': True,
 }
-
 
 # DJANGO REST FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'api.user.serializers.login.CustomJWTAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
@@ -194,6 +189,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
+    'DATETIME_FORMAT': '%s',
 }
 
 

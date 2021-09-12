@@ -6,32 +6,6 @@ from django import forms
 import re
 
 
-class CategoryAdminForm(forms.ModelForm):
-    class Meta:
-        model = models.Categories
-        fields = ('title', 'mid', 'description', 'snapshot_image')
-
-    def clean(self):
-        r = re.compile(r'[^A-Za-z0-9]+')
-        result = r.search(self.cleaned_data['mid'])
-        if result is not None:
-            self.add_error('mid', '영문+숫자만 가능합니다.')
-            raise forms.ValidationError([])
-
-
-@admin.register(models.Categories)
-class CategoryAdmin(admin.ModelAdmin):
-    form = CategoryAdminForm
-    list_display = ('title', 'mid', 'snapshot_image')
-    list_display_links = ('title',)
-    search_fields = ('title', 'mid',)
-
-    def get_id(self, obj):
-        return obj.id
-
-    get_id.short_description = 'mid'
-
-
 class MagazinesAdminForm(forms.ModelForm):
     class Meta:
         model = models.Magazines

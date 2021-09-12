@@ -16,16 +16,16 @@ class PasswordChangeVerifierCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         phone = attrs['phone']
         if not User.objects.filter(phone=phone).exists():
-            raise ValidationError({'phone': ['존재하지 않는 휴대폰입니다.']})
+            raise ValidationError({'error_msg': '존재하지 않는 휴대폰입니다.'})
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = timezone.now()
         hash_string = str(phone) + code + str(created.timestamp())
         token = hashlib.sha1(hash_string.encode('utf-8')).hexdigest()
-        attrs.update({'code': code,'token': token, 'created': created})
+        attrs.update({'code': code, 'token': token, 'created': created})
         try:
             self.send_code(attrs)
         except Exception:
-            raise ValidationError('인증번호 전송 실패')
+            raise ValidationError({'error_msg': '인증번호 전송 실패'})
         return attrs
 
     def send_code(self, attrs):
@@ -44,7 +44,7 @@ class PasswordChangeVerifierConfirmSerializer(serializers.Serializer):
         try:
             phone_verifier = PhoneVerifier.objects.get(phone=phone, code=code)
         except PhoneVerifier.DoesNotExist:
-            raise ValidationError({'code': ['인증번호가 일치하지 않습니다.']})
+            raise ValidationError({'error_msg': '인증번호가 일치하지 않습니다.'})
         attrs.update({'token': phone_verifier.token})
         return attrs
 
@@ -69,11 +69,11 @@ class PasswordChangeSerializer(serializers.Serializer):
         phone = attrs['phone']
         phone_token = attrs['phone_token']
         if password != password_confirm:
-            raise ValidationError('비밀번호가 일치하지 않습니다.')
+            raise ValidationError({'error_msg': '비밀번호가 일치하지 않습니다.'})
         try:
             self.phone_verifier = PhoneVerifier.objects.get(phone=phone, token=phone_token)
         except PhoneVerifier.DoesNotExist:
-            raise ValidationError('휴대폰 인증을 진행해주세요.')
+            raise ValidationError({'error_msg': '휴대폰 인증을 진행해주세요.'})
         return attrs
 
     @transaction.atomic

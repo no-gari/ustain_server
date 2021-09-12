@@ -16,7 +16,7 @@ class ClayfulRegisterSerializer(serializers.Serializer):
             response = customer.create(payload)
             attrs.update({'user_id': response.data.get('userId')})
         except Exception as err:
-            raise ValidationError({'code': err.code, 'message': err.message})
+            raise ValidationError({'code': err.code, 'error_msg': err.message})
         return attrs
 
     def create(self, validated_data):
@@ -40,7 +40,7 @@ class ClayfulLoginSerializer(serializers.Serializer):
                 'expires_in': response.data.get('expiresIn')
             })
         except Exception as err:
-            raise ValidationError({'code': err.code, 'message': err.message})
+            raise ValidationError({'code': err.code, 'error_msg': err.message})
         return attrs
 
     def create(self, validated_data):

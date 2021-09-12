@@ -38,9 +38,9 @@ class PhoneUpdateVerifierCreateSerializer(serializers.Serializer):
         old_phone = attrs['old_phone']
         new_phone = attrs['new_phone']
         if User.objects.filter(phone=new_phone).exists():
-            raise ValidationError({'error_msg': ['이미 존재하는 핸드폰입니다.']})
+            raise ValidationError({'error_msg': '이미 존재하는 핸드폰입니다.'})
         if old_phone == new_phone:
-            raise ValidationError({'error_msg': ['기존의 번호와 동일합니다.']})
+            raise ValidationError({'error_msg': '기존의 번호와 동일합니다.'})
         code = ''.join([str(random.randint(0, 9)) for i in range(6)])
         created = datetime.datetime.now()
         hash_string = str(new_phone) + code + str(created.timestamp())
@@ -55,7 +55,7 @@ class PhoneUpdateVerifierCreateSerializer(serializers.Serializer):
         try:
             self.send_code(attrs)
         except Exception:
-            raise ValidationError('인증번호 전송 실패')
+            raise ValidationError({'error_msg': '인증 번호 전송에 실패하였습니다.'})
         return attrs
 
     def send_code(self, attrs):
@@ -77,7 +77,7 @@ class PhoneUpdateVerifierConfirmSerializer(serializers.Serializer):
         try:
             phone_verifier = PhoneVerifier.objects.get(phone=phone, code=code)
         except PhoneVerifier.DoesNotExist:
-            raise ValidationError({'code': ['인증번호가 일치하지 않습니다.']})
+            raise ValidationError({'error_msg': '인증번호가 일치하지 않습니다.'})
         phone_verifier.delete()
         return attrs
 

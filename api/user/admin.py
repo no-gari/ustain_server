@@ -1,6 +1,11 @@
-from api.user.models import User, EmailVerifier, PhoneVerifier, UserGroup
+from api.user.models import User, EmailVerifier, PhoneVerifier, UserGroup, Categories
 from django.contrib import admin
 from django import forms
+
+
+@admin.register(Categories)
+class CategoryAdmiin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(UserGroup)

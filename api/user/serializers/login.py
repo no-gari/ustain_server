@@ -1,7 +1,23 @@
 from api.user.models import User
 from api.clayful_client import ClayfulCustomerClient
+from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.backends import TokenBackend
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+
+
+class CustomJWTAuthentication(JWTAuthentication):
+    def get_validated_token(self, raw_token):
+        messages = []
+        for AuthToken in api_settings.AUTH_TOKEN_CLASSES:
+            try:
+                return AuthToken(raw_token)
+            except TokenError as e:
+                messages.append({'token_class': AuthToken.__name__,
+                                 'token_type': AuthToken.token_type,
+                                 'message': e.args[0]})
+        raise InvalidToken({'error_msg': '유효하지 않은 토큰입니다.'})
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
