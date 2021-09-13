@@ -29,7 +29,7 @@ class MagazineRetrieveSerializer(serializers.ModelSerializer):
         try:
             collection_id = obj.collection
             if collection_id is None:
-                return {}
+                return []
             clayful_product_client = ClayfulProductClient()
             products_data = clayful_product_client.list_products(collection=collection_id).data
             serializer = ProductListSerializer(products_data, many=True)
