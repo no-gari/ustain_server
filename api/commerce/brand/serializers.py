@@ -29,12 +29,18 @@ class BrandRetrieveSerializer(serializers.Serializer):
         return value['updatedAt']['raw']
 
     def get_magazines(self, value):
-        magazines = Magazines.objects.filter(brand=value['_id'])
-        magazine_data = MagazinesListSerializer(magazines, many=True).data
-        return magazine_data
+        try:
+            magazines = Magazines.objects.filter(brand=value['_id'])
+            magazine_data = MagazinesListSerializer(magazines, many=True).data
+            return magazine_data
+        except:
+            return []
 
     def get_products(self, value):
         clayful_product_client = ClayfulProductClient()
-        products = clayful_product_client.get_related_products(brand_id=value['_id'])
-        product_data = ProductListSerializer(products.data, many=True).data
-        return product_data
+        try:
+            products = clayful_product_client.get_related_products(brand_id=value['_id'])
+            product_data = ProductListSerializer(products.data, many=True).data
+            return product_data
+        except:
+            return []
