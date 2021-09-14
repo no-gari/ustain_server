@@ -11,6 +11,10 @@ class ProductListSerializer(serializers.Serializer):
     discount_price = serializers.SerializerMethodField()
     discount_rate = serializers.SerializerMethodField()
     brand = serializers.SerializerMethodField()
+    thumbnail = serializers.SerializerMethodField()
+
+    def get_thumbnail(self, value):
+        return value['thumbnail']['url']
 
     def get_rating(self, value):
         return value['rating']['average']['formatted']
