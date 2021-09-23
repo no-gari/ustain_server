@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="icon" href="{% static 'image/logo.png' %}" type="image/x-icon" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>어스테인. 가치를 선물하다.</title>
+</head>
+<style>
+    div {
+        margin: 0 0;
+        padding: 0 0;
+        font-family: "Nanum Square Round";
+    }
+    h5 {
+        font-family: "Nanum Square Round";
+    }
+    p {
+        margin: 0 auto;
+    }
+
+</style>
+<body>
+    <div style="position: relative;">
+        <canvas id="canvas" style="height: 100vh; position: absolute; z-index: 2;"></canvas>
+        <div style="position: absolute; width: 100%">
+            <img width="100%" class="center-block" src="{% static 'image/onboarding 3.png' %}" alt="">
+        </div>
+        <div style="width: 300px; position: absolute; top: 140vw; left:50%; margin-left: -150px;" class="text-center">
+            <h4>~~~님의 마음을 전달 드릴</h4>
+            <h4>모든 준비가 완료 되었어요!</h4>
+            <p class="pt-3">배송이 시작되면 다시 안내드리겠습니다.</p>
+            <p>기타 문의 사항은 카카오톡 플러스 친구를 이용해주세요🤗</p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+
+    const canvasEl = document.querySelector('#canvas');
+
+    const w = canvasEl.width = window.innerWidth;
+    const h = canvasEl.height = window.innerHeight;
+
+    function loop() {
+        requestAnimationFrame(loop);
+        ctx.clearRect(0, 0, w, h);
+
+        confs.forEach((conf) => {
+            conf.update();
+            conf.draw();
+        })
+    }
+
+
+    function Confetti() {
+        //construct confetti
+        const colours = ['#fde132', '#009bde', '#ff6b00'];
+
+        this.x = Math.round(Math.random() * w);
+        this.y = Math.round(Math.random() * h) - (h / 2);
+        this.rotation = Math.random() * 360;
+
+        const size = Math.random() * (w / 40);
+        this.size = size < 15 ? 15 : size;
+
+        this.color = colours[Math.floor(colours.length * Math.random())];
+
+        this.speed = this.size / 8;
+
+        this.opacity = Math.random();
+
+        this.shiftDirection = Math.random() > 0.5 ? 1 : -1;
+    }
+
+    Confetti.prototype.border = function () {
+        if (this.y >= h) {
+            this.y = h;
+        }
+    }
+
+    Confetti.prototype.update = function () {
+        this.y += this.speed;
+
+        if (this.y <= h) {
+            this.x += this.shiftDirection / 5;
+            this.rotation += this.shiftDirection * this.speed / 100;
+        }
+
+        this.border();
+    };
+
+    Confetti.prototype.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, this.rotation, this.rotation + (Math.PI / 2));
+        ctx.lineTo(this.x, this.y);
+        ctx.closePath();
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    };
+
+    const ctx = canvasEl.getContext('2d');
+    const confNum = Math.floor(w / 8);
+    const confs = new Array(confNum).fill().map(_ => new Confetti());
+
+    loop();
+</script>
+</html>

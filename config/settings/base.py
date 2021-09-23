@@ -58,6 +58,7 @@ LOCAL_APPS = [
     'api.commerce.wishlist.apps.WishlistConfig',
     'api.commerce.qna.apps.QnaConfig',
     'api.commerce.comment.apps.CommentConfig',
+    'landing'
     ]
 
 THIRD_PARTY_APPS = [
@@ -91,7 +92,9 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
+    <link rel="icon" href="{% static 'image/logo.png' %}" type="image/x-icon"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>어스테인. 가치를 선물하다.</title>
+</head>
+<body>
+<table class="table">
+    <div class="container">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">보내는 분</th>
+            <th scope="col">수령인</th>
+            <th scope="col">전달하기</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <form method="post">
+                    {% csrf_token %}
+                    <th scope="row">{{ object.id }}</th>
+                    <td>{{ object.orderer_phone }}</td>
+                    <td>{{ object.reciever_phone }}</td>
+                    <td>
+                        <button name="value" value="{{ object.id }}" type="submit" class="btn btn-info"
+                                {% if object.letter_deliver %}disabled{% endif %}>보내기
+                        </button>
+                    </td>
+                </form>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </div>
+</table>
+</body>
+</html>
