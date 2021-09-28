@@ -29,6 +29,6 @@ class BrandRetrieveSerializer(serializers.Serializer):
         try:
             products = clayful_product_client.get_related_products(brand_id=value['_id'])
             product_data = ProductListSerializer(products.data, many=True).data
-            return product_data
+            return product_data[:4]
         except:
             return []

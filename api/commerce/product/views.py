@@ -30,7 +30,20 @@ class ProductListByCategoriesView(ListAPIView):
             products_count = clf_product_client.count_products(collection=category, brand=brand)
             max_index = int(products_count.data['count']['formatted']) // 10 + 1
             serializer = ProductListSerializer(queryset, many=True)
-            response = {'max_index': max_index, 'products': serializer.data}
+            if not serializer.data == []:
+                response = {'max_index': max_index, 'products': serializer.data}
+            else:
+                response = {
+                    '_id': '',
+                    'name': '',
+                    'hashtags': '',
+                    'rating': '',
+                    'original_price': '',
+                    'discount_price': '',
+                    'discount_rate': '',
+                    'brand': '',
+                    'thumbnail': ''
+                }
             return Response(response, status=status.HTTP_200_OK)
         except Exception:
             raise ValidationError({'error_msg': '상품을 불러올 수 없습니다.'})
@@ -48,6 +61,7 @@ class ProductDetailView(APIView):
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
             else:
                 serializer = ProductDetailSerializer(product_detail.data)
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+                # return Response(product_detail.data, status=status.HTTP_200_OK)
         except Exception:
-            raise ValidationError({'error_msg': ['%s: 유효하지 않은 id입니다.' % product_id]})
+            raise ValidationError({'error_msg': '유효하지 않은 id입니다.'})

@@ -1,6 +1,7 @@
 import hashlib
 import random
 from clayful import Clayful
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -74,17 +75,14 @@ class UserRegisterSerializer(serializers.Serializer):
     phone_token = serializers.CharField(write_only=True, required=False)
     password = serializers.CharField(write_only=True, required=False)
     password_confirm = serializers.CharField(write_only=True, required=False)
-
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
     clayful = serializers.CharField(read_only=True)
-
     clayful_error_code = serializers.CharField(read_only=True)
     clayful_error_message = serializers.CharField(read_only=True)
 
     def get_fields(self):
         fields = super().get_fields()
-
         if 'phone' in User.VERIFY_FIELDS:
             fields['phone_token'].required = True
         if 'phone' in User.VERIFY_FIELDS or 'phone' in User.REGISTER_FIELDS:
@@ -98,7 +96,6 @@ class UserRegisterSerializer(serializers.Serializer):
     def validate(self, attrs):
         phone = attrs.get('phone')
         phone_token = attrs.pop('phone_token', None)
-
         password = attrs.get('password')
         password_confirm = attrs.pop('password_confirm', None)
 
@@ -118,23 +115,16 @@ class UserRegisterSerializer(serializers.Serializer):
 
     def clayful_register(self, phone):
         Clayful.config({
-            'client': "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImI5ZDM1MjFhNjFhYTQ4OWYwNWY2ZWQwOWVlYjU5ZmFhYWQ2NjdjOGEwYTEwNTRiOTY0YTJkM2E5ZjczM2EyZjgiLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjI5MDA3NjA4LCJzdG9yZSI6IjRINlhaTEdUNzU3TS44WVVBWlpTQTRTQUMiLCJzdWIiOiJCSkhMS0tFVkU5WUEifQ.ZZV0TUGuOAekbhipF2jpiiKzFe_Sd19171LgOs4hsCM",
+            'client': settings.CLAYFUL_BACKEND_TOKEN,
             'debug_language': 'ko'
         })
         try:
             customer = Clayful.Customer
             userId = str(phone) + '@email.com'
-
-            payload = {
-                'connect': True,
-                'email': userId,
-            }
-
+            payload = {'connect': True, 'email': userId}
             response = customer.create(payload)
         except Exception as err:
-            print('code:', err.code)
-            print('message: ', err.message)
-            # raise ValidationError({'code': err.code, 'message': err.message})
+            raise ValidationError({'error_msg': err.args[0]})
 
     @transaction.atomic
     def create(self, validated_data):
@@ -159,5 +149,5 @@ class UserRegisterSerializer(serializers.Serializer):
         return {
             'access': refresh.access_token,
             'refresh': refresh,
-            'clayful': token,
+            'clayful': token
         }
