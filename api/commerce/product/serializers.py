@@ -22,16 +22,16 @@ class ProductListSerializer(serializers.Serializer):
         return value['thumbnail']['url']
 
     def get_rating(self, value):
-        return value['rating']['average']['formatted']
+        return value['rating']['average']['raw']
 
     def get_original_price(self, value):
-        return str(value['price']['original']['raw'])
+        return value['price']['original']['raw']
 
     def get_discount_price(self, value):
-        return str(value['price']['sale']['raw'])
+        return value['price']['sale']['raw']
 
     def get_discount_rate(self, value):
-        return str(value['discount']['value']['raw'])
+        return value['discount']['value']['raw']
 
     def get_brand(self, value):
         return value['brand']['name']
@@ -73,35 +73,35 @@ class ProductDetailSerializer(serializers.Serializer):
                         name_value += ' / '
                 return name_value
             except:
-                return ''
+                return None
 
         def get_original_price(self, value):
             try:
-                org_price = str(value['price']['original']['raw'])
+                org_price = value['price']['original']['raw']
                 return org_price
             except:
-                return ''
+                return None
 
         def get_discount_price(self, value):
             try:
-                dis_price = str(value['price']['sale']['raw'])
+                dis_price = value['price']['sale']['raw']
                 return dis_price
             except:
                 return ''
 
         def get_discount_rate(self, value):
             try:
-                dis_rate = str(value['discount']['value']['raw'])
+                dis_rate = value['discount']['value']['raw']
                 return dis_rate
             except:
-                return ''
+                return None
 
         def get_thumbnail(self, value):
             try:
                 thumbnail = value['thumbnail']['url']
                 return thumbnail
             except:
-                return ''
+                return None
 
         def get_types(self, value):
             try:
@@ -131,31 +131,31 @@ class ProductDetailSerializer(serializers.Serializer):
 
     def get_rating(self, value):
         try:
-            rating = value['rating']['average']['formatted']
+            rating = value['rating']['average']['raw']
             return rating
         except:
-            return ''
+            return None
 
     def get_original_price(self, value):
         try:
-            org_price = str(value['price']['original']['raw'])
+            org_price = value['price']['original']['raw']
             return org_price
         except:
-            return ''
+            return None
 
     def get_discount_price(self, value):
         try:
-            dis_price = str(value['price']['sale']['raw'])
+            dis_price = value['price']['sale']['raw']
             return dis_price
         except:
-            return ''
+            return None
 
     def get_discount_rate(self, value):
         try:
-            dis_rate = str(value['discount']['value']['raw'])
+            dis_rate = value['discount']['value']['raw']
             return dis_rate
         except:
-            return ''
+            return None
 
     def get_brand(self, value):
         try:
@@ -172,11 +172,11 @@ class ProductDetailSerializer(serializers.Serializer):
             thumbnail = value['thumbnail']['url']
             return thumbnail
         except:
-            return ''
+            return None
 
     def get_total_reviews(self, value):
         try:
-            reviews = str(value['totalReview']['raw'])
+            reviews = value['totalReview']['raw']
             return reviews
         except:
-            return ''
+            return None

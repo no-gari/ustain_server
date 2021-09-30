@@ -32,35 +32,35 @@ class CartListSerializer(serializers.Serializer):
             name = value['brand']['name']
             return name
         except:
-            return ''
+            return None
 
     def get_product_id(self, value):
         try:
             product_id = value['product']['_id']
             return product_id
         except:
-            return ''
+            return None
 
     def get_product_name(self, value):
         try:
             product_name = value['product']['name']
             return product_name
         except:
-            return ''
+            return None
 
     def get_product_thumbnail(self, value):
         try:
             product_thumbnail = value['product']['thumbnail']['url']
             return product_thumbnail
         except:
-            return ''
+            return None
 
     def get_variant_id(self, value):
         try:
             variant_id = value['variant']['_id']
             return variant_id
         except:
-            return ''
+            return None
 
     def get_variant_name(self, value):
         options = value['variant']['types']
@@ -74,17 +74,17 @@ class CartListSerializer(serializers.Serializer):
 
     def get_sale_price(self, value):
         try:
-            sale_price = str(value['variant']['price']['sale']['raw'])
+            sale_price = value['variant']['price']['sale']['raw']
             return sale_price
         except:
-            return ''
+            return None
 
     def get_quantity(self, value):
         try:
-            quantity = str(value['quantity']['raw'])
+            quantity = value['quantity']['raw']
             return quantity
         except:
-            return ''
+            return None
 
 
 class CartItemSerializer(serializers.Serializer):
