@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -58,7 +57,7 @@ LOCAL_APPS = [
     'api.commerce.qna.apps.QnaConfig',
     'api.commerce.comment.apps.CommentConfig',
     'landing'
-    ]
+]
 
 THIRD_PARTY_APPS = [
     'django_crontab',
@@ -74,7 +73,6 @@ SITE_ID = 1
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
-
 MIDDLEWARE = [
     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -86,7 +84,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 TEMPLATES = [
     {
@@ -106,7 +103,6 @@ TEMPLATES = [
     },
 ]
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -125,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -139,7 +134,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -151,21 +145,17 @@ STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 # AUTH_USER_MODEL
 AUTH_USER_MODEL = 'user.User'
-
 
 # APPLICATION
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.routing.application'
 
-
 # HOST
 DEFAULT_HOST = 'api'
 ROOT_HOSTCONF = 'config.hosts'
 ROOT_URLCONF = 'config.urls.api'
-
 
 # JWT
 SIMPLE_JWT = {
@@ -194,7 +184,6 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%Y.%m.%d',
 }
 
-
 # SWAGGER
 SWAGGER_SETTINGS = {
     'DEFAULT_AUTO_SCHEMA_CLASS': 'config.swagger.SquadSwaggerAutoSchema',
@@ -204,7 +193,6 @@ SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': None,
     'DEFAULT_API_URL': 'http://127.0.0.1:8000/api/'
 }
-
 
 # CHANNELS
 CHANNEL_LAYERS = {

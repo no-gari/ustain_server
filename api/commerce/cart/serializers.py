@@ -23,31 +23,46 @@ class CartListSerializer(serializers.Serializer):
     product_name = serializers.SerializerMethodField()
     product_thumbnail = serializers.SerializerMethodField()
     variant_id = serializers.SerializerMethodField()
-    variant_options = serializers.SerializerMethodField()
-    # original_price = serializers.SerializerMethodField()
+    variant_name = serializers.SerializerMethodField()
     sale_price = serializers.SerializerMethodField()
-    # discount_price = serializers.SerializerMethodField()
     quantity = serializers.SerializerMethodField()
-    # total_original_price = serializers.SerializerMethodField()
-    # total_discount_price = serializers.SerializerMethodField()
-    # total_sale_price = serializers.SerializerMethodField()
 
     def get_brand(self, value):
-        return value['brand']['name']
+        try:
+            name = value['brand']['name']
+            return name
+        except:
+            return ''
 
     def get_product_id(self, value):
-        return value['product']['_id']
+        try:
+            product_id = value['product']['_id']
+            return product_id
+        except:
+            return ''
 
     def get_product_name(self, value):
-        return value['product']['name']
+        try:
+            product_name = value['product']['name']
+            return product_name
+        except:
+            return ''
 
     def get_product_thumbnail(self, value):
-        return value['product']['thumbnail']['url']
+        try:
+            product_thumbnail = value['product']['thumbnail']['url']
+            return product_thumbnail
+        except:
+            return ''
 
     def get_variant_id(self, value):
-        return value['variant']['_id']
+        try:
+            variant_id = value['variant']['_id']
+            return variant_id
+        except:
+            return ''
 
-    def get_variant_options(self, value):
+    def get_variant_name(self, value):
         options = value['variant']['types']
         option_string = '옵션 ('
         for option in options:
@@ -57,24 +72,19 @@ class CartListSerializer(serializers.Serializer):
                 option_string = option_string + option['option']['name'] + ' : ' + option['variation']['value'] + ')'
         return option_string
 
-    # def get_original_price(self, value):
-    #     return value['variant']['price']['original']['raw']
-
     def get_sale_price(self, value):
-        return str(value['variant']['price']['sale']['raw'])
-
-    # def get_discount_price(self, value):
-    #     return value['variant']['discount']['discounted']['formatted']
+        try:
+            sale_price = str(value['variant']['price']['sale']['raw'])
+            return sale_price
+        except:
+            return ''
 
     def get_quantity(self, value):
-        return str(value['quantity']['raw'])
-    #
-    # def get_total_orignal_price(self, value):
-    #     return value['']
-    #
-    # def get_total_discount_price(self, value):
-    #
-    # def get_total_sale_price(self, value):
+        try:
+            quantity = str(value['quantity']['raw'])
+            return quantity
+        except:
+            return ''
 
 
 class CartItemSerializer(serializers.Serializer):

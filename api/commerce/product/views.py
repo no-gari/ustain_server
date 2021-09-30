@@ -29,6 +29,7 @@ class ProductListByCategoriesView(ListAPIView):
             clf_product_client = ClayfulProductClient()
             products_count = clf_product_client.count_products(collection=category, brand=brand)
             max_index = int(products_count.data['count']['formatted']) // 10 + 1
+
             serializer = ProductListSerializer(queryset, many=True)
             if not serializer.data == []:
                 response = {'max_index': max_index, 'products': serializer.data}
@@ -61,7 +62,7 @@ class ProductDetailView(APIView):
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
             else:
                 serializer = ProductDetailSerializer(product_detail.data)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-                # return Response(product_detail.data, status=status.HTTP_200_OK)
+                # return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(product_detail.data, status=status.HTTP_200_OK)
         except Exception:
             raise ValidationError({'error_msg': '유효하지 않은 id입니다.'})

@@ -54,7 +54,7 @@ class ProductDetailSerializer(serializers.Serializer):
 
     class VariantSerializer(serializers.Serializer):
         _id = serializers.CharField()
-        name = serializers.SerializerMethodField()
+        variant_name = serializers.SerializerMethodField()
         original_price = serializers.SerializerMethodField()
         discount_price = serializers.SerializerMethodField()
         discount_rate = serializers.SerializerMethodField()
@@ -62,7 +62,7 @@ class ProductDetailSerializer(serializers.Serializer):
         thumbnail = serializers.SerializerMethodField()
         types = serializers.SerializerMethodField()
 
-        def get_name(self, value):
+        def get_variant_name(self, value):
             try:
                 name_value = ''
                 types = value['types']

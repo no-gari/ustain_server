@@ -41,7 +41,7 @@ class AddItemToCartView(CreateAPIView):
             if not add_item.status == 200:
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
         except Exception as err:
-            raise ValidationError({'error_msg': err})
+            raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
         serializer.save(
             shipping_method=add_item.data['shippingMethod'],
             bundle_items=add_item.data['bundleItems'],
@@ -54,6 +54,26 @@ class AddItemToCartView(CreateAPIView):
             return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
         self.kwargs.update({'clayful': request.META.get('HTTP_CLAYFUL')})
         return self.create(request, *args, **kwargs)
+
+
+@api_view(["POST"])
+def add_to_cart(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
+        response = clayful_cart_client.add_item(
+            product_id=request.data.get('product'),
+            variant=request.data.get('variant'),
+            quantity=request.data.get('quantity')
+        )
+        serializer = CartItemSerializer(response.data)
+        if response.status == 200:
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            raise ValidationError({'error_msg': '다시 시도해주세요.'})
+    except:
+        raise ValidationError({'error_msg': '다시 시도해주세요.'})
 
 
 class DeleteItemToCartView(DestroyAPIView):
@@ -81,7 +101,7 @@ class DeleteItemToCartView(DestroyAPIView):
 def empty_cart(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
-    clayful_cart_client = ClayfulCartClient(auth_token=request.header['clayful'])
+    clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
     response = clayful_cart_client.empty_cart()
     if response.status == 204:
         return Response(response.data, status=status.HTTP_200_OK)
@@ -93,7 +113,7 @@ def empty_cart(request, *args, **kwargs):
 def count_items(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
-    clayful_cart_client = ClayfulCartClient(auth_token=request.header['clayful'])
+    clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
     response = clayful_cart_client.count_items_cart()
     if response.status == 200:
         return Response({'count': response.data['count']['formatted']}, status=status.HTTP_200_OK)
@@ -105,8 +125,8 @@ def count_items(request, *args, **kwargs):
 def checkout_cart(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
-    clayful_cart_client = ClayfulCartClient(auth_token=request.header['clayful'])
-    response = clayful_cart_client.checkout_cart(items=request.data['items'], clayful=request.headers['clayful'])
+    clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
+    response = clayful_cart_client.checkout_cart(items=request.data['items'])
     if response.status == 200:
         return Response({'count': response.data}, status=status.HTTP_200_OK)
     else:

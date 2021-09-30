@@ -165,12 +165,13 @@ class ClayfulReviewClient:
         try:
             options = {
                 'query':
-                    {'limit': 10,
-                     'product': kwargs['product'],
-                     'page': kwargs['page'],
-                     'sort': '-id',
-                     'published': False
-                     }
+                    {
+                        'limit': 10,
+                        'product': kwargs['product'],
+                        'page': kwargs['page'],
+                        'sort': '-id',
+                        'published': False
+                    }
             }
             response = self.review.list(options)
             return response
@@ -219,9 +220,9 @@ class ClayfulReviewClient:
     def delete_review(self, **kwargs):
         try:
             review_id = kwargs['review_id']
-            options = ({
+            options = {
                 'customer': kwargs['customer'],
-            })
+            }
             response = self.review.delete_for_me(review_id, options)
             return response
         except Exception as err:
@@ -252,12 +253,13 @@ class ClayfulQNAClient:
         try:
             options = {
                 'query':
-                    {'limit': 10,
-                     'product': kwargs['product'],
-                     'page': kwargs['page'],
-                     'sort': '-id',
-                     'published': True
-                     }
+                    {
+                        'limit': 10,
+                        'product': kwargs['product'],
+                        'page': kwargs['page'],
+                        'sort': '-id',
+                        'published': True,
+                    }
             }
             response = self.review.list(options)
             return response
@@ -283,20 +285,17 @@ class ClayfulQNAClient:
 
     def create_qna(self, **kwargs):
         try:
-            payload = ({
-                'order': kwargs['order'],
+            payload = {
                 'product': kwargs['product'],
-                'rating': kwargs['rating'],
+                'title': 'title',
                 'body': kwargs['body'],
-                'images': kwargs['images'],
-                'published': True,
-                'meta': {
-                    'qnaReason': kwargs['qnaReason']
-                }
-            })
-            options = ({
+                # 'meta': {
+                #     'qnaReason': kwargs['qnaReason']
+                # }
+            }
+            options = {
                 'customer': kwargs['customer'],
-            })
+            }
             response = self.review.create_for_me(payload, options)
             return response
         except Exception as err:
