@@ -2,6 +2,7 @@ from api.commerce.product.serializers import ProductListSerializer, ProductDetai
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulProductClient
 from rest_framework.generics import ListAPIView
+from api.commerce.list_helper import get_index
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -26,24 +27,20 @@ class ProductListByCategoriesView(ListAPIView):
             queryset = self.get_queryset()
             brand = self.kwargs.get('brand', 'any')
             category = self.kwargs.get('category', 'any')
+            page = self.kwargs.get('page', 1)
             clf_product_client = ClayfulProductClient()
-            products_count = clf_product_client.count_products(collection=category, brand=brand)
-            max_index = int(products_count.data['count']['formatted']) // 10 + 1
-
+            products_count = clf_product_client.count_products(collection=category, brand=brand).data
+            max_index, previous, next_val = get_index(request, products_count['count']['raw'], page)
             serializer = ProductListSerializer(queryset, many=True)
             if not serializer.data == []:
-                response = {'max_index': max_index, 'products': serializer.data}
+                response = {'previous': previous, 'next': next_val, 'count': 10, 'results': serializer.data}
             else:
                 response = {
-                    '_id': '',
-                    'name': '',
-                    'hashtags': '',
-                    'rating': '',
-                    'original_price': '',
-                    'discount_price': '',
-                    'discount_rate': '',
-                    'brand': '',
-                    'thumbnail': ''
+                    'previous': None, 'next': None, 'count': None,
+                    'result': {
+                        '_id': None, 'name': None, 'hashtags': None, 'rating': None, 'original_price': None,
+                        'discount_price': None, 'discount_rate': None, 'brand': None, 'thumbnail': None
+                    }
                 }
             return Response(response, status=status.HTTP_200_OK)
         except Exception:

@@ -68,6 +68,7 @@ class ClayfulProductClient:
                 'query': {
                     'collection': kwargs.get('collection', 'any'),
                     'limit': 10,
+                    'page': kwargs.get('page', 1),
                     'sort': kwargs.get('sort', '-createdAt'),
                     'brand': kwargs.get('brand', 'any')
                 }
