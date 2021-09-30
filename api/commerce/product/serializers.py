@@ -109,7 +109,7 @@ class ProductDetailSerializer(serializers.Serializer):
                 types = value['types']
                 for type in types:
                     type_value.update({type['option']['_id']: type['variation']['_id']})
-                return types
+                return type_value
             except:
                 return {}
 

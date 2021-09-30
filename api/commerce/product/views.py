@@ -59,7 +59,7 @@ class ProductDetailView(APIView):
                 raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
             else:
                 serializer = ProductDetailSerializer(product_detail.data)
-                # return Response(serializer.data, status=status.HTTP_200_OK)
-                return Response(product_detail.data, status=status.HTTP_200_OK)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+                # return Response(product_detail.data, status=status.HTTP_200_OK)
         except Exception:
             raise ValidationError({'error_msg': '유효하지 않은 id입니다.'})
