@@ -351,14 +351,6 @@ class ClayfulCartClient:
         except Exception as err:
             raise ValidationError({'error_msg': [err.message]})
 
-    def get_selected_items(self, **kwargs):
-        try:
-            self.options.update({'items': kwargs['items']})
-            response = self.cart.get_for_me({}, self.options)
-            return response
-        except Exception as err:
-            raise ValidationError({'error_msg': [err.message]})
-
     def add_item(self, **kwargs):
         try:
             payload = {'product': kwargs['product_id'], 'variant': kwargs['variant'], 'quantity': kwargs['quantity']}

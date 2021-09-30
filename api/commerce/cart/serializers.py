@@ -1,4 +1,3 @@
-from rest_framework.validators import ValidationError
 from rest_framework import serializers
 
 
@@ -26,6 +25,7 @@ class CartListSerializer(serializers.Serializer):
     variant_name = serializers.SerializerMethodField()
     sale_price = serializers.SerializerMethodField()
     quantity = serializers.SerializerMethodField()
+    _id = serializers.CharField()
 
     def get_brand(self, value):
         try:
@@ -91,7 +91,6 @@ class CartItemSerializer(serializers.Serializer):
     product = serializers.CharField()
     variant = serializers.CharField()
     quantity = serializers.IntegerField()
-
     shipping_method = serializers.CharField(read_only=True)
     bundle_items = serializers.JSONField(read_only=True)
     added_at = serializers.CharField(read_only=True)
