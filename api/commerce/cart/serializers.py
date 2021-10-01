@@ -1,19 +1,25 @@
 from rest_framework import serializers
 
 
-class EmptyCartSerializer(serializers.Serializer):
-    def validate(self, attrs):
-        return attrs
+class CheckOutSerializer(serializers.ListSerializer):
+    _id = serializers.CharField()
+    quantity = serializers.CharField()
+    product = serializers.SerializerMethodField()
+    variant = serializers.SerializerMethodField()
 
+    def get_product(self, value):
+        try:
+            product_id = value['product_id']
+            return product_id
+        except:
+            return None
 
-class CountItemSerializer(serializers.Serializer):
-    def validate(self, attrs):
-        return attrs
-
-
-class CheckOutSerializer(serializers.Serializer):
-    def validate(self, attrs):
-        return attrs
+    def get_variant(self, value):
+        try:
+            variant_id = value['variant_id']
+            return variant_id
+        except:
+            return None
 
 
 class CartListSerializer(serializers.Serializer):
@@ -66,7 +72,7 @@ class CartListSerializer(serializers.Serializer):
         options = value['variant']['types']
         option_string = '옵션 ('
         for option in options:
-            if options[-1] is not option and len(options) is not 1:
+            if options[-1] is not option and len(options) != 1:
                 option_string = option_string + option['option']['name'] + ' : ' + option['variation']['value'] + ', '
             else:
                 option_string = option_string + option['option']['name'] + ' : ' + option['variation']['value'] + ')'

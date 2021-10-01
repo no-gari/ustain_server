@@ -1,4 +1,4 @@
-from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer
+from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer, CheckOutSerializer
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulCartClient
 from rest_framework.decorators import api_view
@@ -90,7 +90,8 @@ def checkout_cart(request, *args, **kwargs):
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
     clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
     try:
-        response = clayful_cart_client.checkout_cart(items=request.data['items'])
+        serailizer = CheckOutSerializer(request.data, many=True)
+        response = clayful_cart_client.checkout_cart(items=serailizer.data)
         if response.status == 200:
             return Response({'count': response.data}, status=status.HTTP_200_OK)
     except:

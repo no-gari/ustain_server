@@ -1,4 +1,4 @@
-from api.commerce.cart.views import  empty_cart, count_items, add_to_cart, get_cart, delete_item
+from api.commerce.cart.views import  empty_cart, count_items, add_to_cart, get_cart, delete_item, checkout_cart
 from django.urls import path
 
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
     path('empty/', empty_cart),
     path('delete-item/', delete_item),
     path('count-items/', count_items),
+    path('checkout/', checkout_cart)
 ]

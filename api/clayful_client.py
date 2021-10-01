@@ -387,7 +387,7 @@ class ClayfulCartClient:
     def checkout_cart(self, **kwargs):
         try:
             payload = {
-                'items': [kwargs['items']]
+                'items': kwargs['items'],
             }
             resposne = self.cart.checkout_for_me('order', payload, self.options)
             return resposne

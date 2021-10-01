@@ -60,7 +60,7 @@ class ProductDetailSerializer(serializers.Serializer):
         discount_rate = serializers.SerializerMethodField()
         available = serializers.BooleanField()
         thumbnail = serializers.SerializerMethodField()
-        types = serializers.SerializerMethodField()
+        # types = serializers.SerializerMethodField()
 
         def get_variant_name(self, value):
             try:
@@ -102,16 +102,16 @@ class ProductDetailSerializer(serializers.Serializer):
                 return thumbnail
             except:
                 return None
-
-        def get_types(self, value):
-            try:
-                type_value = {}
-                types = value['types']
-                for type in types:
-                    type_value.update({type['option']['_id']: type['variation']['_id']})
-                return type_value
-            except:
-                return {}
+        #
+        # def get_types(self, value):
+        #     try:
+        #         type_value = {}
+        #         types = value['types']
+        #         for type in types:
+        #             type_value.update({type['option']['_id']: type['variation']['_id']})
+        #         return type_value
+        #     except:
+        #         return {}
 
     _id = serializers.CharField()
     name = serializers.CharField()
