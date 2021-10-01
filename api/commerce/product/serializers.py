@@ -60,6 +60,7 @@ class ProductDetailSerializer(serializers.Serializer):
         discount_rate = serializers.SerializerMethodField()
         available = serializers.BooleanField()
         thumbnail = serializers.SerializerMethodField()
+        types = serializers.JSONField()
         # types = serializers.SerializerMethodField()
 
         def get_variant_name(self, value):
