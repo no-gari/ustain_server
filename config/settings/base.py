@@ -54,7 +54,6 @@ LOCAL_APPS = [
     'api.commerce.review.apps.ReviewConfig',
     'api.commerce.shipping.apps.ShippingConfig',
     'api.commerce.wishlist.apps.WishlistConfig',
-    'api.commerce.qna.apps.QnaConfig',
     'api.commerce.comment.apps.CommentConfig',
     'landing'
 ]
