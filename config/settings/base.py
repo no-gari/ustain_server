@@ -55,7 +55,6 @@ LOCAL_APPS = [
     'api.commerce.shipping.apps.ShippingConfig',
     'api.commerce.wishlist.apps.WishlistConfig',
     'api.commerce.comment.apps.CommentConfig',
-    'landing'
 ]
 
 THIRD_PARTY_APPS = [
