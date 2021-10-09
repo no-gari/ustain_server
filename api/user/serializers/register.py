@@ -131,6 +131,7 @@ class UserRegisterSerializer(serializers.Serializer):
         user = User.objects.create_user(**validated_data,)
         userId = str(user.phone)+'@email.com'
         user.email = userId
+        user.points = 1000
         user.save()
         clayful_customer_client = ClayfulCustomerClient()
         clayful_register = clayful_customer_client.clayful_register(email=userId)
