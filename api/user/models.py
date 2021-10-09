@@ -64,6 +64,7 @@ class User(AbstractUser):
     profile_article = models.CharField(max_length=512, verbose_name='프로필 정보', null=True, blank=True)
     birthday = models.DateField(verbose_name='생일', null=True, blank=True)
     categories = models.ManyToManyField(Categories, verbose_name='관심 카테고리')
+    points = models.IntegerField(verbose_name= '포인트', null=True, blank=True)
 
     class SexChoices(models.TextChoices):
         MALE = 'MA', _('남자')
