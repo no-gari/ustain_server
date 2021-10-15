@@ -1,4 +1,4 @@
-from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer, CheckOutSerializer
+from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulCartClient
 from rest_framework.decorators import api_view
@@ -17,7 +17,8 @@ def get_cart(request, *args, **kwargs):
             raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
         if not my_cart.data['cart']['items'] == []:
             serializer = CartListSerializer(my_cart.data['cart']['items'], many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            # return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(my_cart.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '장바구니를 불러오지 못했습니다. 다시 시도해주세요.'})
@@ -80,19 +81,5 @@ def count_items(request, *args, **kwargs):
         response = clayful_cart_client.count_items_cart()
         if response.status == 200:
             return Response(response.data['count']['raw'], status=status.HTTP_200_OK)
-    except:
-        raise ValidationError({'error_msg': '다시 시도해주세요.'})
-
-
-@api_view(["POST"])
-def checkout_cart(request, *args, **kwargs):
-    if not request.user.is_authenticated:
-        return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
-    clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
-    try:
-        serailizer = CheckOutSerializer(request.data, many=True)
-        response = clayful_cart_client.checkout_cart(items=serailizer.data)
-        if response.status == 200:
-            return Response({'count': response.data}, status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '다시 시도해주세요.'})

@@ -1,5 +1,4 @@
-from api.commerce.customer.models import UserShipping
-from api.user.models import User
+from api.commerce.customer.models import UserShipping, ShippingRequest
 from rest_framework import serializers
 
 
@@ -9,7 +8,12 @@ class AddressSerializer(serializers.ModelSerializer):
         exclude = ('user',)
 
 
-class UserPointSerializer(serializers.ModelSerializer):
+class UserPointSerializer(serializers.Serializer):
+    used = serializers.CharField()
+    available = serializers.CharField()
+
+
+class ShippingrRequestSerializers(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['points']
+        model = ShippingRequest
+        fields = '__all__'

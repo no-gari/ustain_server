@@ -1,27 +1,6 @@
 from rest_framework import serializers
 
 
-class CheckOutSerializer(serializers.ListSerializer):
-    _id = serializers.CharField()
-    quantity = serializers.CharField()
-    product = serializers.SerializerMethodField()
-    variant = serializers.SerializerMethodField()
-
-    def get_product(self, value):
-        try:
-            product_id = value['product_id']
-            return product_id
-        except:
-            return None
-
-    def get_variant(self, value):
-        try:
-            variant_id = value['variant_id']
-            return variant_id
-        except:
-            return None
-
-
 class CartListSerializer(serializers.Serializer):
     brand = serializers.SerializerMethodField()
     product_id = serializers.SerializerMethodField()
