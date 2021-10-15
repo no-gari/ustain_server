@@ -1,7 +1,5 @@
 import hashlib
 import random
-from clayful import Clayful
-from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -78,8 +76,6 @@ class UserRegisterSerializer(serializers.Serializer):
     access = serializers.CharField(read_only=True)
     refresh = serializers.CharField(read_only=True)
     clayful = serializers.CharField(read_only=True)
-    clayful_error_code = serializers.CharField(read_only=True)
-    clayful_error_message = serializers.CharField(read_only=True)
 
     def get_fields(self):
         fields = super().get_fields()
@@ -113,19 +109,6 @@ class UserRegisterSerializer(serializers.Serializer):
 
         return attrs
 
-    def clayful_register(self, phone):
-        Clayful.config({
-            'client': settings.CLAYFUL_BACKEND_TOKEN,
-            'debug_language': 'ko'
-        })
-        try:
-            customer = Clayful.Customer
-            userId = str(phone) + '@email.com'
-            payload = {'connect': True, 'email': userId}
-            response = customer.create(payload)
-        except Exception as err:
-            raise ValidationError({'error_msg': err.args[0]})
-
     @transaction.atomic
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data,)
@@ -134,7 +117,7 @@ class UserRegisterSerializer(serializers.Serializer):
         user.points = 1000
         user.save()
         clayful_customer_client = ClayfulCustomerClient()
-        clayful_register = clayful_customer_client.clayful_register(email=userId)
+        clayful_register = clayful_customer_client.clayful_register(email=userId, mobile=str(user.phone))
 
         if not clayful_register.status == 201:
             user.delete()

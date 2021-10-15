@@ -1,4 +1,5 @@
 from api.user.models import User, EmailVerifier, PhoneVerifier, UserGroup, Categories
+from api.commerce.customer.models import UserShipping, ShippingRequest
 from django.contrib import admin
 from django import forms
 
@@ -32,4 +33,14 @@ class EmailVerifierAdmin(admin.ModelAdmin):
 
 @admin.register(PhoneVerifier)
 class PhoneVerifierAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UserShipping)
+class UserAddressAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ShippingRequest)
+class ShippingRequestAdmin(admin.ModelAdmin):
     pass

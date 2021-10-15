@@ -19,7 +19,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.profile_article = validated_data.get('profile_article', instance.profile_article)
         instance.birthday = validated_data.get('birthday', instance.profile_article)
-
         sex_choices = validated_data.get('sex_choices')
         if sex_choices == 'MA':
             instance.sex_choices = User.SexChoices.MALE

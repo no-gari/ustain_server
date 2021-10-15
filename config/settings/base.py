@@ -41,20 +41,19 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'api.logger.apps.LoggerConfig',
     'api.user.apps.UserConfig',
+    'api.logger.apps.LoggerConfig',
     'api.magazine.apps.MagazineConfig',
     'api.firebase.apps.FirebaseConfig',
     'api.commerce.cart.apps.CartConfig',
-    'api.commerce.collection.apps.CollectionConfig',
-    'api.commerce.customer.apps.CustomerConfig',
     'api.commerce.order.apps.OrderConfig',
-    'api.commerce.payment.apps.PaymentConfig',
-    'api.commerce.product.apps.ProductConfig',
     'api.commerce.review.apps.ReviewConfig',
-    'api.commerce.shipping.apps.ShippingConfig',
-    'api.commerce.wishlist.apps.WishlistConfig',
+    'api.commerce.coupon.apps.CouponConfig',
     'api.commerce.comment.apps.CommentConfig',
+    'api.commerce.product.apps.ProductConfig',
+    'api.commerce.customer.apps.CustomerConfig',
+    'api.commerce.wishlist.apps.WishlistConfig',
+    'api.commerce.collection.apps.CollectionConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -229,3 +228,11 @@ CLAYFUL_API_KEY = '521bf375f86c91e5b9053b1fd461dddfc97bf568bfb056e8d26471febdd69
 CLAYFUL_API_SECRET = 'cab48c9b28a1fd40b8cb0dd38323f12716f4d00896c8e05476993676ef98b7fb7dfedad2f44b29b82705bf3650852cc3'
 CLAYFUL_BACKEND_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImI5ZDM1MjFhNjFhYTQ4OWYwNWY2ZWQwOWVlYjU5ZmFhYWQ2NjdjOGEwYTEwNTRiOTY0YTJkM2E5ZjczM2EyZjgiLCJyb2xlIjoiY2xpZW50IiwiaWF0IjoxNjI5MDA3NjA4LCJzdG9yZSI6IjRINlhaTEdUNzU3TS44WVVBWlpTQTRTQUMiLCJzdWIiOiJCSkhMS0tFVkU5WUEifQ.ZZV0TUGuOAekbhipF2jpiiKzFe_Sd19171LgOs4hsCM'
 CLAYFUL_PRODUCT_ID = 'W9TKSQ4CVLQW'
+CLAYFUL_PAYMENT_METHOD = 'PKNFTB5QW4DF'
+CLAYFUL_SHIPPING_ID = 'LECXWETTR9DX'
+
+# IAMPORT
+IAMPORT_CODE = 'imp03489525'
+IAMPORT_KEY = '7187883882735895'
+IAMPORT_SECRET = 'sqexHAerJ78AZwtOKfbl95Vbrn3lVlVnM9VtKaUti34hzx6kNhFWnB7OYaaUw5iifeLZoGtGJxYj55DS'
+IMPORT_EXPORT_USE_TRANSACTIONS = True

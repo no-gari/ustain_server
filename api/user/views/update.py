@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from api.clayful_client import ClayfulCustomerClient
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 from api.user.serializers.update import UserProfileSerializer, PhoneUpdateVerifierCreateSerializer, PhoneUpdateVerifierConfirmSerializer
@@ -15,12 +16,16 @@ class UserProfileView(RetrieveUpdateDestroyAPIView):
         return self.request.user
 
     def delete(self, request, *args, **kwargs):
-        clayful = self.request.data['clayful']
-        clayful_customer_client = ClayfulCustomerClient()
-        clayful_customer_client.clayful_customer_delete(clayful=clayful)
-        del_user = self.request.user
-        del_user.delete()
-        return Response(status=status.HTTP_200_OK)
+        try:
+            clayful = self.request.META['HTTP_CLAYFUL']
+            clayful_customer_client = ClayfulCustomerClient()
+            response = clayful_customer_client.clayful_customer_delete(clayful=clayful)
+            if response.status == 204:
+                del_user = self.request.user
+                del_user.delete()
+            return Response(status=status.HTTP_200_OK)
+        except:
+            raise ValidationError({'error_msg': '회원 삭제에 실패했습니다.'})
 
 
 class PhoneUpdateVerifierCreateView(CreateAPIView):
