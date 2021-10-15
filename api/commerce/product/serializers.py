@@ -103,16 +103,6 @@ class ProductDetailSerializer(serializers.Serializer):
                 return thumbnail
             except:
                 return None
-        #
-        # def get_types(self, value):
-        #     try:
-        #         type_value = {}
-        #         types = value['types']
-        #         for type in types:
-        #             type_value.update({type['option']['_id']: type['variation']['_id']})
-        #         return type_value
-        #     except:
-        #         return {}
 
     _id = serializers.CharField()
     name = serializers.CharField()
@@ -181,3 +171,75 @@ class ProductDetailSerializer(serializers.Serializer):
             return reviews
         except:
             return None
+
+
+class ProductCheckoutSerializer(serializers.Serializer):
+    brand = serializers.SerializerMethodField()
+    _id = serializers.SerializerMethodField()
+    product_id = serializers.SerializerMethodField()
+    product_name = serializers.SerializerMethodField()
+    product_thumbnail = serializers.SerializerMethodField()
+    variant_id = serializers.SerializerMethodField()
+    variant_name = serializers.SerializerMethodField()
+    sale_price = serializers.SerializerMethodField()
+    quantity = serializers.CharField()
+
+    def get__id(self, value):
+        return None
+
+    def get_brand(self, value):
+        try:
+            name = value['products']['brand']['name']
+            return name
+        except:
+            return None
+
+    def get_product_id(self, value):
+        try:
+            product_id = value['products']['_id']
+            return product_id
+        except:
+            return None
+
+    def get_product_name(self, value):
+        try:
+            product_name = value['products']['name']
+            return product_name
+        except:
+            return None
+
+    def get_product_thumbnail(self, value):
+        try:
+            product_thumbnail = value['products']['thumbnail']['url']
+            return product_thumbnail
+        except:
+            return None
+
+    def get_variant_id(self, value):
+        try:
+            variant_id = value['variant']
+            return variant_id
+        except:
+            return None
+
+    def get_variant_name(self, value):
+        variant_id = value['variant']
+        options = []
+        for variant in value['products']['variants']:
+            if variant_id == variant['_id']:
+                options = variant['types']
+        option_string = '옵션 ('
+        for option in options:
+            if options[-1] is not option and len(options) != 1:
+                option_string = option_string + option['option']['name'] + ' : ' + option['variation']['value'] + ', '
+            else:
+                option_string = option_string + option['option']['name'] + ' : ' + option['variation']['value'] + ')'
+        return option_string
+
+    def get_sale_price(self, value):
+        variant_id = value['variant']
+        sale_price = 0
+        for variant in value['products']['variants']:
+            if variant_id == variant['_id']:
+                sale_price = variant['price']['sale']['raw']
+        return sale_price

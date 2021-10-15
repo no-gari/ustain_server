@@ -42,6 +42,7 @@ class CouponDetailSerializer(serializers.Serializer):
     description = serializers.SerializerMethodField()
     min_price = serializers.SerializerMethodField()
     discount = serializers.SerializerMethodField()
+    expires_at = serializers.SerializerMethodField()
 
     def get_name(self, value):
         try:
@@ -70,3 +71,6 @@ class CouponDetailSerializer(serializers.Serializer):
             return discount
         except:
             return None
+
+    def get_expires_at(self, value):
+        return None

@@ -17,8 +17,7 @@ def get_cart(request, *args, **kwargs):
             raise ValidationError({'error_msg': '서버 에러입니다. 다시 시도해주세요.'})
         if not my_cart.data['cart']['items'] == []:
             serializer = CartListSerializer(my_cart.data['cart']['items'], many=True)
-            # return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(my_cart.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '장바구니를 불러오지 못했습니다. 다시 시도해주세요.'})
