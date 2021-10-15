@@ -11,4 +11,3 @@ class EmailLogAdmin(admin.ModelAdmin):
 @admin.register(PhoneLog)
 class PhoneLogAdmin(admin.ModelAdmin):
     pass
-

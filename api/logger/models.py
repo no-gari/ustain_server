@@ -39,28 +39,3 @@ class PhoneLog(models.Model):
 
     def __str__(self):
         return self.body
-
-
-class PointLog(models.Model):
-    user = models.ForeignKey(User, verbose_name='고객', on_delete=models.CASCADE)
-    name = models.CharField(verbose_name='포인트 적립/사용 내역', max_length=32)
-    points = models.IntegerField(verbose_name='포인트 적립/사용 금액')
-    created = models.DateTimeField(verbose_name='생성일시', auto_now_add=True)
-
-    class UsageChoices(models.TextChoices):
-        USED = 'USED', _('사용')
-        GAIN = 'GAIN', _('적립')
-
-    usage = models.CharField(
-        max_length=4,
-        choices=UsageChoices.choices,
-        default=UsageChoices.GAIN,
-    )
-
-    class Meta:
-        verbose_name = '포인트 로그'
-        verbose_name_plural = '포인트 로그'
-        ordering = ['-created']
-
-    def __str__(self):
-        return self.name

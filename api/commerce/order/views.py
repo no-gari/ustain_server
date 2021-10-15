@@ -1,6 +1,4 @@
-from api.commerce.customer.serializers import AddressSerializer, UserPointSerializer, ShippingrRequestSerializers
-from api.commerce.order.serializers import CheckOutSerializer
-from api.commerce.cart.serializers import CartListSerializer
+from api.commerce.customer.serializers import AddressSerializer, ShippingrRequestSerializers
 from api.commerce.customer.models import UserShipping, ShippingRequest
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulOrderClient

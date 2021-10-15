@@ -8,11 +8,6 @@ class AddressSerializer(serializers.ModelSerializer):
         exclude = ('user',)
 
 
-class UserPointSerializer(serializers.Serializer):
-    used = serializers.CharField()
-    available = serializers.CharField()
-
-
 class ShippingrRequestSerializers(serializers.ModelSerializer):
     class Meta:
         model = ShippingRequest
