@@ -297,71 +297,13 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    # def checkout_cart(self, **kwargs):
-    #     try:
-    #         payload = {
-    #             'items': kwargs['items'],
-    #             'currency': 'KRW',
-    #             'paymentMethod': kwargs['payment_method'],
-    #             'address': {
-    #                 'shipping': kwargs['shipping'],
-    #                 'billing': kwargs['shipping'],
-    #             },
-    #             'request': kwargs['shipping_request'],
-    #             'discount': {
-    #                 'cart': {
-    #                     'discounts': [
-    #                         kwargs['points']
-    #                     ]
-    #                 }
-    #             }
-    #         }
-    #         resposne = self.cart.checkout_for_me('order', payload, self.options)
-    #         return resposne
-    #     except Exception as err:
-    #         error_msg = []
-    #         if err.args:
-    #             for error in err.args:
-    #                 error_msg.append(error)
-    #         return ValidationError({'error_msg': error_msg})
     def checkout_cart(self, **kwargs):
         try:
-            payload = {
-                'currency': 'KRW',
-                'paymentMethod': 'PKNFTB5QW4DF',
-                'address': {
-                    'shipping': {
-                        'name': {
-                            'full': '노종혁'
-                        },
-                        'postcode': "12345",
-                        'country': "KR",
-                        'city': "서울시",
-                        'address1': "서초구 오얏로 14길 7",
-                        'address2': "100동 123호",
-                        'mobile': '010-0000-0000',
-                    },
-                    'billing': {
-                        'name': {
-                            'full': '노종혁'
-                        },
-                        'postcode': "12345",
-                        'country': "KR",
-                        'city': "서울시",
-                        'address1': "서초구 오얏로 14길 7",
-                        'address2': "100동 123호",
-                        'mobile': '010-1234-1234',
-                    },
-                },
-                # 'request': "요구사항입니다.",
-                'discount': {
-                    'cart': {
-                        'coupon': '5BULAKZ3XWYH',
-                    }
-                }
-            }
+            payload = kwargs['payload']
+            if payload['discount'] is None:
+                payload.pop('discount')
             options = self.options
-            # options['query'] = {'items': 'YEKW4DJLCQZT'}
+            options['query'] = {'items': kwargs['items']}
             resposne = self.cart.checkout_for_me('order', payload, self.options)
             return resposne
         except Exception as err:
@@ -371,53 +313,11 @@ class ClayfulCartClient:
                     error_msg.append(error)
             return ValidationError({'error_msg': error_msg})
 
-    def checkout_cart_instance(self, **kwargs):
-        try:
-            payload = {
-                'items': [
-                    {},
-                ],
-                'currency': 'KRW',
-                'paymentMethod': 'PKNFTB5QW4DF',
-                'address': {
-                    'shipping': {
-                        'name': {
-                            'full': '노종혁'
-                        },
-                        'postcode': "12345",
-                        'country': "KR",
-                        'city': "서울시",
-                        'address1': "서초구 오얏로 14길 7",
-                        'address2': "100동 123호",
-                        'mobile': '010-0000-0000',
-                    },
-                    'billing': {
-                        'name': {
-                            'full': '노종혁'
-                        },
-                        'postcode': "12345",
-                        'country': "KR",
-                        'city': "서울시",
-                        'address1': "서초구 오얏로 14길 7",
-                        'address2': "100동 123호",
-                        'mobile': '010-1234-1234',
-                    },
-                },
-                # 'request': "요구사항입니다.",
-            }
-            response = self.cart.checkout_for_me('order', payload, self.options)
-            return response
-        except Exception as err:
-            error_msg = []
-            if err.args:
-                for error in err.args:
-                    error_msg.append(error)
-            return ValidationError({'error_msg': error_msg})
-
 
 class ClayfulOrderClient:
-    def __init__(self):
+    def __init__(self, auth_token):
         self.order = Clayful.Order
+        self.options = {'customer': auth_token}
 
     def get_order_list(self, **kwargs):
         try:
@@ -429,6 +329,15 @@ class ClayfulOrderClient:
                 }
             }
             response = self.order.list_for_me(options)
+            return response
+        except Exception as err:
+            return ValidationError({'error_msg': [err.message]})
+
+    def order_cancel(self, **kwargs):
+        try:
+            payload = kwargs['payload']
+            order_id = kwargs['order_id']
+            response = self.order.cancel_for_me(order_id, payload, self.options)
             return response
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
