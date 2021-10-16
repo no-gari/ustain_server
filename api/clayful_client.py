@@ -321,13 +321,8 @@ class ClayfulOrderClient:
 
     def get_order_list(self, **kwargs):
         try:
-            options = {
-                'customer': kwargs['clayful'],
-                'query': {
-                    'limit': 10,
-                    'page': kwargs['page']
-                }
-            }
+            options = self.options
+            options['query'] = {'limit': 10, 'page': kwargs['page'], 'raw': True}
             response = self.order.list_for_me(options)
             return response
         except Exception as err:
@@ -344,9 +339,9 @@ class ClayfulOrderClient:
 
     def get_order(self, **kwargs):
         try:
-            options = {'customer': kwargs['clayful']}
-            order_id = kwargs['order_id']
-            response = self.order.get_for_me(order_id, options)
+            options = self.options
+            options['query'] = {'raw': True, 'displayLanguage': 'order'}
+            response = self.order.get_for_me(kwargs['order_id'], options)
             return response
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
