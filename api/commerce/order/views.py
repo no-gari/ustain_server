@@ -74,8 +74,8 @@ def order_list(request, *args, **kwargs):
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
     try:
         page = kwargs.get('page', 1)
-        clf_order_client = ClayfulOrderClient(auth_token=request.META['HTTP_CLIENT'])
-        order_count = clf_order_client.order_count(clayful=request.META['HTTP_CLAYFUL']).data
+        clf_order_client = ClayfulOrderClient(auth_token=request.META['HTTP_CLAYFUL'])
+        order_count = clf_order_client.order_count().data
         max_index, previous, next_val = get_index(request, order_count['count']['raw'], page)
         order = clf_order_client.get_order_list(page=page)
         if order.status == 200:
@@ -90,8 +90,8 @@ def get_order(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
     try:
-        clf_order_client = ClayfulOrderClient(auth_token=request.META['HTTP_CLIENT'])
-        order = clf_order_client.get_order(order_id=request.data['order_id'])
+        clf_order_client = ClayfulOrderClient(auth_token=request.META['HTTP_CLAYFUL'])
+        order = clf_order_client.get_order(order_id=kwargs['order_id'])
         if order.status == 200:
             return Response(order.data, status=status.HTTP_200_OK)
     except:
