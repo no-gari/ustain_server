@@ -16,6 +16,7 @@ class CatalogsListView(ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
+
         categories = eval(self.request.query_params.get('categories', []))
         if categories != []:
             magazines = Catalog.objects.filter(published=True, categories__in=categories).order_by('-id')

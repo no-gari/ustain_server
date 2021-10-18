@@ -11,17 +11,11 @@ class Catalog(models.Model):
     collection = models.CharField(max_length=255, verbose_name='콜렉션 ID', help_text='클레이풀 상의 콜렉션에 해당하는 ID를 입력해주세요.')
 
     class Choices(models.TextChoices):
+        MALE = '맨'
+        FEMALE = '우먼'
+        BEAUTY = '뷰티'
 
-        MALE = 'MA', _('남자')
-        FEMALE = 'FE', _('여자')
-        BEAUTY = 'BE', _('뷰')
-
-    choices = models.CharField(
-        max_length=2,
-        choices=Choices.choices,
-        default=Choices.FEMALE,
-        verbose_name='선택'
-    )
+    choices = models.CharField(max_length= 32, choices=Choices.choices, default=Choices.FEMALE, verbose_name='선택')
 
     def __str__(self):
         return str(self.title)
