@@ -1,41 +1,28 @@
 from api.catalog.serializers import CatalogListSerializers, CatalogRetrieveSerializer
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.pagination import PageNumberPagination
+from api.clayful_client import ClayfulCollectionClient, ClayfulProductClient
+from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import api_view
+from api.commerce.list_helper import get_index_catalog
+from rest_framework.status import HTTP_200_OK
 from rest_framework.response import Response
-from api.catalog.models import Catalog
+from django.conf import settings
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 10
+@api_view(["GET"])
+def catalog_list(request, *args, **kwargs):
+    try:
+        clf_colleciton = ClayfulCollectionClient()
+        clf_catalogs = ClayfulCollectionClient.get_collections(parent=settings.CLAYFUL_CATALOG_ID).data
+        return Response(clf_catalogs, status=HTTP_200_OK)
+
+    except:
+        raise ValidationError({'error_msg': '카탈로그 불러오기를 실패했습니다.'})
 
 
-class CatalogsListView(ListAPIView):
-    serializer_class = CatalogListSerializers
-    pagination_class = StandardResultsSetPagination
+@api_view(["GET"])
+def get_catalog(request, *args, **kwargs):
+    try:
+        catalog_id = kwargs['catalog_id']
 
-    def get_queryset(self):
-
-        categories = eval(self.request.query_params.get('categories', []))
-        if categories != []:
-            magazines = Catalog.objects.filter(published=True, categories__in=categories).order_by('-id')
-        else:
-            magazines = Catalog.objects.filter(published=True).order_by('-id')
-        return magazines
-
-
-class CatalogRetrieveView(RetrieveAPIView):
-    serializer_class = CatalogRetrieveSerializer
-    lookup_field = 'id'
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.hits += 1
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-    def get_queryset(self):
-        magazines = Catalog.objects.filter(published=True)
-        return magazines
+    except:
+        raise ValidationError({'error_msg': '카탈로그 불러오기를 실패했습니다.'})

@@ -1,10 +1,9 @@
 from rest_framework import serializers
-from api.catalog.models import Catalog
 
 
 class CatalogListSerializers(serializers.ModelSerializer):
-    model = Catalog
+    pass
 
 
 class CatalogRetrieveSerializer(serializers.ModelSerializer):
-    model = Catalog
+    pass
