@@ -9,6 +9,5 @@ urlpatterns = [
     path('comment/', include('api.commerce.comment.urls')),
     path('product/', include('api.commerce.product.urls')),
     path('customer/', include('api.commerce.customer.urls')),
-    # path('wishlist/', include('api.commerce.wishlist.urls')),
     path('collection/', include('api.commerce.collection.urls')),
 ]

@@ -1,5 +1,3 @@
-from django.utils.translation import gettext_lazy as _
-from api.user.models import User
 from django.db import models
 
 

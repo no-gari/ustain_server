@@ -28,17 +28,19 @@ def add_to_cart(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
     try:
+        added_list = []
         clayful_cart_client = ClayfulCartClient(auth_token=request.META['HTTP_CLAYFUL'])
-        response = clayful_cart_client.add_item(
-            product_id=request.data.get('product'),
-            variant=request.data.get('variant'),
-            quantity=request.data.get('quantity')
-        )
-        serializer = CartItemSerializer(response.data)
-        if response.status == 200:
-            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-        else:
-            raise ValidationError({'error_msg': '다시 시도해주세요.'})
+        for data in request.data:
+            response = clayful_cart_client.add_item(
+                product_id=data.get('product'),
+                variant=data.get('variant'),
+                quantity=data.get('quantity')
+            )
+            if response.status != 200:
+                raise ValidationError({'error_msg': '상품 추가에 실패했습니다.'})
+            added_list.append(response.data)
+        serializer = CartItemSerializer(added_list, many=True)
+        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '다시 시도해주세요.'})
 
