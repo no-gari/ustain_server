@@ -58,6 +58,15 @@ class MainMagazinesListView(ListAPIView):
         return magazines
 
 
+class MainBannerMagazineListView(ListAPIView):
+    serializer_class = MagazinesListSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        magazines = Magazines.objects.filter(published=False, is_main=True).order_by('-id')
+        return magazines
+
+
 class MagazineRetrieveView(RetrieveAPIView):
     serializer_class = MagazineRetrieveSerializer
     permission_classes = [AllowAny]
