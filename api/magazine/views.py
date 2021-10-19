@@ -51,6 +51,7 @@ class ScrappedMagazinesListView(ListAPIView):
 
 class MainMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
+    pagination_class = StandardResultsSetPagination
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -60,10 +61,11 @@ class MainMagazinesListView(ListAPIView):
 
 class MainBannerMagazineListView(ListAPIView):
     serializer_class = MagazinesListSerializer
+    pagination_class = StandardResultsSetPagination
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        magazines = Magazines.objects.filter(published=False, is_main=True).order_by('-id')
+        magazines = Magazines.objects.filter(published=False, is_banner=True).order_by('-id')
         return magazines
 
 
