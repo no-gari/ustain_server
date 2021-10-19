@@ -50,7 +50,6 @@ class ScrappedMagazinesListView(ListAPIView):
 
 class MainMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
-    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         magazines = Magazines.objects.filter(published=True, is_main=True).order_by('-id')
@@ -59,7 +58,6 @@ class MainMagazinesListView(ListAPIView):
 
 class MainBannerMagazineListView(ListAPIView):
     serializer_class = MagazinesListSerializer
-    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         magazines = Magazines.objects.filter(published=False, is_banner=True).order_by('-id')
