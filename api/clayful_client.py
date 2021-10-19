@@ -54,13 +54,27 @@ class ClayfulProductClient:
             options = {
                 'query': {
                     'brand': kwargs['brand_id'],
-                    'limit': 100,
+                    'limit': 120,
                 }
             }
             response = self.product.list(options)
             return response
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
+
+    def list_catalog_products(self, **kwargs):
+        try:
+            options = {
+                'query': {
+                    'collection': kwargs.get('collection', 'any'),
+                    'limit': 120
+                }
+            }
+            response = self.product.list(options)
+            return response
+        except Exception as err:
+            return ValidationError({'error_msg': [err.message]})
+
 
     def list_products(self, **kwargs):
         try:

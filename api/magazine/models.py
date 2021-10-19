@@ -33,7 +33,8 @@ class ChoiceEnum(Enum):
 
 class Magazines(models.Model):
     categories = models.ManyToManyField(Categories, verbose_name='카테고리', related_name='magazines')
-    is_main = models.BooleanField(default=False, verbose_name='메인 배너 노출 여부', help_text='체크 하시면 어플리케이션 메인 배너에 등록 됩니다.')
+    is_main = models.BooleanField(default=False, verbose_name='메인 매거진 노출 여부', help_text='체크 하시면 어플리케이션 메인 매거진에 등록 됩니다.')
+    is_banner = models.BooleanField(default=False, verbose_name='메인 배너 노출 여부', help_text='체크 하시면 어플리케이션 메인 배너에 등록 됩니다.')
     banner_image = models.ImageField(verbose_name='배너 이미지', upload_to=upload_to('image/%Y/%m/%d/'))
     published = models.BooleanField(default=False, verbose_name='글 발행 여부', help_text='해당 글을 발행하시려면 체크 해 주세요.')
     comments_banned = models.BooleanField(default=False, verbose_name='댓글 차단', help_text='댓글을 차단하시려면 체크 해 주세요.')
