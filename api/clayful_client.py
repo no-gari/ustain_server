@@ -44,11 +44,6 @@ class ClayfulCustomerClient:
             return ValidationError({'error_msg': [e.args]})
 
 
-class ClayfulCatalogClient:
-    def __init__(self):
-        pass
-
-
 class ClayfulProductClient:
     def __init__(self):
         super().__init__()
