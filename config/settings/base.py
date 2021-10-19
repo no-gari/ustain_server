@@ -32,7 +32,6 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     'api.user.apps.UserConfig',
     'api.logger.apps.LoggerConfig',
-    'api.catalog.apps.CatalogConfig',
     'api.magazine.apps.MagazineConfig',
     'api.firebase.apps.FirebaseConfig',
     'api.commerce.cart.apps.CartConfig',
@@ -41,9 +40,9 @@ LOCAL_APPS = [
     'api.commerce.coupon.apps.CouponConfig',
     'api.commerce.comment.apps.CommentConfig',
     'api.commerce.product.apps.ProductConfig',
+    'api.commerce.catalog.apps.CatalogConfig',
     'api.commerce.customer.apps.CustomerConfig',
     'api.commerce.wishlist.apps.WishlistConfig',
-    'api.commerce.catalogue.apps.CatalogueConfig',
     'api.commerce.collection.apps.CollectionConfig',
 ]
 

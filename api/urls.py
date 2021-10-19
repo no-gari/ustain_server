@@ -5,5 +5,4 @@ urlpatterns = [
     path('firebase/', include('api.firebase.urls')),
     path('magazine/', include('api.magazine.urls')),
     path('commerce/', include('api.commerce.urls')),
-    path('catalog/', include('api.catalog.urls'))
 ]

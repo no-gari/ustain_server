@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class CatalogConfig(AppConfig):
-    name = 'api.catalog'
-    verbose_name = "카탈로그"
+    name = 'api.commerce.catalog'
+    verbose_name = '카탈로그'

@@ -7,7 +7,7 @@ from django.conf import settings
 
 
 @api_view(["GET"])
-def catalogue_list(request, *args, **kwargs):
+def catalog_list(request, *args, **kwargs):
     try:
         clayful_comment_client = ClayfulCollectionClient()
         response = clayful_comment_client.get_collection(parent=settings.CLAYFUL_CATALOGUE_ID)
@@ -17,5 +17,5 @@ def catalogue_list(request, *args, **kwargs):
 
 
 @api_view(["GET"])
-def get_catalogue(request, *args, **kwargs):
+def get_catalog(request, *args, **kwargs):
     pass
