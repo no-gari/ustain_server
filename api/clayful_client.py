@@ -44,6 +44,11 @@ class ClayfulCustomerClient:
             return ValidationError({'error_msg': [e.args]})
 
 
+class ClayfulCatalogClient:
+    def __init__(self):
+        pass
+
+
 class ClayfulProductClient:
     def __init__(self):
         super().__init__()
@@ -120,10 +125,8 @@ class ClayfulCollectionClient:
     def get_collections(self, **kwargs):
         try:
             parent = kwargs.get('parent', None)
-            if parent is None:
-                options = {'query': {'parent': 'none'}}
-            else:
-                options = {'query': {'parent': parent}}
+            options = {'query': {'parent': 'none', 'limit': 120}} if parent is None else {
+                'query': {'parent': parent, 'limit': 120}}
             response = self.collection.list(options)
             return response
         except Exception as err:

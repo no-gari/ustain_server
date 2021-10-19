@@ -42,7 +42,6 @@ LOCAL_APPS = [
     'api.commerce.product.apps.ProductConfig',
     'api.commerce.catalog.apps.CatalogConfig',
     'api.commerce.customer.apps.CustomerConfig',
-    'api.commerce.wishlist.apps.WishlistConfig',
     'api.commerce.collection.apps.CollectionConfig',
 ]
 
@@ -220,7 +219,6 @@ CLAYFUL_BACKEND_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImI5ZDM1Mj
 CLAYFUL_PRODUCT_ID = 'W9TKSQ4CVLQW'
 CLAYFUL_PAYMENT_METHOD = 'PKNFTB5QW4DF'
 CLAYFUL_SHIPPING_ID = 'LECXWETTR9DX'
-CLAYFUL_CATALOG_ID = 'BAF2PX9ZFHVE'
 
 # IAMPORT
 IAMPORT_CODE = 'imp03489525'
