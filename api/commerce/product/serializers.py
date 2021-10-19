@@ -181,6 +181,7 @@ class ProductCheckoutSerializer(serializers.Serializer):
     product_thumbnail = serializers.SerializerMethodField()
     variant_id = serializers.SerializerMethodField()
     variant_name = serializers.SerializerMethodField()
+    available = serializers.SerializerMethodField()
     sale_price = serializers.SerializerMethodField()
     quantity = serializers.CharField()
 
@@ -235,6 +236,9 @@ class ProductCheckoutSerializer(serializers.Serializer):
             else:
                 option_string = option_string + option['option']['name'] + ' : ' + option['variation']['value'] + ')'
         return option_string
+
+    def get_available(self, value):
+        return value['products']['available']
 
     def get_sale_price(self, value):
         variant_id = value['variant']

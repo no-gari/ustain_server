@@ -28,8 +28,8 @@ def order_temp(request, *args, **kwargs):
         serialized_requests = ShippingrRequestSerializers(ShippingRequest.objects.all(), many=True).data
         return Response({'products': serialized_data, 'address': serialized_address,
                          'request': {'shipping_request': serialized_requests, 'additional_request': ''},
-                         'coupon': {'Id': None, 'name': None, 'description': None, 'min_price': None, 'discount': None,
-                                    'expires_at': None}, 'agreed': False}, status=status.HTTP_200_OK)
+                         'coupon': {'Id': None, 'name': None, 'description': None, 'min_price': None,
+                                    'discount': None, 'expires_at': None}}, status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '상품 에러입니다.'})
 
