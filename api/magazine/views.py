@@ -1,7 +1,7 @@
-from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, RetrieveAPIView, \
-    DestroyAPIView, RetrieveUpdateAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, \
+    RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.magazine.serializers import *
 from .models import *
@@ -16,7 +16,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 class MagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [AllowAny]
 
     def get_queryset(self):
         categories = eval(self.request.query_params.get('categories', []))
@@ -52,7 +51,6 @@ class ScrappedMagazinesListView(ListAPIView):
 class MainMagazinesListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [AllowAny]
 
     def get_queryset(self):
         magazines = Magazines.objects.filter(published=True, is_main=True).order_by('-id')
@@ -62,7 +60,6 @@ class MainMagazinesListView(ListAPIView):
 class MainBannerMagazineListView(ListAPIView):
     serializer_class = MagazinesListSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [AllowAny]
 
     def get_queryset(self):
         magazines = Magazines.objects.filter(published=False, is_banner=True).order_by('-id')
@@ -71,7 +68,7 @@ class MainBannerMagazineListView(ListAPIView):
 
 class MagazineRetrieveView(RetrieveAPIView):
     serializer_class = MagazineRetrieveSerializer
-    permission_classes = [AllowAny]
+    queryset = Magazines.objects.all()
     lookup_field = 'id'
 
     def retrieve(self, request, *args, **kwargs):
@@ -81,15 +78,10 @@ class MagazineRetrieveView(RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    def get_queryset(self):
-        magazines = Magazines.objects.filter(published=True)
-        return magazines
-
 
 class MagazineLikeUpdateView(RetrieveUpdateAPIView):
     queryset = Magazines.objects.prefetch_related('like_users').all()
     serializer_class = MagazineLikeSerializer
-    permission_classes = [AllowAny]
     allowed_methods = ['put', 'get']
     lookup_field = 'id'
 
@@ -97,7 +89,6 @@ class MagazineLikeUpdateView(RetrieveUpdateAPIView):
 class MagazineScrapUpdateView(RetrieveUpdateAPIView):
     queryset = Magazines.objects.prefetch_related('scrapped_users').all()
     serializer_class = MagazineScrapUpdateSerializer
-    permission_classes = [AllowAny]
     allowed_methods = ['put', 'get']
     lookup_field = 'id'
 
@@ -105,7 +96,6 @@ class MagazineScrapUpdateView(RetrieveUpdateAPIView):
 class MagazineReviewsListSerializer(ListAPIView):
     serializer_class = MagazineReviewsListSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [AllowAny]
 
     def get_queryset(self):
         magazine_comments = MagazineComments.objects.filter(magazines_id=self.kwargs['id'], parent=None).order_by('id')
