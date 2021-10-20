@@ -2,13 +2,20 @@ from api.commerce.product.serializers import ProductListSerializer
 from api.magazine.models import Magazines, MagazineComments
 from rest_framework.validators import ValidationError
 from api.clayful_client import ClayfulProductClient
+from django.utils.html import strip_tags
 from rest_framework import serializers
 
 
 class MagazinesListSerializer(serializers.ModelSerializer):
+    content = serializers.SerializerMethodField()
+
     class Meta:
         model = Magazines
         fields = ['categories', 'banner_image', 'id', 'content', 'title']
+
+    def get_content(self, value):
+        content = strip_tags(value.content)
+        return content
 
 
 class MagazineRetrieveSerializer(serializers.ModelSerializer):
