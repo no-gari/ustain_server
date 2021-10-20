@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group as AuthGroup, AbstractUser, UserManager as DjangoUserManager
-from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.db import models
 
 
 class UserGroup(models.Model):

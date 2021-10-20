@@ -32,6 +32,7 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     'api.user.apps.UserConfig',
     'api.logger.apps.LoggerConfig',
+    'api.mypage.apps.MypageConfig',
     'api.magazine.apps.MagazineConfig',
     'api.firebase.apps.FirebaseConfig',
     'api.commerce.cart.apps.CartConfig',
