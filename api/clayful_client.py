@@ -75,8 +75,35 @@ class ClayfulProductClient:
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
 
+    def search_products_count(self, **kwargs):
+        try:
+            options = {
+                'query': {
+                    'q': kwargs['keyword'],
+                    'search': 'name.ko,keywords.ko',
+                    'searchMatch': 'partial'
+                }
+            }
+            response = self.product.count(options)
+            return response
+        except Exception as err:
+            return ValidationError({'error_msg': [err.message]})
+
     def search_products(self, **kwargs):
-        pass
+        try:
+            options = {
+                'query': {
+                    'q': kwargs['keyword'],
+                    'search': 'name.ko,keywords.ko',
+                    'searchMatch': 'partial',
+                    'limit': 10,
+                    'page': kwargs.get('page', 1)
+                }
+            }
+            response = self.product.list(options)
+            return response
+        except Exception as err:
+            return ValidationError({'error_msg': [err.message]})
 
     def list_products(self, **kwargs):
         try:
