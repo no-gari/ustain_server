@@ -19,7 +19,7 @@ def get_big_collections(request, *args, **kwargs):
         if response.status == 200:
             for category in large_categories:
                 categories = clayful_brand_client.get_collections(parent=category['_id'])
-                big_categoreis.append({category['name']: CollectionRetrieveSerializers(categories.data, many=True).data})
+                big_categoreis.append({"name": category['name'], "collection": [CollectionRetrieveSerializers(categories.data, many=True).data]})
             return Response(big_categoreis, status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '카테고리를 가져오지 못했습니다.'})
