@@ -75,6 +75,8 @@ class ClayfulProductClient:
         except Exception as err:
             return ValidationError({'error_msg': [err.message]})
 
+    def search_products(self, **kwargs):
+        pass
 
     def list_products(self, **kwargs):
         try:
