@@ -45,6 +45,7 @@ class Magazines(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
     hits = models.PositiveIntegerField(default=0, verbose_name='조회수')
     title = models.CharField(max_length=255, verbose_name='제목')
+    subtitle = models.CharField(max_length=1024, verbose_name='부제목', default='부제목입니다.')
     content = models.TextField(verbose_name='내용')
     collection = models.CharField(max_length=255, verbose_name='콜렉션 ID', blank=True, null=True, help_text='클레이풀 상의 콜렉션에 해당하는 ID를 입력해주세요.')
     brand = models.CharField(max_length=64, verbose_name='브랜드 ID', blank=True, null=True, help_text='클레이풀 상의 브랜드에 해당하는 ID를 입력해주세요.')

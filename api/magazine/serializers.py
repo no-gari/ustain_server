@@ -11,7 +11,7 @@ class MagazinesListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Magazines
-        fields = ['categories', 'banner_image', 'id', 'content', 'title']
+        fields = ['categories', 'banner_image', 'id', 'content', 'title', 'subtitle']
 
     def get_content(self, value):
         content = strip_tags(value.content)
@@ -26,7 +26,7 @@ class MagazineRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Magazines
         fields = ['categories', 'banner_image', 'id', 'content', 'title', 'hits', 'created_at', 'updated_at',
-                  'comments_banned', 'like_user_count', 'total_comments', 'products']
+                  'comments_banned', 'like_user_count', 'total_comments', 'products', 'subtitle']
 
     def get_total_comments(self, obj):
         total_comments = obj.magazine_comments.count()
