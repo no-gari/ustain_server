@@ -1,9 +1,12 @@
+from api.commerce.customer.serializers import AddressSerializer, ShippingrRequestSerializers
 from api.commerce.cart.serializers import CartListSerializer, CartItemSerializer
+from api.commerce.customer.models import UserShipping, ShippingRequest
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulCartClient
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+
 
 
 @api_view(["GET"])
@@ -84,3 +87,20 @@ def count_items(request, *args, **kwargs):
             return Response(response.data['count']['raw'], status=status.HTTP_200_OK)
     except:
         raise ValidationError({'error_msg': '다시 시도해주세요.'})
+
+
+@api_view(["POST"])
+def order_temp(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        serialized_data = request.data
+        address = UserShipping.objects.filter(is_default=True, user=request.user).first()
+        serialized_address = AddressSerializer(address).data
+        serialized_requests = ShippingrRequestSerializers(ShippingRequest.objects.all(), many=True).data
+        return Response({'products': serialized_data, 'address': serialized_address,
+                         'request': {'shipping_request': serialized_requests, 'additional_request': ''},
+                         'coupon': {'Id': None, 'name': None, 'description': None, 'min_price': None,
+                                    'discount': None, 'expires_at': None}}, status=status.HTTP_200_OK)
+    except:
+        raise ValidationError({'error_msg': '상품 에러입니다.'})

@@ -1,7 +1,10 @@
-from api.commerce.product.serializers import ProductListSerializer, ProductDetailSerializer
+from api.commerce.product.serializers import ProductListSerializer, ProductDetailSerializer, ProductCheckoutSerializer
+from api.commerce.customer.serializers import AddressSerializer, ShippingrRequestSerializers
+from api.commerce.customer.models import UserShipping, ShippingRequest
 from rest_framework.exceptions import ValidationError
 from api.clayful_client import ClayfulProductClient
 from rest_framework.generics import ListAPIView
+from rest_framework.decorators import api_view
 from api.commerce.list_helper import get_index
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -63,3 +66,26 @@ class ProductDetailView(APIView):
                 # return Response(product_detail.data, status=status.HTTP_200_OK)
         except Exception:
             raise ValidationError({'error_msg': '유효하지 않은 id입니다.'})
+
+
+@api_view(["POST"])
+def order_temp(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return Response({'error_msg': '로그인 후 이용해주세요,'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        clf_product_client = ClayfulProductClient()
+        product_list = []
+        for data in request.data:
+            product = clf_product_client.get_detail(id=data['product']).data
+            serialized_data = ProductCheckoutSerializer(
+                {'products': product, 'variant': data['variant'], 'quantity': data['quantity']}).data
+            product_list.append(serialized_data)
+        address = UserShipping.objects.filter(is_default=True, user=request.user).first()
+        serialized_address = AddressSerializer(address).data
+        serialized_requests = ShippingrRequestSerializers(ShippingRequest.objects.all(), many=True).data
+        return Response({'products': product_list, 'address': serialized_address,
+                         'request': {'shipping_request': serialized_requests, 'additional_request': ''},
+                         'coupon': {'Id': None, 'name': None, 'description': None, 'min_price': None,
+                                    'discount': None, 'expires_at': None}}, status=status.HTTP_200_OK)
+    except:
+        raise ValidationError({'error_msg': '상품 에러입니다.'})
