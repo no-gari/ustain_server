@@ -42,7 +42,6 @@ LOCAL_APPS = [
     'api.commerce.coupon.apps.CouponConfig',
     'api.commerce.comment.apps.CommentConfig',
     'api.commerce.product.apps.ProductConfig',
-    'api.commerce.catalog.apps.CatalogConfig',
     'api.commerce.customer.apps.CustomerConfig',
     'api.commerce.collection.apps.CollectionConfig',
 ]

@@ -1,10 +1,19 @@
-from api.magazine.views import *
+from api.magazine.views import MagazinesListView, MagazineLikeUpdateView, MainMagazinesListView, \
+    MainBannerMagazineListView, MagazineRetrieveView, ScrappedMagazinesListView, MagazineScrapUpdateView, \
+    MagazineReviewsListSerializer, MagazineReviewCreateView, MagazineCommentUpdateView, MagazineCommentDeleteView, \
+    catalog_list, get_catalog
 from django.urls import path
 
 urlpatterns = [
-    path('list/', MagazinesListView.as_view()),
+    # 오늘의 매거진
     path('list/is-main/', MainMagazinesListView.as_view()),
+    # 배너에 실리는 매거진
     path('list/is-main/banner/', MainBannerMagazineListView.as_view()),
+    # 카탈로그 매거진
+    path('list/catalog/', catalog_list),
+    # 카탈로그 상세 뷰
+    path('list/catalog/<str:catalog_id>', get_catalog),
+    path('list/', MagazinesListView.as_view()),
     path('detail/<int:id>/', MagazineRetrieveView.as_view()),
     path('list/scrapped/', ScrappedMagazinesListView.as_view()),
     path('detail/<int:id>/update-like/', MagazineLikeUpdateView.as_view()),
