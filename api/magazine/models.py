@@ -31,6 +31,23 @@ class ChoiceEnum(Enum):
         return [(choice.name, choice.value) for choice in cls]
 
 
+class Catalog(models.Model):
+    banner_image = models.ImageField(verbose_name='배너 이미지', upload_to=upload_to('image/%Y/%m/%d/'), null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='작성')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성일')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
+    title = models.CharField(max_length=255, verbose_name='제목')
+    description = models.TextField(verbose_name='카탈로그 설명', default='카탈로그 설명입니다.')
+    collection = models.CharField(max_length=255, verbose_name='콜렉션 ID', blank=True, null=True, help_text='클레이풀 상의 콜렉션에 해당하는 ID를 입력해주세요.')
+
+    def __str__(self):
+        return str(self.title)
+
+    class Meta:
+        verbose_name = '카탈로그'
+        verbose_name_plural = '카탈로그'
+
+
 class Magazines(models.Model):
     categories = models.ManyToManyField(Categories, verbose_name='카테고리', related_name='magazines')
     is_main = models.BooleanField(default=False, verbose_name='메인 매거진 노출 여부', help_text='체크 하시면 어플리케이션 메인 매거진에 등록 됩니다.')

@@ -32,6 +32,11 @@ class MagazinesAdminForm(forms.ModelForm):
         return instance
 
 
+@admin.register(models.Catalog)
+class CatalogAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(models.Magazines)
 class MagazinesAdmin(SummernoteModelAdmin):
     form = MagazinesAdminForm
