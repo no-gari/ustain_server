@@ -18,7 +18,7 @@ def order_create(request, *args, **kwargs):
             add = clf_client.add_item(product_id=first['product_id'], variant=first['variant_id'], quantity=first['quantity'])
             items = add.data['_id']
         else:
-            items = QueryOptionSerializer(request.data['products'])
+            items = QueryOptionSerializer(request.data['products']).data
         payload = OrderSerializer(request.data).data
         response = clf_client.checkout_cart(items=items, payload=payload)
         if response.status == 201:

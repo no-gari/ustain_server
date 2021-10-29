@@ -341,10 +341,10 @@ class ClayfulCartClient:
     def checkout_cart(self, **kwargs):
         try:
             payload = kwargs['payload']
-            if payload['discount'] is None:
+            if payload['discount']['cart']['coupon'] is None or payload['discount'] is None:
                 payload.pop('discount')
             options = self.options
-            options['query'] = {'items': kwargs['items']}
+            options['query'] = {'items': kwargs['items']['products']}
             resposne = self.cart.checkout_for_me('order', payload, self.options)
             return resposne
         except Exception as err:

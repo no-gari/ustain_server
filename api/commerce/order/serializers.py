@@ -32,13 +32,17 @@ class OrderSerializer(serializers.Serializer):
                         'address1': address1, 'address2': address2, 'mobile': mobile}}
 
     def get_discount(self, value):
-        discount = value['coupon']['_id']
-        return None if discount is None else {'cart': {'coupon': discount}}
+        try:
+            discount = value['coupon']['_id']
+            return {'cart': {'coupon': discount}}
+        except:
+            return None
 
     def get_request(self, value):
-        request1 = value['request']['shipping_request']['content']
-        request2 = value['request']['additional_request']
-        return request1 + ' ' + request2
+        request1 = value['request']['shipping_request'].get('content', '')
+        request2 = str(value['request'].get('additional_request', ''))
+        resonse = request1 + ' ' + request2
+        return resonse
 
 
 class QueryOptionSerializer(serializers.Serializer):
@@ -48,7 +52,7 @@ class QueryOptionSerializer(serializers.Serializer):
         product_string = ''
         for product in value:
             product_string += product['_id']
-            if product == product[-1]:
+            if not product == value[-1]:
                 product_string += ','
         return product_string
 
