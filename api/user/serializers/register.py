@@ -40,7 +40,7 @@ class PhoneVerifierCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def send_code(self, attrs):
-        body = f'어라운드어스 회원가입 인증번호: [{attrs["code"]}]'
+        body = f'어스테인 회원가입 인증번호: [{attrs["code"]}]'
         PhoneLog.objects.create(to=attrs['phone'], body=body)
 
 

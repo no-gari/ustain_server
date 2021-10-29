@@ -58,7 +58,7 @@ class PhoneUpdateVerifierCreateSerializer(serializers.Serializer):
         return attrs
 
     def send_code(self, attrs):
-        body = f'어라운드어스 휴대폰 번호 변경 인증번호: [{attrs["code"]}]'
+        body = f'어스테인 휴대폰 번호 변경 인증번호: [{attrs["code"]}]'
         PhoneLog.objects.create(to=attrs['new_phone'], body=body)
 
     def create(self, validated_data):

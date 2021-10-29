@@ -122,19 +122,13 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-SITE_NAME = 'around-us'
+SITE_NAME = 'ustain'
 
-# STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR / 'static'
-
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
-
-STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "..", "www", "media")
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # AUTH_USER_MODEL
 AUTH_USER_MODEL = 'user.User'
