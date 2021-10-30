@@ -1,5 +1,5 @@
+from api.magazine.models import Magazines, MagazineComments, Catalog
 from api.commerce.product.serializers import ProductListSerializer
-from api.magazine.models import Magazines, MagazineComments
 from rest_framework.validators import ValidationError
 from api.clayful_client import ClayfulProductClient
 from django.utils.html import strip_tags
@@ -142,3 +142,31 @@ class MagazineReviewDestroySerializer(serializers.ModelSerializer):
     class Meta:
         model = MagazineComments
         fields = ['id']
+
+
+class CatalogSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Catalog
+        fields = ['id', 'banner_image', 'title', 'description', 'products']
+
+    def get_products(self, obj):
+        clf_product_client = ClayfulProductClient()
+        products = clf_product_client.list_products(page=1, collection=obj.collection).data
+        serialized_products = ProductListSerializer(products, many=True).data[:3]
+        return serialized_products
+
+
+class CatalogDetailSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Catalog
+        fields = ['id', 'banner_image', 'title', 'description', 'products']
+
+    def get_products(self, obj):
+        clf_product_client = ClayfulProductClient()
+        products = clf_product_client.list_products(page=1, collection=obj.collection).data
+        serialized_products = ProductListSerializer(products, many=True).data
+        return serialized_products
