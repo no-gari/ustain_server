@@ -2,7 +2,6 @@ from api.user.views.phone import PasswordChangeVerifierConfirmView, PasswordChan
 from api.user.views.update import UserProfileView, PhoneUpdateVerifierCreateView, PhoneUpdateVerifierConfirmView
 from api.user.views.register import UserRegisterView, PhoneVerifierCreateView, PhoneVerifierConfirmView
 from api.user.views.login import CustomTokenObtainPairView, CustomTokenRefreshView
-from api.user.views.category import CategoryListView
 from django.urls import path
 
 
@@ -23,10 +22,6 @@ urlpatterns = [
 
     # 유저 프로필 가져오기, 업데이트, 삭제
     path('profile/', UserProfileView.as_view()),
-
-    # 카테고리 전체 가져오기
-    path('categories/', CategoryListView.as_view()),
-
 
     # 휴대폰 번호 재설정
     path('update/phone/phone-verifier/', PhoneUpdateVerifierCreateView.as_view()),

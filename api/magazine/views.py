@@ -3,17 +3,18 @@ from api.magazine.serializers import MagazinesListSerializer, MagazineReviewsLis
     MagazineReviewUpdateSerializer, MagazineReviewCreateSerializer, MagazineReviewDestroySerializer
 from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, \
     RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView
-from api.clayful_client import ClayfulCollectionClient, ClayfulProductClient
 from api.magazine.models import Magazines, MagazineComments, Catalog
-from api.commerce.product.serializers import ProductListSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
-from rest_framework.decorators import api_view
-from rest_framework.status import HTTP_200_OK
 from rest_framework.response import Response
-from django.utils.html import strip_tags
-from django.conf import settings
+
+
+class CategoryListView(ListAPIView):
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+    ordering = ['-id']
+    queryset = Categories.objects.all()
 
 
 class StandardResultsSetPagination(PageNumberPagination):

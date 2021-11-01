@@ -4,6 +4,13 @@ from rest_framework.validators import ValidationError
 from api.clayful_client import ClayfulProductClient
 from django.utils.html import strip_tags
 from rest_framework import serializers
+from api.user.models import Categories
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categories
+        fields = '__all__'
 
 
 class MagazinesListSerializer(serializers.ModelSerializer):
