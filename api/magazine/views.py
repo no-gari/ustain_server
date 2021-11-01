@@ -1,6 +1,6 @@
 from api.magazine.serializers import MagazinesListSerializer, MagazineReviewsListSerializer, CatalogDetailSerializer, \
     MagazineRetrieveSerializer, MagazineLikeSerializer, MagazineScrapUpdateSerializer, CatalogSerializer, \
-    MagazineReviewUpdateSerializer, MagazineReviewCreateSerializer, MagazineReviewDestroySerializer
+    MagazineReviewUpdateSerializer, MagazineReviewCreateSerializer, MagazineReviewDestroySerializer, CategorySerializer
 from rest_framework.generics import UpdateAPIView, CreateAPIView, ListAPIView, \
     RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView
 from api.magazine.models import Magazines, MagazineComments, Catalog
@@ -8,11 +8,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from api.user.models import Categories
 
 
 class CategoryListView(ListAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [AllowAny]
     ordering = ['-id']
     queryset = Categories.objects.all()
 
